@@ -39,7 +39,7 @@ export default async function StudioPage() {
 
       {services.length ? (
         <section className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-24">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-stone">{labels.services}</p>
+          <p className="kicker text-stone">{labels.services}</p>
           <h2 className="display-sm mt-3">{labels.how_works}</h2>
           <div className="mt-12 divide-y divide-line border-y border-line">
             {services.map((service, index) => (

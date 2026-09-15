@@ -42,7 +42,7 @@ export function ContactForm() {
 
   if (status === "sent") {
     return (
-      <div className="border border-line bg-ivory px-8 py-12">
+      <div>
         <p className="font-serif text-3xl">Gracias.</p>
         <p className="mt-3 max-w-md text-sm leading-relaxed text-stone">
           Recibimos tu mensaje y te responderemos a la brevedad.
@@ -58,7 +58,7 @@ export function ContactForm() {
         <input
           required
           name="name"
-          className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none"
+          className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none transition-colors focus:border-ink"
         />
       </label>
       <label className="grid gap-2 text-[11px] uppercase tracking-[0.2em] text-stone">
@@ -67,14 +67,14 @@ export function ContactForm() {
           required
           type="email"
           name="email"
-          className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none"
+          className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none transition-colors focus:border-ink"
         />
       </label>
       <label className="grid gap-2 text-[11px] uppercase tracking-[0.2em] text-stone">
         Teléfono
         <input
           name="phone"
-          className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none"
+          className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none transition-colors focus:border-ink"
         />
       </label>
       <label className="grid gap-2 text-[11px] uppercase tracking-[0.2em] text-stone">
@@ -83,14 +83,14 @@ export function ContactForm() {
           required
           name="message"
           rows={5}
-          className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none"
+          className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none transition-colors focus:border-ink"
         />
       </label>
       {error ? <p className="text-sm text-bronze">{error}</p> : null}
       <button
         type="submit"
         disabled={status === "sending"}
-        className="mt-4 w-fit border border-ink px-8 py-3 text-[11px] uppercase tracking-[0.22em] transition-colors hover:bg-ink hover:text-ivory disabled:opacity-50"
+        className="mt-4 w-fit bg-ink px-8 py-3 text-[11px] uppercase tracking-[0.22em] text-ivory transition-opacity hover:opacity-80 disabled:opacity-50"
       >
         {status === "sending" ? "Enviando…" : "Enviar"}
       </button>

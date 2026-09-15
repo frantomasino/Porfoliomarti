@@ -22,10 +22,11 @@ export default async function ContactPage() {
     <SiteShell site={site}>
       <section className="mx-auto grid max-w-7xl gap-12 px-6 pb-24 pt-12 md:grid-cols-[1.1fr_0.9fr] md:gap-16 md:px-10 md:pt-16">
         <div>
-          <p className="text-[11px] uppercase tracking-[0.24em] text-stone">{labels.conversemos}</p>
-          <h1 className="display mt-3">{labels.contact}</h1>
+          <p className="kicker text-stone">{labels.conversemos}</p>
+          <h1 className="display mt-4">{labels.contact}</h1>
+          <div className="rule mt-6 max-w-[4rem]" />
           {labels.contact_intro ? (
-            <p className="mt-8 max-w-lg text-sm leading-relaxed text-stone">{labels.contact_intro}</p>
+            <p className="mt-8 max-w-lg text-[0.95rem] leading-[1.75] text-stone">{labels.contact_intro}</p>
           ) : null}
           <div className="mt-8 flex flex-wrap gap-3">
             {site.instagram ? (
@@ -63,7 +64,9 @@ export default async function ContactPage() {
             ) : null}
           </div>
         </div>
-        <ContactForm />
+        <div className="border border-line bg-ivory px-6 py-8 md:px-8 md:py-10">
+          <ContactForm />
+        </div>
       </section>
       <ExtraSections sections={extra} />
     </SiteShell>

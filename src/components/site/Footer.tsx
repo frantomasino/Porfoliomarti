@@ -10,7 +10,7 @@ export function Footer({ site }: { site: SiteProfile }) {
 
   return (
     <footer className="border-t border-line bg-paper pb-[env(safe-area-inset-bottom)]">
-      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 md:grid md:grid-cols-[1.4fr_1fr_1fr] md:gap-12 md:px-10 md:py-16">
+      <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-12 md:grid md:grid-cols-[1.5fr_1fr_0.8fr] md:gap-16 md:px-10 md:py-20">
         <div>
           <p className="font-serif text-3xl leading-none md:text-[2.6rem]">
             {site.studio_name || site.full_name}

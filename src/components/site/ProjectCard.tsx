@@ -24,7 +24,9 @@ export function ProjectCard({
               className="img-zoom h-full w-full object-cover"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-stone">Sin imagen</div>
+            <div className="flex h-full items-end bg-ivory px-6 py-6">
+              <p className="font-serif text-4xl text-line">{number}</p>
+            </div>
           )}
         </div>
         <div className="mt-4 flex items-start justify-between gap-4">

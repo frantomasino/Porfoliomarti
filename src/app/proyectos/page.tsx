@@ -20,8 +20,9 @@ export default async function ProjectsPage() {
   return (
     <SiteShell site={site}>
       <section className="mx-auto max-w-7xl px-6 pb-24 pt-12 md:px-10 md:pt-16">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-stone">{labels.archive}</p>
-        <h1 className="display mt-3">{labels.nav_projects}</h1>
+        <p className="kicker text-stone">{labels.archive}</p>
+        <h1 className="display mt-4">{labels.nav_projects}</h1>
+        <div className="rule mt-6 max-w-[4rem]" />
         <ProjectArchive projects={projects} />
       </section>
       <ExtraSections sections={extra} />

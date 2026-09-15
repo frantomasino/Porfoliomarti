@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { EmptyFrame } from "@/components/site/EmptyFrame";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import type { Project } from "@/lib/types";
 import { cx } from "@/lib/utils";
@@ -41,7 +42,7 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
           ))}
         </div>
       ) : (
-        <p className="mt-10 text-sm text-stone">Todavía no hay obras publicadas.</p>
+        <EmptyFrame kicker="Archivo" title="El archivo se actualiza con cada encargo." />
       )}
     </>
   );

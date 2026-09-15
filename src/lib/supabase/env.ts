@@ -18,5 +18,9 @@ export function getSupabaseServiceKey() {
 }
 
 export function isSupabaseConfigured() {
+  return Boolean(getSupabaseUrl() && getSupabaseAnonKey());
+}
+
+export function isAdminDatabaseReady() {
   return Boolean(getSupabaseUrl() && getSupabaseServiceKey());
 }

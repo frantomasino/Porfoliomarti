@@ -18,6 +18,7 @@ export function ExtraSections({ sections }: { sections: PageSection[] }) {
             </div>
           ) : null}
           {section.title ? <h2 className="display-sm">{section.title}</h2> : null}
+          {section.title ? <div className="rule mt-5 max-w-[4rem]" /> : null}
           {section.body ? (
             <p className="mt-5 max-w-2xl whitespace-pre-line text-sm leading-relaxed text-stone">
               {section.body}

@@ -61,7 +61,7 @@ export function Header({ name, profession, instagram, home = false, labels }: He
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 md:px-10 md:py-4">
           <Link href="/" className="min-w-0 leading-tight" onClick={() => setOpen(false)}>
-            <span className="font-serif text-[1.35rem] tracking-wide md:text-2xl">{name}</span>
+            <span className="font-serif text-[1.4rem] tracking-[0.02em] md:text-[1.65rem]">{name}</span>
             {profession ? (
               <span className="mt-0.5 hidden truncate text-[10px] uppercase tracking-[0.24em] opacity-70 sm:block">
                 {profession}
