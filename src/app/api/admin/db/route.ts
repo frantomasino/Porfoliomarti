@@ -1,7 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { revalidateSite } from "@/lib/admin/revalidate";
 import { ADMIN_COOKIE, isValidAdminToken } from "@/lib/admin/session";
+import { errorMessage } from "@/lib/errors";
 import { createServiceClient } from "@/lib/supabase/service";
+
+export const runtime = "nodejs";
 
 type Body = {
   table: string;
@@ -92,9 +95,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ error: "Operación inválida" }, { status: 400 });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: errorMessage(error) }, { status: 500 });
   }
 }

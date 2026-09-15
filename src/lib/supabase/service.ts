@@ -1,5 +1,12 @@
+import { setDefaultResultOrder } from "node:dns";
 import { createClient } from "@supabase/supabase-js";
 import { getSupabaseServiceKey, getSupabaseUrl } from "@/lib/supabase/env";
+
+try {
+  setDefaultResultOrder("ipv4first");
+} catch {
+  // Edge runtime has no dns module.
+}
 
 export function createServiceClient() {
   const url = getSupabaseUrl();

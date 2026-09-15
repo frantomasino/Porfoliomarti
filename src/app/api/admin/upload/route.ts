@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { ADMIN_COOKIE, isValidAdminToken } from "@/lib/admin/session";
+import { errorMessage } from "@/lib/errors";
 import { createServiceClient } from "@/lib/supabase/service";
 
 export const runtime = "nodejs";
@@ -34,9 +35,6 @@ export async function POST(request: NextRequest) {
     const { data } = supabase.storage.from("portfolio").getPublicUrl(path);
     return NextResponse.json({ url: data.publicUrl });
   } catch (error) {
-    return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Error" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: errorMessage(error) }, { status: 500 });
   }
 }
