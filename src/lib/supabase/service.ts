@@ -20,7 +20,13 @@ export function createServiceClient() {
 
   if (!key) {
     throw new Error(
-      "Falta SUPABASE_SERVICE_ROLE_KEY en Vercel. Nombre exacto, Production, sin espacios, y Redeploy.",
+      "Falta SUPABASE_SERVICE_ROLE_KEY en Vercel. Poné la sb_secret_ (Secret), no la publishable, y Redeploy.",
+    );
+  }
+
+  if (key.startsWith("sb_publishable_")) {
+    throw new Error(
+      "SUPABASE_SERVICE_ROLE_KEY tiene la clave pública. Pegá la Secret key (sb_secret_…).",
     );
   }
 

@@ -14,11 +14,7 @@ export function getSupabaseAnonKey() {
 }
 
 export function getSupabaseServiceKey() {
-  return (
-    trim(process.env.SUPABASE_SERVICE_ROLE_KEY) ||
-    trim(process.env.SUPABASE_SECRET_KEY) ||
-    getSupabaseAnonKey()
-  );
+  return trim(process.env.SUPABASE_SERVICE_ROLE_KEY) || trim(process.env.SUPABASE_SECRET_KEY);
 }
 
 export function isSupabaseConfigured() {
