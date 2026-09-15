@@ -220,7 +220,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           <Field label="Título" className="md:col-span-2">
             <input className={fieldClass} value={project.title} onChange={(e) => update("title", e.target.value)} required />
           </Field>
-          <Field label="Slug">
+          <Field label="Enlace (se arma solo con el título)">
             <input
               className={fieldClass}
               value={derivedSlug}
@@ -228,7 +228,6 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
                 setSlugTouched(true);
                 update("slug", e.target.value);
               }}
-              required
             />
           </Field>
           <Field label="Categoría">
@@ -302,7 +301,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           </label>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="sticky bottom-0 z-10 -mx-5 flex items-center gap-4 border-t border-line bg-paper/95 px-5 py-4 backdrop-blur-md md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
           <button type="submit" disabled={busy} className={buttonClass}>
             {busy ? "Guardando…" : "Guardar proyecto"}
           </button>

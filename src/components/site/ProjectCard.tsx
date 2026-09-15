@@ -28,19 +28,19 @@ export function ProjectCard({
           </div>
         }
       />
-      <Link href={`/proyectos/${project.slug}`} className="mt-4 flex items-start justify-between gap-4">
+      <Link href={`/proyectos/${project.slug}`} className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <p className="text-[11px] uppercase tracking-[0.18em] text-stone">
             {number} / {project.category} / {project.year}
           </p>
-          <h3 className="mt-1 font-serif text-[1.55rem] leading-[1.15] break-words md:text-[2.1rem]">
+          <h3 className="mt-1 font-serif text-[1.55rem] leading-[1.15] break-all md:text-[2.1rem] md:break-words">
             {project.title}
           </h3>
           {project.location ? (
             <p className="mt-2 max-w-md text-sm leading-relaxed text-stone">{project.location}</p>
           ) : null}
         </div>
-        <span className="mt-1 shrink-0 border border-ink px-3 py-2 text-[11px] uppercase tracking-[0.18em]">
+        <span className="inline-flex w-fit shrink-0 border border-ink px-3 py-2 text-[11px] uppercase tracking-[0.18em]">
           Ver
         </span>
       </Link>

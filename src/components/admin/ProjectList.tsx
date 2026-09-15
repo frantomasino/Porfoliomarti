@@ -76,7 +76,7 @@ export function ProjectList() {
 
   return (
     <AdminPage
-      title="Proyectos"
+      title="Obras"
       description="Subí o bajá las obras con las flechas. Ese orden es el que se ve en el sitio."
       actions={
         <Link href="/admin/proyectos/nuevo" className={buttonClass}>

@@ -35,7 +35,7 @@ export function ProjectViewer({
   return (
     <section className="bg-paper">
       <div
-        className="relative mx-auto w-full max-w-5xl touch-pan-y bg-paper"
+        className="relative mx-auto flex w-full max-w-5xl touch-pan-y justify-center bg-paper"
         onTouchStart={(event) => {
           startX.current = event.changedTouches[0]?.clientX ?? null;
         }}
@@ -46,28 +46,30 @@ export function ProjectViewer({
           if (Math.abs(delta) > 50) go(delta < 0 ? 1 : -1);
         }}
       >
-        {current?.image ? (
-          <MediaBlock item={current.image} alt={project.title} layout="natural" />
-        ) : current?.cover ? (
-          <Photo
-            src={current.cover}
-            alt={project.title}
-            priority
-            width={1400}
-            className="mx-auto block max-h-[68svh] w-full object-contain"
-          />
-        ) : (
-          <div className="h-64 w-full bg-ivory" />
-        )}
-        {slides.length > 1 ? (
-          <>
-            <Arrow side="left" onClick={() => go(-1)} />
-            <Arrow side="right" onClick={() => go(1)} />
-            <span className="absolute bottom-3 left-3 z-10 bg-ink/70 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-ivory md:bottom-4 md:left-4">
-              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-            </span>
-          </>
-        ) : null}
+        <div className="relative max-w-full">
+          {current?.image ? (
+            <MediaBlock item={current.image} alt={project.title} layout="natural" />
+          ) : current?.cover ? (
+            <Photo
+              src={current.cover}
+              alt={project.title}
+              priority
+              width={1400}
+              className="mx-auto block max-h-[68svh] w-auto max-w-full object-contain"
+            />
+          ) : (
+            <div className="h-64 w-full bg-ivory" />
+          )}
+          {slides.length > 1 ? (
+            <>
+              <Arrow side="left" onClick={() => go(-1)} />
+              <Arrow side="right" onClick={() => go(1)} />
+              <span className="absolute bottom-3 left-3 z-10 bg-ink/70 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-ivory md:bottom-4 md:left-4">
+                {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+              </span>
+            </>
+          ) : null}
+        </div>
       </div>
       <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 md:flex-row md:items-end md:justify-between md:px-10">
         <div className="min-w-0">

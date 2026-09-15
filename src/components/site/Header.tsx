@@ -53,11 +53,11 @@ export function Header({ name, profession, instagram, logoUrl, home = false, lab
       <header
         className={cx(
           "site-header sticky top-0 border-b",
-          open ? "z-[80]" : "z-50",
-          dark
-            ? "border-white/10 bg-ink/80 text-ivory backdrop-blur-md"
-            : "border-line bg-paper/92 text-ink backdrop-blur-md",
-          open && "border-white/10 bg-ink text-ivory",
+          open
+            ? "z-[80] border-white/10 bg-ink text-ivory"
+            : dark
+              ? "z-50 border-white/10 bg-ink/80 text-ivory backdrop-blur-md"
+              : "z-50 border-line bg-paper/92 text-ink backdrop-blur-md",
         )}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 md:px-10 md:py-4">

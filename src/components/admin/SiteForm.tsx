@@ -125,7 +125,45 @@ export function SiteForm() {
       title="Sitio"
       description="Empezá por WhatsApp, biografía, retrato y portada. Después las obras."
     >
-      <form onSubmit={save} className="grid gap-10">
+      <form onSubmit={save} className="grid gap-10 pb-24">
+        <div className="grid gap-5 border border-line bg-ivory px-5 py-6">
+          <p className="text-[11px] uppercase tracking-[0.18em] text-stone">Lo primero</p>
+          <Field label="WhatsApp / teléfono">
+            <input
+              className={fieldClass}
+              value={site.phone}
+              onChange={(e) => update("phone", e.target.value)}
+              placeholder="54911..."
+              inputMode="tel"
+            />
+          </Field>
+          <Field label="Biografía">
+            <textarea
+              rows={5}
+              className={fieldClass}
+              value={site.bio}
+              onChange={(e) => update("bio", e.target.value)}
+              placeholder="Quiénes somos. Sale en Nosotros y en la home."
+            />
+          </Field>
+          <div className="grid gap-8 md:grid-cols-2">
+            <ImageUpload
+              label="Retrato"
+              folder="portrait"
+              value={site.portrait_url}
+              onChange={(url) => update("portrait_url", url)}
+              hint="Foto de Martina o del estudio. No uses una foto de obra acá."
+            />
+            <ImageUpload
+              label="Imagen de portada"
+              folder="hero"
+              value={site.hero_image_url}
+              onChange={(url) => update("hero_image_url", url)}
+              hint="La primera imagen grande de la home. Si no hay, la home arranca más corta."
+            />
+          </div>
+        </div>
+
         <div className="grid gap-5 md:grid-cols-2">
           <Field label="Estudio">
             <input className={fieldClass} value={site.studio_name ?? ""} onChange={(e) => update("studio_name", e.target.value)} />
@@ -152,14 +190,6 @@ export function SiteForm() {
           </Field>
           <Field label="Email">
             <input className={fieldClass} value={site.email} onChange={(e) => update("email", e.target.value)} />
-          </Field>
-          <Field label="WhatsApp / teléfono">
-            <input
-              className={fieldClass}
-              value={site.phone}
-              onChange={(e) => update("phone", e.target.value)}
-              placeholder="54911..."
-            />
           </Field>
           <Field label="Instagram">
             <input className={fieldClass} value={site.instagram} onChange={(e) => update("instagram", e.target.value)} />
@@ -196,14 +226,6 @@ export function SiteForm() {
           />
         </div>
 
-        <Field label="Biografía">
-          <textarea
-            rows={5}
-            className={fieldClass}
-            value={site.bio}
-            onChange={(e) => update("bio", e.target.value)}
-          />
-        </Field>
         <Field label="Filosofía del estudio">
           <textarea
             rows={4}
@@ -212,21 +234,6 @@ export function SiteForm() {
             onChange={(e) => update("philosophy", e.target.value)}
           />
         </Field>
-
-        <div className="grid gap-8 md:grid-cols-2">
-          <ImageUpload
-            label="Imagen de portada"
-            folder="hero"
-            value={site.hero_image_url}
-            onChange={(url) => update("hero_image_url", url)}
-          />
-          <ImageUpload
-            label="Retrato"
-            folder="portrait"
-            value={site.portrait_url}
-            onChange={(url) => update("portrait_url", url)}
-          />
-        </div>
 
         <div className="grid gap-5 md:grid-cols-2">
           <Field label="Título SEO">
@@ -337,7 +344,7 @@ export function SiteForm() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="sticky bottom-0 z-10 -mx-5 flex items-center gap-4 border-t border-line bg-paper/95 px-5 py-4 backdrop-blur-md md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
           <button type="submit" disabled={busy} className={buttonClass}>
             {busy ? "Guardando…" : "Guardar sitio"}
           </button>

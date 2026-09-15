@@ -17,7 +17,7 @@ export function MediaBlock({
   const isVideo = item.kind === "video" || Boolean(embed) || isFileVideo(item.url);
   const natural = layout === "natural";
   const mediaClass = natural
-    ? `mx-auto block max-h-[68svh] w-full object-contain ${className}`
+    ? `mx-auto block max-h-[68svh] w-auto max-w-full object-contain ${className}`
     : `absolute inset-0 h-full w-full object-cover ${className}`;
 
   if (isVideo && embed) {

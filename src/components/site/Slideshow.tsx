@@ -48,6 +48,7 @@ export function Slideshow({
           src={photo}
           alt={alt}
           width={width}
+          priority
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (
