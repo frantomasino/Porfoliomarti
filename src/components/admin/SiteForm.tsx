@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { AdminPage, buttonClass, Field, fieldClass } from "@/components/admin/ui";
+import { BRAND_ACCEPT } from "@/lib/admin/images";
 import { adminQuery } from "@/lib/admin/db";
 import { mergeLabels, mergeTheme } from "@/lib/appearance";
 import { seedSite } from "@/lib/seed";
@@ -25,6 +26,8 @@ export function SiteForm() {
           ...seedSite,
           ...data,
           studio_name: data.studio_name || seedSite.studio_name,
+          logo_url: data.logo_url || "",
+          favicon_url: data.favicon_url || "",
           theme: mergeTheme(data.theme),
           labels: mergeLabels(data.labels),
         });
@@ -52,6 +55,8 @@ export function SiteForm() {
         linkedin: site.linkedin,
         hero_image_url: site.hero_image_url,
         portrait_url: site.portrait_url,
+        logo_url: site.logo_url,
+        favicon_url: site.favicon_url,
         seo_title: site.seo_title,
         seo_description: site.seo_description,
         founded_year: Number(site.founded_year) || 2014,
@@ -85,8 +90,8 @@ export function SiteForm() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "No se pudo guardar.";
       setStatus(
-        /column|theme|labels/i.test(message)
-          ? "Falta correr el SQL de apariencia en Supabase (colores y textos). Pegá migration-appearance.sql y dale Run."
+        /column|theme|labels|logo|favicon/i.test(message)
+          ? "Falta correr un SQL en Supabase. Pegá supabase/migration-brand.sql (logo y favicon) o migration-appearance.sql y dale Run."
           : message,
       );
     } finally {
@@ -118,7 +123,7 @@ export function SiteForm() {
   return (
     <AdminPage
       title="Sitio"
-      description="Nombre, textos, colores y menú. Lo que guardes acá es lo que se ve en el portafolio."
+      description="Nombre, logo, textos, colores y menú. Lo que guardes acá es lo que se ve en el portafolio."
     >
       <form onSubmit={save} className="grid gap-10">
         <div className="grid gap-5 md:grid-cols-2">
@@ -157,6 +162,35 @@ export function SiteForm() {
           <Field label="LinkedIn">
             <input className={fieldClass} value={site.linkedin} onChange={(e) => update("linkedin", e.target.value)} />
           </Field>
+        </div>
+
+        <div className="grid gap-8 border-t border-line pt-10 md:grid-cols-2">
+          <ImageUpload
+            label="Logo"
+            folder="brand"
+            preview="contain"
+            clearable
+            brand
+            maxEdge={1600}
+            accept={BRAND_ACCEPT}
+            value={site.logo_url ?? ""}
+            onChange={(url) => update("logo_url", url)}
+            hint="JPG, PNG, WebP o SVG. Si lo subís, reemplaza el nombre en el menú y el pie. Si no, se sigue viendo el texto."
+            emptyLabel="Sin logo — se usa el nombre"
+          />
+          <ImageUpload
+            label="Favicon"
+            folder="brand"
+            preview="contain"
+            clearable
+            brand
+            maxEdge={256}
+            accept={BRAND_ACCEPT}
+            value={site.favicon_url ?? ""}
+            onChange={(url) => update("favicon_url", url)}
+            hint="Ícono de la pestaña del navegador. PNG, WebP, SVG o ICO. Cuadrado, lo más simple posible."
+            emptyLabel="Sin favicon"
+          />
         </div>
 
         <Field label="Biografía">

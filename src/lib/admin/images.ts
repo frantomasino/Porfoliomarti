@@ -1,4 +1,5 @@
 export const IMAGE_ACCEPT = "image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp";
+export const BRAND_ACCEPT = `${IMAGE_ACCEPT},image/svg+xml,image/x-icon,image/vnd.microsoft.icon,.svg,.ico`;
 export const GALLERY_ACCEPT = `${IMAGE_ACCEPT},video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov`;
 
 const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/jpg"]);
@@ -8,11 +9,27 @@ export function isHeic(file: File) {
   return /heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
 }
 
+export function isSvg(file: File) {
+  return file.type === "image/svg+xml" || /\.svg$/i.test(file.name);
+}
+
+export function isIco(file: File) {
+  return (
+    file.type === "image/x-icon" ||
+    file.type === "image/vnd.microsoft.icon" ||
+    /\.ico$/i.test(file.name)
+  );
+}
+
 export function isAllowedImage(file: File) {
   if (isHeic(file)) return false;
   const type = file.type.toLowerCase();
   if (IMAGE_TYPES.has(type)) return true;
   return /\.(jpe?g|png|webp)$/i.test(file.name);
+}
+
+export function isAllowedBrand(file: File) {
+  return isAllowedImage(file) || isSvg(file) || isIco(file);
 }
 
 export function isAllowedVideo(file: File) {
@@ -23,6 +40,8 @@ export function extensionForUpload(file: File) {
   const type = file.type.toLowerCase();
   if (type === "image/webp") return "webp";
   if (type === "image/png") return "png";
+  if (type === "image/svg+xml") return "svg";
+  if (type === "image/x-icon" || type === "image/vnd.microsoft.icon") return "ico";
   if (type === "image/jpeg" || type === "image/jpg") return "jpg";
   if (type === "video/webm") return "webm";
   if (type === "video/quicktime") return "mov";
@@ -36,17 +55,21 @@ function rename(name: string, ext: string) {
   return `${name.replace(/\.[^.]+$/, "") || "imagen"}.${ext}`;
 }
 
-export async function prepareImageForUpload(file: File): Promise<File> {
+export async function prepareImageForUpload(
+  file: File,
+  options: { maxEdge?: number; brand?: boolean } = {},
+): Promise<File> {
   if (isHeic(file)) {
     throw new Error("El celular envió HEIC. Elegí JPG, PNG o WebP (en iPhone, compartir como JPG).");
   }
-  if (!isAllowedImage(file)) {
-    throw new Error("Solo JPG, PNG o WebP.");
+  if (options.brand ? !isAllowedBrand(file) : !isAllowedImage(file)) {
+    throw new Error(options.brand ? "Usá JPG, PNG, WebP, SVG o ICO." : "Solo JPG, PNG o WebP.");
   }
+  if (isSvg(file) || isIco(file)) return file;
 
   try {
     const bitmap = await createImageBitmap(file);
-    const maxEdge = 2400;
+    const maxEdge = options.maxEdge ?? 2400;
     const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
     const width = Math.max(1, Math.round(bitmap.width * scale));
     const height = Math.max(1, Math.round(bitmap.height * scale));
@@ -61,9 +84,16 @@ export async function prepareImageForUpload(file: File): Promise<File> {
     context.drawImage(bitmap, 0, 0, width, height);
     bitmap.close();
 
-    const webp = await blobFromCanvas(canvas, "image/webp", 0.84);
+    const keepAlpha = file.type === "image/png" || /\.png$/i.test(file.name) || Boolean(options.brand);
+    const webp = await blobFromCanvas(canvas, "image/webp", keepAlpha ? 0.92 : 0.84);
     if (webp && webp.size > 0) {
       return new File([webp], rename(file.name, "webp"), { type: "image/webp" });
+    }
+    if (keepAlpha) {
+      const png = await blobFromCanvas(canvas, "image/png", 1);
+      if (png && png.size > 0) {
+        return new File([png], rename(file.name, "png"), { type: "image/png" });
+      }
     }
     const jpeg = await blobFromCanvas(canvas, "image/jpeg", 0.84);
     if (jpeg && jpeg.size > 0) {

@@ -39,6 +39,8 @@ const loadSiteProfile = unstable_cache(
       ...seedSite,
       ...row,
       studio_name: row.studio_name || seedSite.studio_name,
+      logo_url: row.logo_url || "",
+      favicon_url: row.favicon_url || "",
       theme: mergeTheme(row.theme),
       labels: mergeLabels(row.labels),
     };

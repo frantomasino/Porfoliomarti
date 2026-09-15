@@ -18,6 +18,7 @@ export function SiteShell({
         name={site.studio_name || site.full_name}
         profession={site.profession}
         instagram={site.instagram}
+        logoUrl={site.logo_url}
         home={home}
         labels={siteLabels(site)}
       />

@@ -12,9 +12,18 @@ export function Footer({ site }: { site: SiteProfile }) {
     <footer className="border-t border-line bg-paper pb-[env(safe-area-inset-bottom)]">
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-12 md:grid md:grid-cols-[1.5fr_1fr_0.8fr] md:gap-16 md:px-10 md:py-20">
         <div>
-          <p className="font-serif text-3xl leading-none md:text-[2.6rem]">
-            {site.studio_name || site.full_name}
-          </p>
+          {site.logo_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={site.logo_url}
+              alt={site.studio_name || site.full_name}
+              className="h-10 w-auto max-w-[12rem] object-contain"
+            />
+          ) : (
+            <p className="font-serif text-3xl leading-none md:text-[2.6rem]">
+              {site.studio_name || site.full_name}
+            </p>
+          )}
           <p className="mt-3 hidden text-sm uppercase tracking-[0.18em] text-stone md:block">
             {[site.full_name, site.profession].filter(Boolean).join(" · ")}
           </p>

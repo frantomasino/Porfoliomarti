@@ -27,6 +27,7 @@ export const viewport: Viewport = {
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteProfile();
+  const brandIcon = site.favicon_url || site.logo_url;
 
   return {
     title: {
@@ -34,10 +35,17 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s — ${site.studio_name || site.full_name}`,
     },
     description: site.seo_description || site.tagline,
+    icons: brandIcon
+      ? {
+          icon: [{ url: brandIcon }],
+          shortcut: brandIcon,
+          apple: [{ url: brandIcon }],
+        }
+      : undefined,
     openGraph: {
       title: site.seo_title || site.full_name,
       description: site.seo_description || site.tagline,
-      images: site.hero_image_url ? [site.hero_image_url] : undefined,
+      images: site.hero_image_url ? [site.hero_image_url] : site.logo_url ? [site.logo_url] : undefined,
     },
   };
 }

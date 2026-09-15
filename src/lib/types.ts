@@ -13,6 +13,8 @@ export type SiteProfile = {
   linkedin: string;
   hero_image_url: string;
   portrait_url: string;
+  logo_url: string;
+  favicon_url: string;
   seo_title: string;
   seo_description: string;
   founded_year: number;

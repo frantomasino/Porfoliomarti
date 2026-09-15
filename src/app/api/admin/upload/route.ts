@@ -6,15 +6,25 @@ import { createServiceClient } from "@/lib/supabase/service";
 export const runtime = "nodejs";
 export const maxDuration = 120;
 
-const imageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/jpg"]);
+const imageTypes = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/jpg",
+  "image/svg+xml",
+  "image/x-icon",
+  "image/vnd.microsoft.icon",
+]);
 const videoTypes = new Set(["video/mp4", "video/webm", "video/quicktime"]);
-const imageExt = new Set(["jpg", "jpeg", "png", "webp"]);
+const imageExt = new Set(["jpg", "jpeg", "png", "webp", "svg", "ico"]);
 const videoExt = new Set(["mp4", "webm", "mov"]);
 
 function extensionOf(file: File) {
   const type = file.type.toLowerCase();
   if (type === "image/webp") return "webp";
   if (type === "image/png") return "png";
+  if (type === "image/svg+xml") return "svg";
+  if (type === "image/x-icon" || type === "image/vnd.microsoft.icon") return "ico";
   if (type === "image/jpeg" || type === "image/jpg") return "jpg";
   if (type === "video/webm") return "webm";
   if (type === "video/quicktime") return "mov";

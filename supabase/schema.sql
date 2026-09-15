@@ -20,6 +20,8 @@ create table if not exists public.site_profile (
   linkedin text not null default '',
   hero_image_url text not null default '',
   portrait_url text not null default '',
+  logo_url text not null default '',
+  favicon_url text not null default '',
   seo_title text not null default '',
   seo_description text not null default '',
   founded_year int not null default 2020,
@@ -232,6 +234,12 @@ alter table public.site_profile
 
 alter table public.site_profile
   add column if not exists labels jsonb not null default '{}'::jsonb;
+
+alter table public.site_profile
+  add column if not exists logo_url text not null default '';
+
+alter table public.site_profile
+  add column if not exists favicon_url text not null default '';
 
 create table if not exists public.page_sections (
   id uuid primary key default gen_random_uuid(),

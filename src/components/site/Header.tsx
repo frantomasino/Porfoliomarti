@@ -10,11 +10,12 @@ type HeaderProps = {
   name: string;
   profession: string;
   instagram?: string;
+  logoUrl?: string;
   home?: boolean;
   labels: SiteLabels;
 };
 
-export function Header({ name, profession, instagram, home = false, labels }: HeaderProps) {
+export function Header({ name, profession, instagram, logoUrl, home = false, labels }: HeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -61,12 +62,26 @@ export function Header({ name, profession, instagram, home = false, labels }: He
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 md:px-10 md:py-4">
           <Link href="/" className="min-w-0 leading-tight" onClick={() => setOpen(false)}>
-            <span className="font-serif text-[1.4rem] tracking-[0.02em] md:text-[1.65rem]">{name}</span>
-            {profession ? (
-              <span className="mt-0.5 hidden truncate text-[10px] uppercase tracking-[0.24em] opacity-70 sm:block">
-                {profession}
+            {logoUrl ? (
+              <span
+                className={cx(
+                  "inline-flex max-w-[11rem] items-center md:max-w-[13rem]",
+                  dark || open ? "rounded-sm bg-ivory px-2 py-1" : "",
+                )}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={logoUrl} alt={name} className="h-8 w-auto max-h-8 object-contain md:h-9 md:max-h-9" />
               </span>
-            ) : null}
+            ) : (
+              <>
+                <span className="font-serif text-[1.4rem] tracking-[0.02em] md:text-[1.65rem]">{name}</span>
+                {profession ? (
+                  <span className="mt-0.5 hidden truncate text-[10px] uppercase tracking-[0.24em] opacity-70 sm:block">
+                    {profession}
+                  </span>
+                ) : null}
+              </>
+            )}
           </Link>
 
           <nav className="hidden items-center gap-8 text-[11px] uppercase tracking-[0.24em] md:flex">
