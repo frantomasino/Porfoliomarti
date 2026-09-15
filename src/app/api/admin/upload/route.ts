@@ -2,6 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { ADMIN_COOKIE, isValidAdminToken } from "@/lib/admin/session";
 import { createServiceClient } from "@/lib/supabase/service";
 
+export const runtime = "nodejs";
 export const maxDuration = 120;
 
 export async function POST(request: NextRequest) {

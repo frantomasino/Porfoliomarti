@@ -3,7 +3,11 @@ function readEnv(name: string) {
 }
 
 export function getSupabaseUrl() {
-  return readEnv("NEXT_PUBLIC_SUPABASE_URL") || readEnv("SUPABASE_URL");
+  return (
+    readEnv("NEXT_PUBLIC_SUPABASE_URL") ||
+    readEnv("SUPABASE_URL") ||
+    "https://bvavokmdpfcsvtcpwbr.supabase.co"
+  );
 }
 
 export function getSupabaseAnonKey() {
