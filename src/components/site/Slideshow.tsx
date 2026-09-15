@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { MediaArrow, SlideIndex } from "@/components/site/MediaArrow";
 import { Photo } from "@/components/site/Photo";
 import { cx } from "@/lib/utils";
 
@@ -53,39 +54,11 @@ export function Slideshow({
       )}
       {total > 1 ? (
         <>
-          <Arrow side="left" onClick={() => go(-1)} />
-          <Arrow side="right" onClick={() => go(1)} />
-          <span className="absolute bottom-3 left-3 z-10 bg-ink/70 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-ivory">
-            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-          </span>
+          <MediaArrow side="left" label="Anterior" onClick={() => go(-1)} />
+          <MediaArrow side="right" label="Siguiente" onClick={() => go(1)} />
+          <SlideIndex index={index} total={total} />
         </>
       ) : null}
     </div>
-  );
-}
-
-function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      aria-label={side === "left" ? "Anterior" : "Siguiente"}
-      className={cx(
-        "absolute top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 touch-manipulation items-center justify-center bg-ivory/95 text-ink md:h-12 md:w-12",
-        side === "left" ? "left-1.5 md:left-2" : "right-1.5 md:right-2",
-      )}
-      onClick={(event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        onClick();
-      }}
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d={side === "left" ? "M14 6l-6 6 6 6" : "M10 6l6 6-6 6"}
-          stroke="currentColor"
-          strokeWidth="1.6"
-        />
-      </svg>
-    </button>
   );
 }
