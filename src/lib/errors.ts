@@ -9,8 +9,8 @@ export function errorMessage(error: unknown) {
         : "";
   const text = [error.message, cause].filter(Boolean).join(" — ");
 
-  if (/fetch failed|ECONN|ENOTFOUND|UND_ERR|network/i.test(text)) {
-    return "No se pudo conectar a Supabase. Abrí el proyecto en supabase.com (a veces está en pausa) y esperá 30 segundos.";
+  if (/fetch failed|ECONN|ENOTFOUND|UND_ERR|network|ENOTFOUND|dns/i.test(text)) {
+    return "No se pudo conectar a Supabase: la Project URL no existe o está mal copiada. En Supabase → Settings → Data API copiá Project URL (https://xxxxx.supabase.co) y pegala en Vercel como NEXT_PUBLIC_SUPABASE_URL.";
   }
 
   return error.message;

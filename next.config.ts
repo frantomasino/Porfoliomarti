@@ -5,11 +5,10 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
-  experimental: {
+    experimental: {
     serverActions: {
       bodySizeLimit: "80mb",
     },
-    optimizePackageImports: ["@supabase/supabase-js"],
   },
 };
 

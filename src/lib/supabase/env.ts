@@ -3,11 +3,7 @@ function trim(value: string | undefined) {
 }
 
 export function getSupabaseUrl() {
-  return (
-    trim(process.env.NEXT_PUBLIC_SUPABASE_URL) ||
-    trim(process.env.SUPABASE_URL) ||
-    "https://bvavokmdpfcsvtcpwbr.supabase.co"
-  );
+  return trim(process.env.NEXT_PUBLIC_SUPABASE_URL) || trim(process.env.SUPABASE_URL);
 }
 
 export function getSupabaseAnonKey() {
