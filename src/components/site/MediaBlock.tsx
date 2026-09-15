@@ -34,10 +34,10 @@ export function MediaBlock({
         controls
         playsInline
         preload="metadata"
-        className={`absolute inset-0 h-full w-full object-cover ${className}`}
+        className={`absolute inset-0 h-full w-full object-contain ${className}`}
       />
     );
   }
 
-  return <Photo src={item.url} alt={alt} width={1400} className={`absolute inset-0 h-full w-full object-cover ${className}`} />;
+  return <Photo src={item.url} alt={alt} width={1400} className={`absolute inset-0 h-full w-full object-contain ${className}`} />;
 }

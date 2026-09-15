@@ -48,32 +48,26 @@ export function ProjectViewer({
           }}
         >
           {current?.image ? (
-            <MediaBlock item={current.image} alt={current.image.caption || project.title} />
+            <MediaBlock item={current.image} alt={project.title} />
           ) : current?.cover ? (
             <Photo
               src={current.cover}
               alt={project.title}
               priority
               width={1400}
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain"
             />
           ) : (
             <div className="absolute inset-0 bg-ink" />
           )}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
           {slides.length > 1 ? (
             <>
               <Arrow side="left" onClick={() => go(-1)} />
               <Arrow side="right" onClick={() => go(1)} />
-              <span className="absolute bottom-4 left-4 z-10 text-[11px] uppercase tracking-[0.18em] text-ivory">
+              <span className="absolute bottom-4 left-4 z-10 bg-ink/70 px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-ivory">
                 {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
               </span>
             </>
-          ) : null}
-          {current?.image?.caption ? (
-            <p className="absolute bottom-4 right-4 z-10 max-w-[50%] text-right text-[11px] uppercase tracking-[0.16em] text-ivory/80">
-              {current.image.caption}
-            </p>
           ) : null}
         </div>
         <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-4 px-6 py-8 md:px-10">

@@ -35,7 +35,7 @@ export function MediaGallery({ items, onAdd, onChange, onRemove, onMove }: Media
           throw new Error("Fotos: JPG, PNG o WebP. Videos: MP4, MOV o WebM.");
         }
         const url = await adminUpload(ready, "projects/gallery");
-        await onAdd(url, file.name.replace(/\.[^.]+$/, ""), mediaKindFromFile(file));
+        await onAdd(url, "", mediaKindFromFile(file));
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo subir el archivo a Supabase.");

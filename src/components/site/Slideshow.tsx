@@ -29,7 +29,7 @@ export function Slideshow({
 
   return (
     <div
-      className={cx("relative overflow-hidden bg-line", className)}
+      className={cx("relative overflow-hidden bg-ink", className)}
       onTouchStart={(event) => {
         startX.current = event.changedTouches[0]?.clientX ?? null;
       }}
@@ -41,7 +41,7 @@ export function Slideshow({
       }}
     >
       {photo ? (
-        <Photo src={photo} alt={alt} width={width} className="absolute inset-0 h-full w-full object-cover" />
+        <Photo src={photo} alt={alt} width={width} className="absolute inset-0 h-full w-full object-contain" />
       ) : (
         empty
       )}
@@ -49,7 +49,7 @@ export function Slideshow({
         <>
           <Arrow side="left" onClick={() => go(-1)} />
           <Arrow side="right" onClick={() => go(1)} />
-          <span className="absolute bottom-3 left-3 z-10 text-[11px] uppercase tracking-[0.18em] text-ivory">
+          <span className="absolute bottom-3 left-3 z-10 bg-ink/70 px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-ivory">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </span>
         </>
