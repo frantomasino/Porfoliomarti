@@ -1,0 +1,147 @@
+"use client";
+
+import { useState } from "react";
+import { fieldClass, ghostButtonClass, labelClass } from "@/components/admin/ui";
+import { adminUpload } from "@/lib/admin/db";
+import { mediaKindFromFile, mediaKindFromUrl, videoEmbedUrl } from "@/lib/media";
+import type { MediaKind, ProjectImage } from "@/lib/types";
+
+type MediaGalleryProps = {
+  items: ProjectImage[];
+  onAdd: (url: string, caption: string, kind: MediaKind) => Promise<void>;
+  onChange: (item: ProjectImage) => Promise<void>;
+  onRemove: (id: string) => Promise<void>;
+};
+
+export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryProps) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const [link, setLink] = useState("");
+
+  async function uploadFiles(files: FileList | File[]) {
+    setBusy(true);
+    setError("");
+    try {
+      for (const file of Array.from(files)) {
+        const url = await adminUpload(file, "projects/gallery");
+        await onAdd(url, file.name.replace(/\.[^.]+$/, ""), mediaKindFromFile(file));
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo subir el archivo a Supabase.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function addLink() {
+    const url = link.trim();
+    if (!url) return;
+    setBusy(true);
+    setError("");
+    try {
+      await onAdd(url, "", mediaKindFromUrl(url));
+      setLink("");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo agregar el enlace.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <section className="mt-16 border-t border-line pt-10">
+      <h2 className="font-serif text-3xl">Fotos y videos</h2>
+      <p className="mt-2 max-w-2xl text-sm text-stone">
+        Cada obra puede tener muchas fotos y videos. Se suben a Supabase y aparecen en la ficha del proyecto.
+        También podés pegar un link de YouTube o Vimeo.
+      </p>
+
+      <div className="mt-8 grid gap-5">
+        {items.map((item) => (
+          <article key={item.id} className="grid gap-4 border border-line p-4 md:grid-cols-[220px_1fr]">
+            <MediaPreview item={item} />
+            <div className="grid gap-3">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-bronze">
+                {item.kind === "video" ? "Video" : "Foto"}
+              </p>
+              <input
+                className={fieldClass}
+                value={item.caption}
+                placeholder="Epígrafe"
+                onChange={(e) => void onChange({ ...item, caption: e.target.value })}
+              />
+              <div className="flex flex-wrap gap-3">
+                <input
+                  type="number"
+                  className={`${fieldClass} w-24`}
+                  value={item.sort_order}
+                  onChange={(e) => void onChange({ ...item, sort_order: Number(e.target.value) })}
+                />
+                <button type="button" className={ghostButtonClass} onClick={() => void onRemove(item.id)}>
+                  Quitar
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="mt-8 grid gap-5 border border-dashed border-line p-5">
+        <span className={labelClass}>Subir varios archivos</span>
+        <label className="flex cursor-pointer flex-col items-center justify-center gap-2 bg-ivory px-6 py-10 text-center hover:bg-paper">
+          <span className="text-sm">
+            {busy ? "Subiendo a Supabase…" : "Elegí varias fotos o videos (mp4, mov, webm)"}
+          </span>
+          <input
+            type="file"
+            accept="image/*,video/*"
+            multiple
+            className="hidden"
+            disabled={busy}
+            onChange={(event) => {
+              const files = event.target.files;
+              if (files?.length) void uploadFiles(files);
+              event.target.value = "";
+            }}
+          />
+        </label>
+        <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+          <input
+            className={fieldClass}
+            value={link}
+            placeholder="O pegá URL de YouTube, Vimeo o un video"
+            onChange={(event) => setLink(event.target.value)}
+          />
+          <button type="button" className={ghostButtonClass} disabled={busy} onClick={() => void addLink()}>
+            Agregar link
+          </button>
+        </div>
+        {error ? <p className="text-sm text-bronze">{error}</p> : null}
+      </div>
+    </section>
+  );
+}
+
+function MediaPreview({ item }: { item: ProjectImage }) {
+  const embed = videoEmbedUrl(item.url);
+  const isVideo = item.kind === "video" || Boolean(embed);
+
+  if (isVideo && embed) {
+    return (
+      <iframe
+        src={embed}
+        title={item.caption || "Video"}
+        className="h-32 w-full bg-ink"
+      />
+    );
+  }
+
+  if (isVideo) {
+    return <video src={item.url} className="h-32 w-full object-cover" muted />;
+  }
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={item.url} alt="" className="h-32 w-full object-cover" />
+  );
+}
