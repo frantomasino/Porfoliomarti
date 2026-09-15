@@ -40,6 +40,10 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
     [project.slug, project.title, slugTouched],
   );
 
+  const photoCount = [project.cover_url, ...images.map((item) => (item.kind === "video" ? "" : item.url))].filter(
+    (url, index, list) => url && list.indexOf(url) === index,
+  ).length;
+
   useEffect(() => {
     if (!projectId) return;
     void Promise.all([
@@ -104,6 +108,9 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           match: { id: projectId },
         });
         if (error) throw new Error(error);
+        if (payload.cover_url && !images.some((item) => item.url === payload.cover_url)) {
+          await addMedia(payload.cover_url, "", "image");
+        }
         setStatus("Guardado en Supabase.");
       } else {
         const existing = await adminQuery<Pick<Project, "sort_order">[]>({
@@ -158,6 +165,15 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
       throw new Error(error || "No se pudo agregar el archivo.");
     }
     setImages((current) => [...current, data]);
+    if (!project.cover_url && kind === "image") {
+      update("cover_url", url);
+      await adminQuery({
+        table: "projects",
+        op: "update",
+        data: { cover_url: url },
+        match: { id: projectId },
+      });
+    }
   }
 
   async function updateImage(image: ProjectImage) {
@@ -278,9 +294,17 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
         <ImageUpload
           label="Imagen de portada"
           folder="projects"
+          preview="contain"
           value={project.cover_url}
           onChange={(url) => update("cover_url", url)}
+          hint="Se ve entera acá. En el sitio, si hay más fotos en la galería, se pasan con flechas."
+          emptyLabel="JPG, PNG o WebP"
         />
+        {projectId && photoCount < 2 ? (
+          <p className="text-sm text-stone">
+            Para que el visitante pase fotos con flechas, subí al menos dos en Fotos y videos, más abajo.
+          </p>
+        ) : null}
 
         <div className="flex gap-8 text-sm">
           <label className="flex items-center gap-2">

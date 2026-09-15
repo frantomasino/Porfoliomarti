@@ -55,7 +55,7 @@ export function ImageUpload({
         <div
           className={cx(
             "relative overflow-hidden border border-line bg-ivory",
-            preview === "contain" ? "flex h-32 items-center justify-center p-4" : "h-48 bg-line",
+            preview === "contain" ? "flex min-h-48 items-center justify-center bg-ivory p-3 md:min-h-56" : "h-48 bg-line",
           )}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -74,7 +74,7 @@ export function ImageUpload({
         <div
           className={cx(
             "flex items-center justify-center border border-dashed border-line text-sm text-stone",
-            preview === "contain" ? "h-32" : "h-48",
+            preview === "contain" ? "h-48 md:h-56" : "h-48",
           )}
         >
           {emptyLabel}

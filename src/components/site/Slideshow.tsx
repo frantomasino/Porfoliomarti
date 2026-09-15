@@ -10,14 +10,12 @@ export function Slideshow({
   className,
   width = 1400,
   empty,
-  children,
 }: {
   photos: string[];
   alt: string;
   className?: string;
   width?: number;
   empty?: React.ReactNode;
-  children?: React.ReactNode;
 }) {
   const [index, setIndex] = useState(0);
   const startX = useRef<number | null>(null);
@@ -31,7 +29,7 @@ export function Slideshow({
 
   return (
     <div
-      className={cx("group/slide relative overflow-hidden bg-ink touch-pan-y", className)}
+      className={cx("relative overflow-hidden bg-line touch-pan-y", className)}
       onTouchStart={(event) => {
         startX.current = event.changedTouches[0]?.clientX ?? null;
       }}
@@ -48,37 +46,18 @@ export function Slideshow({
           alt={alt}
           width={width}
           priority
-          className="absolute inset-0 h-full w-full object-cover opacity-100 transition duration-700 ease-out md:opacity-[0.84] md:group-hover:opacity-100 md:group-hover:scale-[1.04]"
+          className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (
         empty
       )}
-      {children}
       {total > 1 ? (
         <>
           <Arrow side="left" onClick={() => go(-1)} />
           <Arrow side="right" onClick={() => go(1)} />
-          <span className="pointer-events-none absolute left-4 top-4 z-10 bg-ink/40 px-2.5 py-1 text-[8px] uppercase tracking-[0.16em] text-ivory/80 backdrop-blur-sm">
+          <span className="absolute bottom-3 left-3 z-10 bg-ink/70 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-ivory">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </span>
-          <div className="absolute bottom-16 left-1/2 z-10 flex -translate-x-1/2 gap-1.5 opacity-100 transition-opacity md:bottom-14 md:opacity-0 md:group-hover:opacity-100">
-            {photos.map((_, dot) => (
-              <button
-                key={dot}
-                type="button"
-                aria-label={`Foto ${dot + 1}`}
-                className={cx(
-                  "h-[5px] w-[5px] rounded-full transition",
-                  dot === index ? "scale-125 bg-bronze" : "bg-ivory/35",
-                )}
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setIndex(dot);
-                }}
-              />
-            ))}
-          </div>
         </>
       ) : null}
     </div>
@@ -91,8 +70,8 @@ function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void 
       type="button"
       aria-label={side === "left" ? "Anterior" : "Siguiente"}
       className={cx(
-        "absolute top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center bg-ink/45 text-[13px] text-ivory/85 backdrop-blur-sm transition-opacity md:opacity-0 md:group-hover:opacity-100",
-        side === "left" ? "left-3" : "right-3",
+        "absolute top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-ivory/95 text-ink",
+        side === "left" ? "left-2" : "right-2",
       )}
       onClick={(event) => {
         event.preventDefault();
@@ -100,7 +79,13 @@ function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void 
         onClick();
       }}
     >
-      {side === "left" ? "←" : "→"}
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path
+          d={side === "left" ? "M14 6l-6 6 6 6" : "M10 6l6 6-6 6"}
+          stroke="currentColor"
+          strokeWidth="1.6"
+        />
+      </svg>
     </button>
   );
 }

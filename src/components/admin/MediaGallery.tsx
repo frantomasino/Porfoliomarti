@@ -63,14 +63,15 @@ export function MediaGallery({ items, onAdd, onChange, onRemove, onMove }: Media
     <section className="mt-16 border-t border-line pt-10">
       <h2 className="font-serif text-3xl">Fotos y videos</h2>
       <p className="mt-2 max-w-2xl text-sm text-stone">
-        Cada obra puede tener muchas fotos (JPG, PNG, WebP) y videos. Se suben a Supabase desde
-        la computadora o el celular. También podés pegar un link de YouTube o Vimeo.
+        Estas son las que el visitante pasa con las flechas, sin entrar a la obra. Subí JPG, PNG o WebP
+        (varias a la vez). La preview muestra la foto entera, no recortada. Tachito para borrar, flechas
+        para el orden.
       </p>
 
       <div className="mt-8 grid gap-5">
         {items.map((item, index) => (
-          <article key={item.id} className="grid gap-4 border border-line p-4 md:grid-cols-[220px_1fr]">
-            <div className="relative">
+          <article key={item.id} className="grid gap-4 border border-line p-4 md:grid-cols-[minmax(0,280px)_1fr]">
+            <div className="relative bg-ivory">
               <MediaPreview item={item} />
               <TrashButton
                 label="Eliminar"
@@ -149,17 +150,17 @@ function MediaPreview({ item }: { item: ProjectImage }) {
       <iframe
         src={embed}
         title={item.caption || "Video"}
-        className="h-32 w-full bg-ink"
+        className="h-48 w-full bg-ink"
       />
     );
   }
 
   if (isVideo) {
-    return <video src={item.url} className="h-32 w-full object-cover" muted />;
+    return <video src={item.url} className="h-48 w-full object-contain bg-ink" muted />;
   }
 
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={item.url} alt="" className="h-32 w-full object-cover" />
+    <img src={item.url} alt="" className="mx-auto max-h-56 w-full object-contain" />
   );
 }

@@ -95,6 +95,16 @@ export function ProjectList() {
                 onUp={() => void move(index, -1)}
                 onDown={() => void move(index, 1)}
               />
+              {project.cover_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={project.cover_url}
+                  alt=""
+                  className="h-14 w-14 shrink-0 object-contain bg-ivory"
+                />
+              ) : (
+                <div className="h-14 w-14 shrink-0 bg-ivory" />
+              )}
               <div className="min-w-0">
                 <p className="font-serif text-2xl">{project.title || "Sin título"}</p>
                 <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-stone">
