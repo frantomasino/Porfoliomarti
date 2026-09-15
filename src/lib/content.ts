@@ -5,6 +5,7 @@ import { seedProjects, seedServices, seedSite, seedTimeline } from "@/lib/seed";
 import { createPublicClient } from "@/lib/supabase/public";
 import { mediaKindFromUrl } from "@/lib/media";
 import { mergeLabels, mergeTheme } from "@/lib/appearance";
+import { slugify } from "@/lib/utils";
 import type {
   PageSection,
   Project,
@@ -18,6 +19,13 @@ const cacheOptions: { tags: string[]; revalidate: number } = {
   tags: ["site"],
   revalidate: 120,
 };
+
+function withPublicSlug(project: Project): Project {
+  return {
+    ...project,
+    slug: project.slug || slugify(project.title) || project.id,
+  };
+}
 
 function sortImages(images: ProjectImage[] | null | undefined) {
   return [...(images ?? [])]
@@ -61,10 +69,12 @@ const loadPublishedProjects = unstable_cache(
       .order("sort_order", { ascending: true });
 
     if (!error && data) {
-      return (data as Project[]).map((project) => ({
-        ...project,
-        images: sortImages(project.images),
-      }));
+      return (data as Project[]).map((project) =>
+        withPublicSlug({
+          ...project,
+          images: sortImages(project.images),
+        }),
+      );
     }
 
     const fallback = await supabase
@@ -76,7 +86,7 @@ const loadPublishedProjects = unstable_cache(
       .order("sort_order", { ascending: true });
 
     if (fallback.error || !fallback.data) return [];
-    return fallback.data as Project[];
+    return (fallback.data as Project[]).map(withPublicSlug);
   },
   ["published-projects"],
   cacheOptions,
@@ -85,16 +95,27 @@ const loadPublishedProjects = unstable_cache(
 const loadProjectBySlug = unstable_cache(
   async (slug: string): Promise<Project | null> => {
     const supabase = createPublicClient();
-    const { data, error } = await supabase
+    const bySlug = await supabase
       .from("projects")
       .select("*, images:project_images(*)")
       .eq("slug", slug)
       .eq("published", true)
       .maybeSingle();
 
-    if (error || !data) return null;
-    const project = data as Project;
-    return { ...project, images: sortImages(project.images) };
+    const row = bySlug.data
+      ? bySlug.data
+      : (
+          await supabase
+            .from("projects")
+            .select("*, images:project_images(*)")
+            .eq("id", slug)
+            .eq("published", true)
+            .maybeSingle()
+        ).data;
+
+    if (!row) return null;
+    const project = row as Project;
+    return withPublicSlug({ ...project, images: sortImages(project.images) });
   },
   ["project-by-slug"],
   cacheOptions,

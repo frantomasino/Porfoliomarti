@@ -40,7 +40,7 @@ export function ProjectCard({
             <p className="mt-2 max-w-md text-sm leading-relaxed text-stone">{project.location}</p>
           ) : null}
         </div>
-        <span className="mt-1 shrink-0 text-[11px] uppercase tracking-[0.18em] text-bronze">
+        <span className="mt-1 shrink-0 border border-ink px-3 py-2 text-[11px] uppercase tracking-[0.18em]">
           Ver
         </span>
       </Link>

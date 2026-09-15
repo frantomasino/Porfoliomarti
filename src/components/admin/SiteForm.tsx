@@ -123,7 +123,7 @@ export function SiteForm() {
   return (
     <AdminPage
       title="Sitio"
-      description="Nombre, logo, textos, colores y menú. Lo que guardes acá es lo que se ve en el portafolio."
+      description="Empezá por WhatsApp, biografía, retrato y portada. Después las obras."
     >
       <form onSubmit={save} className="grid gap-10">
         <div className="grid gap-5 md:grid-cols-2">

@@ -91,7 +91,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
     try {
       const payload = {
         ...project,
-        slug: derivedSlug,
+        slug: derivedSlug || slugify(project.title) || `obra-${Date.now()}`,
         year: Number(project.year),
         sort_order: Number(project.sort_order),
       };

@@ -33,21 +33,8 @@ export function videoEmbedUrl(url: string) {
   return null;
 }
 
-export function displayImageUrl(src: string, width = 1400) {
-  try {
-    const url = new URL(src);
-    if (!url.pathname.includes("/storage/v1/object/public/")) return src;
-    url.pathname = url.pathname.replace(
-      "/storage/v1/object/public/",
-      "/storage/v1/render/image/public/",
-    );
-    url.searchParams.set("width", String(width));
-    url.searchParams.set("quality", "70");
-    url.searchParams.set("resize", "contain");
-    return url.toString();
-  } catch {
-    return src;
-  }
+export function displayImageUrl(src: string, _width = 1400) {
+  return src;
 }
 
 export function projectPhotoUrls(project: Project) {

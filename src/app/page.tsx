@@ -43,7 +43,7 @@ export default async function HomePage() {
           className={`relative mx-auto flex max-w-7xl flex-col px-6 md:px-10 ${
             hasHero
               ? "min-h-[78svh] justify-end pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-28 md:min-h-svh md:pb-16"
-              : "min-h-[72svh] justify-end border-b border-line pb-16 pt-28 md:min-h-[78svh] md:pb-20"
+              : "border-b border-line pb-14 pt-24 md:pb-16 md:pt-28"
           }`}
         >
           {site.profession ? (
@@ -95,7 +95,7 @@ export default async function HomePage() {
           </div>
           <Link
             href="/proyectos"
-            className="hidden min-h-11 shrink-0 text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink sm:inline-flex sm:items-center"
+            className="inline-flex min-h-11 shrink-0 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink"
           >
             {labels.archive}
           </Link>

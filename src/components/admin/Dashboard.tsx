@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AdminPage } from "@/components/admin/ui";
 import { adminQuery } from "@/lib/admin/db";
+import type { SiteProfile } from "@/lib/types";
 
 export function Dashboard({ configured }: { configured: boolean }) {
   const [stats, setStats] = useState({
@@ -12,6 +13,7 @@ export function Dashboard({ configured }: { configured: boolean }) {
     messages: 0,
     unread: 0,
   });
+  const [site, setSite] = useState<SiteProfile | null>(null);
 
   useEffect(() => {
     void Promise.all([
@@ -25,7 +27,13 @@ export function Dashboard({ configured }: { configured: boolean }) {
         op: "select",
         select: "id, read",
       }),
-    ]).then(([projects, messages]) => {
+      adminQuery<SiteProfile>({
+        table: "site_profile",
+        op: "select",
+        limit: 1,
+        single: true,
+      }),
+    ]).then(([projects, messages, profile]) => {
       const projectRows = projects.data ?? [];
       const messageRows = messages.data ?? [];
       setStats({
@@ -34,20 +42,55 @@ export function Dashboard({ configured }: { configured: boolean }) {
         messages: messageRows.length,
         unread: messageRows.filter((item) => !item.read).length,
       });
+      if (profile.data) setSite(profile.data);
     });
   }, []);
+
+  const steps = [
+    {
+      done: Boolean(site?.phone),
+      label: "WhatsApp del estudio",
+      detail: "Sitio → WhatsApp / teléfono, con código de país (54911…)",
+      href: "/admin/sitio",
+    },
+    {
+      done: Boolean(site?.bio),
+      label: "Quiénes somos",
+      detail: "Sitio → Biografía. Es el texto de Nosotros.",
+      href: "/admin/sitio",
+    },
+    {
+      done: Boolean(site?.portrait_url),
+      label: "Retrato",
+      detail: "Una foto de Martina o del estudio, no de una obra.",
+      href: "/admin/sitio",
+    },
+    {
+      done: Boolean(site?.hero_image_url),
+      label: "Foto de portada",
+      detail: "La primera imagen grande de la home.",
+      href: "/admin/sitio",
+    },
+    {
+      done: stats.published > 0,
+      label: "Obras con título real",
+      detail: "Proyectos → cada obra: título, fotos, publicar.",
+      href: "/admin/proyectos",
+    },
+  ];
+  const pending = steps.filter((step) => !step.done);
 
   const cards = [
     { href: "/admin/proyectos", label: "Obras", value: stats.projects, note: `${stats.published} publicadas` },
     { href: "/admin/mensajes", label: "Mensajes", value: stats.messages, note: `${stats.unread} sin leer` },
-    { href: "/admin/sitio", label: "Sitio", value: "Editar", note: "Perfil, textos e imágenes" },
+    { href: "/admin/sitio", label: "Sitio", value: "Editar", note: "Nombre, logo, fotos y textos" },
     { href: "/admin/trayectoria", label: "Nosotros", value: "CV", note: "Práctica, formación y premios" },
   ];
 
   return (
     <AdminPage
       title="Resumen"
-      description="Todo lo que edites acá se guarda en Supabase y se publica en el portafolio."
+      description="Primero completá lo de abajo. Después el visitante ve eso en el sitio."
     >
       {!configured ? (
         <p className="mb-8 border border-line bg-ivory px-5 py-4 text-sm text-stone">
@@ -56,6 +99,25 @@ export function Dashboard({ configured }: { configured: boolean }) {
           sin espacios, y después Redeploy.
         </p>
       ) : null}
+
+      <div className="mb-10 border border-line bg-ivory px-5 py-6">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-stone">Para que el sitio se vea completo</p>
+        {pending.length ? (
+          <ul className="mt-4 grid gap-3">
+            {pending.map((step) => (
+              <li key={step.label}>
+                <Link href={step.href} className="block hover:text-bronze">
+                  <span className="font-medium">{step.label}</span>
+                  <span className="mt-1 block text-sm text-stone">{step.detail}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-3 text-sm text-stone">Lo esencial está. Cargá más obras cuando las tengas.</p>
+        )}
+      </div>
+
       <div className="grid gap-5 md:grid-cols-2">
         {cards.map((card) => (
           <Link key={card.href} href={card.href} className="border border-line p-6 transition-colors hover:border-ink">
