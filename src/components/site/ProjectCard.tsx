@@ -3,17 +3,14 @@
 import Link from "next/link";
 import { Slideshow } from "@/components/site/Slideshow";
 import { projectPhotoUrls } from "@/lib/media";
-import { cx } from "@/lib/utils";
 import type { Project } from "@/lib/types";
 
 export function ProjectCard({
   project,
   index,
-  tall = false,
 }: {
   project: Project;
   index?: number;
-  tall?: boolean;
 }) {
   const number = String((index ?? 0) + 1).padStart(2, "0");
   const photos = projectPhotoUrls(project);
@@ -24,10 +21,7 @@ export function ProjectCard({
         photos={photos}
         alt={project.title}
         width={1400}
-        className={cx(
-          "h-[min(68svh,26rem)] w-full",
-          tall ? "md:h-[36rem]" : "md:h-[23.75rem]",
-        )}
+        className="aspect-[4/5] w-full md:aspect-[4/3]"
         empty={
           <div className="flex h-full items-end bg-ivory px-6 py-6">
             <p className="font-serif text-4xl font-light text-line">{number}</p>

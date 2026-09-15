@@ -111,7 +111,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
         if (payload.cover_url && !images.some((item) => item.url === payload.cover_url)) {
           await addMedia(payload.cover_url, "", "image");
         }
-        setStatus("Guardado en Supabase.");
+        setStatus("Guardado.");
       } else {
         const existing = await adminQuery<Pick<Project, "sort_order">[]>({
           table: "projects",
@@ -224,7 +224,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
   return (
     <AdminPage
       title={projectId ? "Editar obra" : "Nueva obra"}
-      description="Portada, fotos y videos se guardan en Supabase. Cada proyecto puede tener una galería larga."
+      description="Título, fotos y Visible en el sitio. Las fotos extra van debajo de la portada. Guardá al final."
       actions={
         <Link href="/admin/proyectos" className={ghostButtonClass}>
           Volver
@@ -235,16 +235,6 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
         <div className="grid gap-5 md:grid-cols-2">
           <Field label="Título" className="md:col-span-2">
             <input className={fieldClass} value={project.title} onChange={(e) => update("title", e.target.value)} required />
-          </Field>
-          <Field label="Enlace (se arma solo con el título)">
-            <input
-              className={fieldClass}
-              value={derivedSlug}
-              onChange={(e) => {
-                setSlugTouched(true);
-                update("slug", e.target.value);
-              }}
-            />
           </Field>
           <Field label="Categoría">
             <select className={fieldClass} value={project.category} onChange={(e) => update("category", e.target.value)}>
@@ -282,7 +272,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
         <Field label="Extracto">
           <textarea rows={3} className={fieldClass} value={project.excerpt} onChange={(e) => update("excerpt", e.target.value)} />
         </Field>
-        <Field label="Memoria descriptiva">
+        <Field label="Memoria descriptiva" hint="Opcional. Texto largo de la obra.">
           <textarea
             rows={8}
             className={fieldClass}
@@ -290,6 +280,22 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
             onChange={(e) => update("description", e.target.value)}
           />
         </Field>
+
+        <details className="border-t border-line pt-4">
+          <summary className="cursor-pointer text-sm text-stone">Dirección web (opcional)</summary>
+          <div className="mt-4">
+            <Field label="Enlace" hint="Se arma sola con el título. No hace falta tocarla.">
+              <input
+                className={fieldClass}
+                value={derivedSlug}
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  update("slug", e.target.value);
+                }}
+              />
+            </Field>
+          </div>
+        </details>
 
         <ImageUpload
           label="Imagen de portada"
@@ -306,46 +312,46 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           </p>
         ) : null}
 
-        <div className="flex gap-8 text-sm">
-          <label className="flex items-center gap-2">
+        <div className="flex flex-col gap-4 text-sm sm:flex-row sm:gap-8">
+          <label className="flex min-h-11 items-center gap-2">
             <input
               type="checkbox"
               checked={project.featured}
               onChange={(e) => update("featured", e.target.checked)}
             />
-            Destacado en inicio
+            Destacada en el inicio
           </label>
-          <label className="flex items-center gap-2">
+          <label className="flex min-h-11 items-center gap-2">
             <input
               type="checkbox"
               checked={project.published}
               onChange={(e) => update("published", e.target.checked)}
             />
-            Publicado
+            Visible en el sitio
           </label>
         </div>
 
+        {projectId ? (
+          <MediaGallery
+            items={images}
+            onAdd={addMedia}
+            onChange={updateImage}
+            onRemove={removeImage}
+            onMove={moveImage}
+          />
+        ) : (
+          <p className="text-sm leading-relaxed text-stone">
+            Guardá la obra para poder subir el resto de las fotos.
+          </p>
+        )}
+
         <div className="sticky bottom-0 z-10 -mx-5 flex items-center gap-4 border-t border-line bg-paper/95 px-5 py-4 backdrop-blur-md md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
           <button type="submit" disabled={busy} className={buttonClass}>
-            {busy ? "Guardando…" : "Guardar proyecto"}
+            {busy ? "Guardando…" : "Guardar obra"}
           </button>
-          {status ? <p className="text-sm text-stone">{status}</p> : null}
+          {status ? <p className="min-w-0 text-sm text-stone">{status}</p> : null}
         </div>
       </form>
-
-      {projectId ? (
-        <MediaGallery
-          items={images}
-          onAdd={addMedia}
-          onChange={updateImage}
-          onRemove={removeImage}
-          onMove={moveImage}
-        />
-      ) : (
-        <p className="mt-10 text-sm text-stone">
-          Guardá el proyecto para cargar la galería: varias fotos y videos.
-        </p>
-      )}
     </AdminPage>
   );
 }

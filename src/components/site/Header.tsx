@@ -19,7 +19,6 @@ export function Header({ name, profession, instagram, logoUrl, home = false, lab
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [path, setPath] = useState("");
   const dark = home && !scrolled && !open;
   const links = [
     { href: "/proyectos", label: labels.nav_projects },
@@ -37,7 +36,6 @@ export function Header({ name, profession, instagram, logoUrl, home = false, lab
   }, []);
 
   useEffect(() => {
-    setPath(pathname);
     setOpen(false);
   }, [pathname]);
 
@@ -86,7 +84,7 @@ export function Header({ name, profession, instagram, logoUrl, home = false, lab
 
           <nav className="hidden items-center gap-8 text-[11px] uppercase tracking-[0.24em] md:flex">
             {links.map((link) => {
-              const current = path.startsWith(link.href);
+              const current = pathname.startsWith(link.href);
               return (
                 <Link
                   key={link.href}

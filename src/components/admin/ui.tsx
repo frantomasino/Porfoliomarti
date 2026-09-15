@@ -1,15 +1,15 @@
 import { cx } from "@/lib/utils";
 
 export const fieldClass =
-  "w-full rounded-none border border-line bg-ivory px-3 py-2.5 text-base text-ink outline-none transition-colors focus:border-ink md:text-sm";
+  "w-full rounded-none border border-line bg-ivory px-3 py-3 text-base text-ink outline-none transition-colors focus:border-ink";
 
-export const labelClass = "text-[11px] uppercase tracking-[0.18em] text-stone";
+export const labelClass = "text-sm text-stone";
 
 export const buttonClass =
-  "border border-ink bg-ink px-5 py-2.5 text-[11px] uppercase tracking-[0.18em] text-ivory transition-opacity hover:opacity-80 disabled:opacity-40";
+  "inline-flex min-h-12 w-full items-center justify-center border border-ink bg-ink px-5 text-sm text-ivory transition-opacity hover:opacity-80 disabled:opacity-40 md:w-auto";
 
 export const ghostButtonClass =
-  "border border-line px-5 py-2.5 text-[11px] uppercase tracking-[0.18em] text-ink transition-colors hover:border-ink";
+  "inline-flex min-h-12 items-center justify-center border border-line px-4 text-sm text-ink transition-colors hover:border-ink";
 
 export function TrashButton({
   onClick,
@@ -84,10 +84,12 @@ export function OrderButtons({
 
 export function Field({
   label,
+  hint,
   children,
   className,
 }: {
   label: string;
+  hint?: string;
   children: React.ReactNode;
   className?: string;
 }) {
@@ -95,6 +97,7 @@ export function Field({
     <label className={cx("grid gap-2", className)}>
       <span className={labelClass}>{label}</span>
       {children}
+      {hint ? <span className="text-xs leading-relaxed text-stone">{hint}</span> : null}
     </label>
   );
 }
@@ -112,12 +115,12 @@ export function AdminPage({
 }) {
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 md:mb-10">
+      <div className="mb-6 flex flex-col gap-4 md:mb-10 md:flex-row md:flex-wrap md:items-end md:justify-between">
         <div>
-          <h1 className="font-serif text-3xl text-ink md:text-4xl">{title}</h1>
-          {description ? <p className="mt-2 max-w-xl text-sm text-stone">{description}</p> : null}
+          <h1 className="font-serif text-[1.85rem] leading-tight text-ink md:text-4xl">{title}</h1>
+          {description ? <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone">{description}</p> : null}
         </div>
-        {actions}
+        {actions ? <div className="w-full md:w-auto">{actions}</div> : null}
       </div>
       {children}
     </div>

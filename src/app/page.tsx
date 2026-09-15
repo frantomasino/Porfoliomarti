@@ -19,6 +19,9 @@ export default async function HomePage() {
   const featured = projects.filter((project) => project.featured).slice(0, 3);
   const works = featured.length ? featured : projects.slice(0, 3);
   const hasHero = Boolean(site.hero_image_url);
+  const showWho = Boolean(site.bio);
+  const headline = (site.tagline || "").trim();
+  const kicker = site.profession || site.location;
 
   return (
     <SiteShell site={site} home={hasHero}>
@@ -34,7 +37,7 @@ export default async function HomePage() {
               alt={site.studio_name || site.full_name}
               priority
               width={1600}
-              className="absolute inset-0 h-full w-full object-cover object-[center_78%] md:object-[center_70%]"
+              className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-ink/40" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/25" />
@@ -44,25 +47,31 @@ export default async function HomePage() {
           className={`relative mx-auto flex max-w-7xl flex-col px-6 md:px-10 ${
             hasHero
               ? "min-h-[78svh] justify-end pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-28 md:min-h-svh md:pb-16"
-              : "border-b border-line pb-14 pt-24 md:pb-16 md:pt-28"
+              : "border-b border-line pb-10 pt-8 md:pb-16 md:pt-28"
           }`}
         >
-          {site.profession ? (
-            <p className="kicker reveal opacity-70">{site.profession}</p>
-          ) : site.location ? (
-            <p className="kicker reveal opacity-70">{site.location}</p>
-          ) : null}
-          <h1 className="display reveal reveal-delay-1 mt-5 max-w-[14ch]">
-            {site.tagline || site.studio_name}
-          </h1>
-          {site.tagline && site.studio_name ? (
-            <p className="reveal reveal-delay-1 mt-5 max-w-md text-sm leading-relaxed opacity-70">
-              {site.studio_name}
-              {site.location ? ` · ${site.location}` : ""}
-            </p>
-          ) : site.location && site.profession ? (
-            <p className="reveal reveal-delay-1 mt-5 text-sm tracking-wide opacity-70">{site.location}</p>
-          ) : null}
+          {headline ? (
+            <>
+              {kicker ? <p className="kicker reveal opacity-70">{kicker}</p> : null}
+              <h1 className="display reveal reveal-delay-1 mt-5 max-w-[16ch]">{headline}</h1>
+              {site.studio_name || site.location ? (
+                <p className="reveal reveal-delay-1 mt-5 max-w-md text-sm leading-relaxed opacity-70">
+                  {[site.studio_name, site.location].filter(Boolean).join(" · ")}
+                </p>
+              ) : null}
+            </>
+          ) : (
+            <>
+              {site.profession ? (
+                <h1 className="display-sm reveal mt-1 max-w-[18ch]">{site.profession}</h1>
+              ) : (
+                <h1 className="sr-only">{site.studio_name || site.full_name || labels.works}</h1>
+              )}
+              {site.location ? (
+                <p className="reveal reveal-delay-1 mt-5 text-sm tracking-wide opacity-70">{site.location}</p>
+              ) : null}
+            </>
+          )}
           <div className="reveal reveal-delay-2 mt-10 flex flex-wrap items-center gap-3">
             <Link
               href="/proyectos"
@@ -86,21 +95,25 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <WhoSection site={site} compact />
+      {showWho ? <WhoSection site={site} compact /> : null}
 
       <PageBanner src={site.banner_url} alt={labels.works} />
 
-      <section className={`mx-auto max-w-7xl px-6 pb-28 md:px-10 ${site.banner_url ? "pt-12 md:pt-16" : ""}`}>
-        <div className="mb-12 flex items-end justify-between gap-6 border-b border-line pb-8 md:mb-16 md:pb-12">
+      <section
+        className={`mx-auto max-w-7xl px-6 pb-28 md:px-10 ${
+          site.banner_url || !showWho ? "pt-10 md:pt-24" : ""
+        }`}
+      >
+        <div className="mb-10 flex items-end justify-between gap-4 border-b border-line pb-6 md:mb-16 md:pb-12">
           <div>
             <p className="kicker text-bronze">{labels.selection}</p>
-            <h2 className="mt-2 font-serif text-[clamp(2.6rem,6vw,4.2rem)] font-light leading-none tracking-tight">
+            <h2 className="mt-2 font-serif text-[clamp(2.2rem,11vw,4.2rem)] font-light leading-none tracking-tight">
               {labels.works}
             </h2>
           </div>
           <Link
             href="/proyectos"
-            className="mb-1 inline-flex min-h-11 shrink-0 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink"
+            className="mb-1 hidden min-h-11 shrink-0 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink md:inline-flex"
           >
             {labels.archive}
           </Link>

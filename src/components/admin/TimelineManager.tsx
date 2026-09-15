@@ -54,7 +54,7 @@ export function TimelineManager() {
       return;
     }
     setDraft(blank);
-    setStatus("Guardado en Supabase.");
+    setStatus("Guardado.");
     await load();
   }
 
@@ -73,7 +73,7 @@ export function TimelineManager() {
       match: { id: item.id },
     });
     if (error) setStatus(error);
-    else setStatus("Guardado en Supabase.");
+    else setStatus("Guardado.");
   }
 
   async function remove(id: string) {
@@ -88,12 +88,12 @@ export function TimelineManager() {
   return (
     <AdminPage
       title="Trayectoria"
-      description="Experiencia, formación y premios que se muestran en Nosotros."
+      description="Práctica, formación y premios. Sale en Nosotros, debajo de la bio."
     >
       {status ? <p className="mb-6 text-sm text-stone">{status}</p> : null}
 
       <form onSubmit={add} className="mb-14 grid gap-4 border border-line p-5">
-        <p className="font-serif text-2xl">Nueva entrada</p>
+        <p className="text-base font-medium">Nueva entrada</p>
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Tipo">
             <select

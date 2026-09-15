@@ -46,7 +46,7 @@ export function ProjectViewer({
           if (Math.abs(delta) > 50) go(delta < 0 ? 1 : -1);
         }}
       >
-        <div className="relative max-w-full">
+        <div className="relative mx-auto w-fit max-w-full">
           {current?.image ? (
             <MediaBlock item={current.image} alt={project.title} layout="natural" />
           ) : current?.cover ? (
@@ -55,7 +55,7 @@ export function ProjectViewer({
               alt={project.title}
               priority
               width={1400}
-              className="mx-auto block max-h-[68svh] w-auto max-w-full object-contain"
+              className="mx-auto block max-h-[62svh] w-auto max-w-full object-contain md:max-h-[68svh]"
             />
           ) : (
             <div className="h-64 w-full bg-ivory" />
@@ -107,8 +107,8 @@ function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void 
       type="button"
       aria-label={side === "left" ? "Foto anterior" : "Foto siguiente"}
       className={cx(
-        "absolute top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-ivory/95 text-ink",
-        side === "left" ? "left-2" : "right-2",
+        "absolute top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 touch-manipulation items-center justify-center bg-ivory/95 text-ink md:h-12 md:w-12",
+        side === "left" ? "left-1.5 md:left-2" : "right-1.5 md:right-2",
       )}
       onClick={onClick}
     >

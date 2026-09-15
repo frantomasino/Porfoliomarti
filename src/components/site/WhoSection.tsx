@@ -14,24 +14,31 @@ export function WhoSection({
   const instagramLabel = site.instagram.includes("instagram.com/")
     ? `@${site.instagram.split("instagram.com/")[1]?.replace(/\/$/, "")}`
     : "Instagram";
+  const hasPortrait = Boolean(site.portrait_url);
 
   return (
-    <section className="mx-auto grid max-w-7xl items-end gap-8 px-6 py-12 md:grid-cols-[0.9fr_1.1fr] md:gap-16 md:px-10 md:py-28">
-      {site.portrait_url ? (
-        <div className="relative aspect-[4/5] max-h-[52svh] overflow-hidden bg-line md:max-h-none">
+    <section
+      className={`mx-auto grid max-w-7xl items-end gap-6 px-6 py-10 md:gap-16 md:px-10 md:py-28 ${
+        hasPortrait ? "md:grid-cols-[0.9fr_1.1fr]" : ""
+      }`}
+    >
+      {hasPortrait ? (
+        <div
+          className={`relative order-2 aspect-[4/5] overflow-hidden bg-line md:order-1 ${
+            compact ? "max-h-[36svh] md:max-h-[28rem]" : "max-h-[38svh] md:max-h-none"
+          }`}
+        >
           <Photo
             src={site.portrait_url}
             alt={site.full_name}
             width={900}
-            className="absolute inset-0 h-full w-full object-cover object-[center_20%]"
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
         </div>
-      ) : (
-        <div className="hidden border border-line bg-ivory md:block md:min-h-[420px]" />
-      )}
-      <div>
+      ) : null}
+      <div className="order-1 md:order-2">
         <p className="kicker text-stone">{labels.who}</p>
-        <h2 className="display mt-4">{site.full_name}</h2>
+        <h2 className="display-sm mt-4">{site.full_name}</h2>
         <div className="rule mt-6 max-w-[4rem]" />
         <p className="mt-6 text-[11px] uppercase tracking-[0.2em] text-bronze">
           {[site.profession, site.studio_name].filter(Boolean).join(" · ")}
@@ -42,7 +49,7 @@ export function WhoSection({
         {!compact && site.philosophy ? (
           <p className="mt-5 max-w-xl text-[0.95rem] leading-[1.75] text-stone">{site.philosophy}</p>
         ) : null}
-        <div className="mt-12 flex flex-wrap items-center gap-3">
+        <div className={`flex flex-wrap items-center gap-3 ${site.bio ? "mt-12" : "mt-6"}`}>
           {compact ? (
             <Link
               href="/estudio"

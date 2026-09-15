@@ -61,7 +61,7 @@ export function ProjectList() {
   }
 
   async function remove(id: string) {
-    if (!confirm("¿Eliminar este proyecto y sus imágenes?")) return;
+    if (!confirm("¿Eliminar esta obra y sus fotos?")) return;
     const { error } = await adminQuery({
       table: "projects",
       op: "delete",
@@ -77,7 +77,7 @@ export function ProjectList() {
   return (
     <AdminPage
       title="Obras"
-      description="Subí o bajá las obras con las flechas. Ese orden es el que se ve en el sitio."
+      description="El orden de esta lista es el que se ve en el sitio. Flechas para subir o bajar."
       actions={
         <Link href="/admin/proyectos/nuevo" className={buttonClass}>
           Nueva obra
@@ -87,8 +87,8 @@ export function ProjectList() {
       {status ? <p className="mb-4 text-sm text-bronze">{status}</p> : null}
       <div className="divide-y divide-line border-y border-line">
         {projects.map((project, index) => (
-          <article key={project.id} className="flex flex-wrap items-center justify-between gap-4 py-5">
-            <div className="flex min-w-0 items-center gap-4">
+          <article key={project.id} className="flex flex-col gap-4 py-5">
+            <div className="flex min-w-0 items-start gap-3">
               <OrderButtons
                 disableUp={busy || index === 0}
                 disableDown={busy || index === projects.length - 1}
@@ -100,31 +100,34 @@ export function ProjectList() {
                 <img
                   src={project.cover_url}
                   alt=""
-                  className="h-14 w-14 shrink-0 object-contain bg-ivory"
+                  className="h-14 w-14 shrink-0 bg-ivory object-contain"
                 />
               ) : (
                 <div className="h-14 w-14 shrink-0 bg-ivory" />
               )}
               <div className="min-w-0">
-                <p className="font-serif text-2xl">{project.title || "Sin título"}</p>
-                <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-stone">
-                  {String(index + 1).padStart(2, "0")} · {project.year} · {project.category} ·{" "}
-                  {project.published ? "Publicado" : "Borrador"}
+                <p className="break-words text-base font-medium">{project.title || "Sin título"}</p>
+                <p className="mt-1 text-sm text-stone">
+                  {project.published ? "Publicada" : "Borrador"}
+                  {project.year ? ` · ${project.year}` : ""}
+                  {project.category ? ` · ${project.category}` : ""}
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Link href={`/admin/proyectos/${project.id}`} className={ghostButtonClass}>
+              <Link href={`/admin/proyectos/${project.id}`} className={`${ghostButtonClass} flex-1 md:flex-none`}>
                 Editar
               </Link>
-              <button type="button" className={ghostButtonClass} onClick={() => void remove(project.id)}>
+              <button type="button" className={`${ghostButtonClass} flex-1 md:flex-none`} onClick={() => void remove(project.id)}>
                 Eliminar
               </button>
             </div>
           </article>
         ))}
         {!projects.length ? (
-          <p className="py-10 text-sm text-stone">Todavía no hay proyectos en Supabase.</p>
+          <p className="py-10 text-sm leading-relaxed text-stone">
+            Todavía no hay obras. Tocá Nueva obra para cargar la primera.
+          </p>
         ) : null}
       </div>
     </AdminPage>

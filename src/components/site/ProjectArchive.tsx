@@ -6,24 +6,18 @@ import { ProjectCard } from "@/components/site/ProjectCard";
 import type { Project } from "@/lib/types";
 import { cx } from "@/lib/utils";
 
-const layouts = [
-  { col: "md:col-span-7", tall: true },
-  { col: "md:col-span-5", tall: false },
-  { col: "md:col-span-5", tall: false },
-  { col: "md:col-span-7", tall: true },
-];
-
 export function WorksGrid({ projects }: { projects: Project[] }) {
   return (
-    <div className="grid grid-cols-1 gap-x-5 gap-y-12 md:grid-cols-12">
-      {projects.map((project, index) => {
-        const layout = projects.length === 1 ? { col: "md:col-span-12", tall: true } : layouts[index % 4];
-        return (
-          <div key={project.id} className={layout.col}>
-            <ProjectCard project={project} index={index} tall={layout.tall} />
-          </div>
-        );
-      })}
+    <div
+      className={
+        projects.length === 1
+          ? "max-w-3xl"
+          : "grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2"
+      }
+    >
+      {projects.map((project, index) => (
+        <ProjectCard key={project.id} project={project} index={index} />
+      ))}
     </div>
   );
 }
@@ -58,7 +52,7 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
         </div>
       ) : null}
       {projects.length ? (
-        <div className={showFilters ? "mt-12" : "mt-12"}>
+        <div className="mt-12">
           <WorksGrid projects={visible} />
         </div>
       ) : (

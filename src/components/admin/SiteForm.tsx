@@ -93,20 +93,18 @@ export function SiteForm() {
         const { banner_url: _banner, ...withoutBanner } = payload;
         result = await write(withoutBanner);
         if (!result.error) {
-          setStatus(
-            "Guardado. Para activar el banner, en Supabase → SQL Editor pegá supabase/migration-banner.sql y dale Run. Después volvé a guardar el banner.",
-          );
+          setStatus("Guardado. El banner todavía no está activo: avisale a quien armó el sitio.");
           return;
         }
       }
 
       if (result.error) throw new Error(result.error);
-      setStatus("Guardado en Supabase.");
+      setStatus("Guardado.");
     } catch (err) {
       const message = err instanceof Error ? err.message : "No se pudo guardar.";
       setStatus(
         /column|theme|labels|logo|favicon|banner/i.test(message)
-          ? "Falta correr un SQL en Supabase. Pegá supabase/migration-banner.sql (banner) o migration-brand.sql (logo y favicon) y dale Run."
+          ? "No se pudo guardar este campo. Avisale a quien armó el sitio."
           : message,
       );
     } finally {
@@ -137,13 +135,13 @@ export function SiteForm() {
 
   return (
     <AdminPage
-      title="Sitio"
-      description="Empezá por WhatsApp, biografía, retrato y portada. Después las obras."
+      title="El estudio"
+      description="Empezá por WhatsApp, la bio y las fotos. Guardá abajo cuando termines: el botón queda fijo en el celular."
     >
       <form onSubmit={save} className="grid gap-10 pb-24">
         <div className="grid gap-5 border border-line bg-ivory px-5 py-6">
-          <p className="text-[11px] uppercase tracking-[0.18em] text-stone">Lo primero</p>
-          <Field label="WhatsApp / teléfono">
+          <p className="text-sm font-medium">Lo primero</p>
+          <Field label="WhatsApp" hint="Con código de país, sin espacios. Ejemplo: 54911…">
             <input
               className={fieldClass}
               value={site.phone}
@@ -152,7 +150,7 @@ export function SiteForm() {
               inputMode="tel"
             />
           </Field>
-          <Field label="Biografía">
+          <Field label="Quiénes somos" hint="Un párrafo. Sale en Nosotros. Si está, también aparece en la home.">
             <textarea
               rows={5}
               className={fieldClass}
@@ -165,6 +163,7 @@ export function SiteForm() {
             <ImageUpload
               label="Retrato"
               folder="portrait"
+              preview="contain"
               value={site.portrait_url}
               onChange={(url) => update("portrait_url", url)}
               hint="Foto de Martina o del estudio. No uses una foto de obra acá."
@@ -199,7 +198,11 @@ export function SiteForm() {
           <Field label="Profesión">
             <input className={fieldClass} value={site.profession} onChange={(e) => update("profession", e.target.value)} />
           </Field>
-          <Field label="Lema" className="md:col-span-2">
+          <Field
+            label="Lema"
+            className="md:col-span-2"
+            hint="Frase de la home. Si lo dejás vacío, no se repite el nombre del estudio."
+          >
             <input className={fieldClass} value={site.tagline} onChange={(e) => update("tagline", e.target.value)} />
           </Field>
           <Field label="Ubicación">
@@ -273,10 +276,10 @@ export function SiteForm() {
           </Field>
         </div>
 
-        <div className="grid gap-5 border-t border-line pt-10">
-          <p className="font-serif text-3xl">Textos del sitio</p>
-          <p className="text-sm text-stone">Estos textos salen en el menú y en cada página: Nosotros, Contacto, Proyectos.</p>
-          <div className="grid gap-5 md:grid-cols-3">
+        <details className="border-t border-line pt-8">
+          <summary className="cursor-pointer text-sm text-stone">Textos del menú (opcional)</summary>
+          <p className="mt-3 text-sm text-stone">Solo si querés cambiar cómo se llaman las páginas.</p>
+          <div className="mt-5 grid gap-5 md:grid-cols-3">
             <Field label="Menú — proyectos">
               <input className={fieldClass} value={labels.nav_projects} onChange={(e) => updateLabel("nav_projects", e.target.value)} />
             </Field>
@@ -334,12 +337,12 @@ export function SiteForm() {
               />
             </Field>
           </div>
-        </div>
+        </details>
 
-        <div className="grid gap-5 border-t border-line pt-10">
-          <p className="font-serif text-3xl">Colores</p>
-          <p className="text-sm text-stone">Se aplican en todo el sitio público.</p>
-          <div className="grid gap-5 md:grid-cols-3">
+        <details className="border-t border-line pt-8">
+          <summary className="cursor-pointer text-sm text-stone">Colores (opcional)</summary>
+          <p className="mt-3 text-sm text-stone">Solo si querés cambiar la paleta del sitio.</p>
+          <div className="mt-5 grid gap-5 md:grid-cols-3">
             {(
               [
                 ["paper", "Fondo"],
@@ -367,13 +370,13 @@ export function SiteForm() {
               </Field>
             ))}
           </div>
-        </div>
+        </details>
 
-        <div className="sticky bottom-0 z-10 -mx-5 flex items-center gap-4 border-t border-line bg-paper/95 px-5 py-4 backdrop-blur-md md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
+        <div className="sticky bottom-0 z-10 -mx-5 flex items-center gap-3 border-t border-line bg-paper/95 px-5 py-3 backdrop-blur-md md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
           <button type="submit" disabled={busy} className={buttonClass}>
-            {busy ? "Guardando…" : "Guardar sitio"}
+            {busy ? "Guardando…" : "Guardar"}
           </button>
-          {status ? <p className="text-sm text-stone">{status}</p> : null}
+          {status ? <p className="min-w-0 text-sm text-stone">{status}</p> : null}
         </div>
       </form>
     </AdminPage>

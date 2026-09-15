@@ -21,11 +21,11 @@ export default async function ProjectsPage() {
   return (
     <SiteShell site={site}>
       <PageBanner src={site.banner_url} alt={labels.nav_projects} />
-      <section className="mx-auto max-w-7xl px-6 pb-28 pt-12 md:px-10 md:pt-16">
-        <div className="flex items-end justify-between gap-6 border-b border-line pb-8 md:pb-12">
+      <section className="mx-auto max-w-7xl px-6 pb-24 pt-8 md:px-10 md:pb-28 md:pt-16">
+        <div className="flex items-end justify-between gap-4 border-b border-line pb-6 md:pb-12">
           <div>
             <p className="kicker text-bronze">{labels.archive}</p>
-            <h1 className="mt-2 font-serif text-[clamp(2.6rem,6vw,4.2rem)] font-light leading-none tracking-tight">
+            <h1 className="mt-2 font-serif text-[clamp(2.2rem,11vw,4.2rem)] font-light leading-none tracking-tight">
               {labels.nav_projects}
             </h1>
           </div>

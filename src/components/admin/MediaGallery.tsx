@@ -38,7 +38,7 @@ export function MediaGallery({ items, onAdd, onChange, onRemove, onMove }: Media
         await onAdd(url, "", mediaKindFromFile(file));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo subir el archivo a Supabase.");
+      setError(err instanceof Error ? err.message : "No se pudo subir el archivo.");
     } finally {
       setBusy(false);
     }
@@ -60,12 +60,11 @@ export function MediaGallery({ items, onAdd, onChange, onRemove, onMove }: Media
   }
 
   return (
-    <section className="mt-16 border-t border-line pt-10">
-      <h2 className="font-serif text-3xl">Fotos y videos</h2>
-      <p className="mt-2 max-w-2xl text-sm text-stone">
-        Estas son las que el visitante pasa con las flechas, sin entrar a la obra. Subí JPG, PNG o WebP
-        (varias a la vez). La preview muestra la foto entera, no recortada. Tachito para borrar, flechas
-        para el orden.
+    <section className="mt-8 border-t border-line pt-8">
+      <h2 className="font-serif text-2xl">Fotos y videos</h2>
+      <p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone">
+        El visitante las pasa con las flechas. Podés elegir varias de una vez. Tachito para borrar,
+        flechas para el orden.
       </p>
 
       <div className="mt-8 grid gap-5">
@@ -108,7 +107,7 @@ export function MediaGallery({ items, onAdd, onChange, onRemove, onMove }: Media
         <span className={labelClass}>Subir varios archivos</span>
         <label className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 bg-ivory px-6 py-10 text-center hover:bg-paper">
           <span className="text-sm">
-            {busy ? "Subiendo a Supabase…" : "Elegir fotos o videos"}
+            {busy ? "Subiendo…" : "Elegir fotos o videos"}
           </span>
           <span className="text-xs text-stone">JPG, PNG, WebP · MP4, MOV, WebM · varias a la vez</span>
           <input

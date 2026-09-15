@@ -29,7 +29,7 @@ export function SectionsManager() {
     if (error) {
       setStatus(
         error.includes("page_sections")
-          ? "Falta correr supabase/migration-appearance.sql en el SQL Editor."
+          ? "Estos bloques todavía no están activos. Avisale a quien armó el sitio."
           : error,
       );
       return;
@@ -71,7 +71,7 @@ export function SectionsManager() {
       },
       match: { id: section.id },
     });
-    setStatus(error ? error : "Guardado en Supabase.");
+    setStatus(error ? error : "Guardado.");
   }
 
   async function remove(id: string) {
@@ -85,12 +85,12 @@ export function SectionsManager() {
 
   return (
     <AdminPage
-      title="Secciones"
-      description="Agregá bloques nuevos (título, texto, foto) y elegí si van en Inicio, Nosotros, Contacto, Proyectos o en todas."
+      title="Extras"
+      description="Bloques opcionales de título, texto y foto. Podés mostrarlos en Inicio, Nosotros, Contacto o Proyectos."
     >
       {status ? <p className="mb-6 text-sm text-stone">{status}</p> : null}
       <form onSubmit={add} className="mb-12 grid gap-4 border border-line p-5">
-        <p className="font-serif text-2xl">Nueva sección</p>
+        <p className="text-base font-medium">Nuevo bloque</p>
         <Field label="Título">
           <input
             className={fieldClass}

@@ -109,5 +109,5 @@ export function ContactForm({ studioPhone }: { studioPhone: string }) {
 }
 
 function urlLabel(studioPhone: string) {
-  return whatsappUrl(studioPhone) ? "Enviar por WhatsApp" : "Enviar";
+  return whatsappUrl(studioPhone) ? "Enviar por WhatsApp" : "Enviar consulta";
 }

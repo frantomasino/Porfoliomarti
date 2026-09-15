@@ -59,7 +59,7 @@ export function ServicesManager() {
       },
       match: { id: service.id },
     });
-    setStatus(error ? error : "Guardado en Supabase.");
+    setStatus(error ? error : "Guardado.");
   }
 
   async function remove(id: string) {
@@ -72,10 +72,10 @@ export function ServicesManager() {
   }
 
   return (
-    <AdminPage title="Servicios" description="Los servicios aparecen en Nosotros.">
+    <AdminPage title="Servicios" description="Cómo trabaja el estudio. Sale en Nosotros, en tres columnas.">
       {status ? <p className="mb-6 text-sm text-stone">{status}</p> : null}
       <form onSubmit={add} className="mb-12 grid gap-4 border border-line p-5">
-        <p className="font-serif text-2xl">Nuevo servicio</p>
+        <p className="text-base font-medium">Nuevo servicio</p>
         <Field label="Título">
           <input className={fieldClass} value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} required />
         </Field>

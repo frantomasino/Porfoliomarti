@@ -24,7 +24,7 @@ export function Footer({ site }: { site: SiteProfile }) {
               {site.studio_name || site.full_name}
             </p>
           )}
-          <p className="mt-3 hidden text-sm uppercase tracking-[0.18em] text-stone md:block">
+          <p className="mt-3 text-sm text-stone md:uppercase md:tracking-[0.18em]">
             {[site.full_name, site.profession].filter(Boolean).join(" · ")}
           </p>
           <nav className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.2em] text-stone">
@@ -39,19 +39,21 @@ export function Footer({ site }: { site: SiteProfile }) {
             </Link>
           </nav>
         </div>
-        <div className="hidden space-y-2 text-sm text-stone md:block">
-          {site.location ? <p>{site.location}</p> : null}
-          {site.email ? (
-            <a className="block min-h-11 hover:text-ink" href={`mailto:${site.email}`}>
-              {site.email}
-            </a>
-          ) : null}
-          {site.phone ? (
-            <a className="block min-h-11 hover:text-ink" href={`tel:${site.phone}`}>
-              {site.phone}
-            </a>
-          ) : null}
-        </div>
+        {site.location || site.email || site.phone ? (
+          <div className="space-y-2 text-sm text-stone">
+            {site.location ? <p>{site.location}</p> : null}
+            {site.email ? (
+              <a className="block min-h-11 hover:text-ink" href={`mailto:${site.email}`}>
+                {site.email}
+              </a>
+            ) : null}
+            {site.phone ? (
+              <a className="block min-h-11 hover:text-ink" href={`tel:${site.phone}`}>
+                {site.phone}
+              </a>
+            ) : null}
+          </div>
+        ) : null}
         <div className="text-sm text-stone">
           {site.instagram ? (
             <a className="inline-flex min-h-11 items-center hover:text-ink" href={site.instagram} target="_blank" rel="noreferrer">

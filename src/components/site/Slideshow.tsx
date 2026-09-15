@@ -49,7 +49,7 @@ export function Slideshow({
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (
-        empty
+        <div className="absolute inset-0">{empty}</div>
       )}
       {total > 1 ? (
         <>
@@ -70,8 +70,8 @@ function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void 
       type="button"
       aria-label={side === "left" ? "Anterior" : "Siguiente"}
       className={cx(
-        "absolute top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-ivory/95 text-ink",
-        side === "left" ? "left-2" : "right-2",
+        "absolute top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 touch-manipulation items-center justify-center bg-ivory/95 text-ink md:h-12 md:w-12",
+        side === "left" ? "left-1.5 md:left-2" : "right-1.5 md:right-2",
       )}
       onClick={(event) => {
         event.preventDefault();

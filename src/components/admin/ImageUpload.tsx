@@ -24,8 +24,8 @@ export function ImageUpload({
   onChange,
   folder = "general",
   label = "Imagen",
-  hint = "JPG, PNG o WebP. Desde la computadora o el celular, siempre acá en el admin. La imagen se optimiza sola al subir.",
-  emptyLabel = "JPG, PNG o WebP",
+  hint = "JPG, PNG o WebP, desde el celular o la computadora. Se achica sola al subir.",
+  emptyLabel = "Todavía no hay foto",
   preview = "cover",
   accept = IMAGE_ACCEPT,
   maxEdge,
@@ -42,7 +42,7 @@ export function ImageUpload({
       const url = await adminUpload(prepared, folder);
       onChange(url);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo subir la imagen a Supabase.");
+      setError(err instanceof Error ? err.message : "No se pudo subir la foto.");
     } finally {
       setBusy(false);
     }
@@ -81,8 +81,8 @@ export function ImageUpload({
         </div>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex min-h-14 w-full cursor-pointer items-center justify-center border border-ink bg-ink px-4 text-[11px] uppercase tracking-[0.18em] text-ivory md:w-fit">
-          {busy ? "Subiendo…" : value ? "Cambiar archivo" : "Elegir archivo"}
+        <label className="flex min-h-12 w-full cursor-pointer items-center justify-center border border-ink bg-ink px-4 text-sm text-ivory md:w-fit">
+          {busy ? "Subiendo…" : value ? "Cambiar foto" : "Elegir foto"}
           <input
             type="file"
             accept={accept}

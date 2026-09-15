@@ -50,7 +50,7 @@ export function MessagesList() {
   return (
     <AdminPage
       title="Mensajes"
-      description="Las consultas del formulario de Contacto se guardan acá. Si hay WhatsApp del estudio, también se abre el chat."
+      description="Las consultas del formulario de Contacto. Si cargaste WhatsApp, también se abre el chat."
     >
       {status ? <p className="mb-4 text-sm text-bronze">{status}</p> : null}
       <div className="grid gap-5">
@@ -61,7 +61,7 @@ export function MessagesList() {
           >
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
-                <p className="font-serif text-2xl">{message.name}</p>
+                <p className="text-base font-medium">{message.name}</p>
                 <p className="mt-1 text-sm text-stone">
                   {message.email}
                   {message.phone ? ` · ${message.phone}` : ""}
@@ -70,11 +70,11 @@ export function MessagesList() {
                   {new Date(message.created_at).toLocaleString("es-AR")}
                 </p>
               </div>
-              <div className="flex gap-3">
-                <button type="button" className={ghostButtonClass} onClick={() => void toggleRead(message)}>
-                  {message.read ? "Marcar no leído" : "Marcar leído"}
+              <div className="flex w-full gap-3 sm:w-auto">
+                <button type="button" className={`${ghostButtonClass} flex-1 sm:flex-none`} onClick={() => void toggleRead(message)}>
+                  {message.read ? "No leído" : "Leído"}
                 </button>
-                <button type="button" className={ghostButtonClass} onClick={() => void remove(message.id)}>
+                <button type="button" className={`${ghostButtonClass} flex-1 sm:flex-none`} onClick={() => void remove(message.id)}>
                   Eliminar
                 </button>
               </div>
