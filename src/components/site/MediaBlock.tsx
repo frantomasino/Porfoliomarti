@@ -39,5 +39,5 @@ export function MediaBlock({
     );
   }
 
-  return <Photo src={item.url} alt={alt} className={`absolute inset-0 h-full w-full object-cover ${className}`} />;
+  return <Photo src={item.url} alt={alt} width={1400} className={`absolute inset-0 h-full w-full object-cover ${className}`} />;
 }

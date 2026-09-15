@@ -32,6 +32,7 @@ export default async function HomePage() {
               src={site.hero_image_url}
               alt={site.studio_name || site.full_name}
               priority
+              width={1600}
               className="absolute inset-0 h-full w-full object-cover object-[center_78%] md:object-[center_70%]"
             />
             <div className="absolute inset-0 bg-ink/40" />
@@ -100,15 +101,10 @@ export default async function HomePage() {
           </Link>
         </div>
         {works.length ? (
-          <div className="grid gap-14">
-            {works[0] ? <ProjectCard project={works[0]} index={0} large /> : null}
-            {works.length > 1 ? (
-              <div className="grid gap-14 md:grid-cols-2">
-                {works.slice(1).map((project, index) => (
-                  <ProjectCard key={project.id} project={project} index={index + 1} />
-                ))}
-              </div>
-            ) : null}
+          <div className="grid gap-12 md:grid-cols-2">
+            {works.map((project, index) => (
+              <ProjectCard key={project.id} project={project} index={index} />
+            ))}
           </div>
         ) : (
           <EmptyFrame kicker={labels.archive} title="El archivo se actualiza con cada encargo." />

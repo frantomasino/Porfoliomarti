@@ -1,4 +1,4 @@
-import type { MediaKind } from "@/lib/types";
+import type { MediaKind, Project } from "@/lib/types";
 
 export function mediaKindFromFile(file: File): MediaKind {
   return file.type.startsWith("video/") ? "video" : "image";
@@ -31,4 +31,32 @@ export function videoEmbedUrl(url: string) {
   const vimeo = vimeoId(url);
   if (vimeo) return `https://player.vimeo.com/video/${vimeo}`;
   return null;
+}
+
+export function displayImageUrl(src: string, width = 1400) {
+  try {
+    const url = new URL(src);
+    if (!url.pathname.includes("/storage/v1/object/public/")) return src;
+    url.pathname = url.pathname.replace(
+      "/storage/v1/object/public/",
+      "/storage/v1/render/image/public/",
+    );
+    url.searchParams.set("width", String(width));
+    url.searchParams.set("quality", "70");
+    url.searchParams.set("resize", "contain");
+    return url.toString();
+  } catch {
+    return src;
+  }
+}
+
+export function projectPhotoUrls(project: Project) {
+  const urls: string[] = [];
+  const add = (url?: string) => {
+    if (!url || mediaKindFromUrl(url) === "video") return;
+    if (!urls.includes(url)) urls.push(url);
+  };
+  add(project.cover_url);
+  for (const item of project.images ?? []) add(item.url);
+  return urls;
 }

@@ -18,10 +18,11 @@ export function WhoSection({
   return (
     <section className="mx-auto grid max-w-7xl items-end gap-10 py-16 md:grid-cols-[0.9fr_1.1fr] md:gap-16 md:px-10 md:py-28">
       {site.portrait_url ? (
-        <div className="relative aspect-[4/5] overflow-hidden bg-line md:aspect-auto md:min-h-[560px]">
+        <div className="relative aspect-[4/5] overflow-hidden bg-line md:aspect-[4/5] md:min-h-0">
           <Photo
             src={site.portrait_url}
             alt={site.full_name}
+            width={900}
             className="absolute inset-0 h-full w-full object-cover object-[center_20%]"
           />
         </div>

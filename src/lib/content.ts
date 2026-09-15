@@ -55,13 +55,28 @@ const loadPublishedProjects = unstable_cache(
     const { data, error } = await supabase
       .from("projects")
       .select(
+        "id, title, slug, category, year, location, client, area, status, excerpt, cover_url, featured, published, sort_order, images:project_images(id, url, caption, sort_order, kind)",
+      )
+      .eq("published", true)
+      .order("sort_order", { ascending: true });
+
+    if (!error && data) {
+      return (data as Project[]).map((project) => ({
+        ...project,
+        images: sortImages(project.images),
+      }));
+    }
+
+    const fallback = await supabase
+      .from("projects")
+      .select(
         "id, title, slug, category, year, location, client, area, status, excerpt, cover_url, featured, published, sort_order",
       )
       .eq("published", true)
       .order("sort_order", { ascending: true });
 
-    if (error || !data) return [];
-    return data as Project[];
+    if (fallback.error || !fallback.data) return [];
+    return fallback.data as Project[];
   },
   ["published-projects"],
   cacheOptions,

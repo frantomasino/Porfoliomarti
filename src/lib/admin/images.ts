@@ -69,7 +69,7 @@ export async function prepareImageForUpload(
 
   try {
     const bitmap = await createImageBitmap(file);
-    const maxEdge = options.maxEdge ?? 2400;
+    const maxEdge = options.maxEdge ?? 1600;
     const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
     const width = Math.max(1, Math.round(bitmap.width * scale));
     const height = Math.max(1, Math.round(bitmap.height * scale));
@@ -85,17 +85,23 @@ export async function prepareImageForUpload(
     bitmap.close();
 
     const keepAlpha = file.type === "image/png" || /\.png$/i.test(file.name) || Boolean(options.brand);
-    const webp = await blobFromCanvas(canvas, "image/webp", keepAlpha ? 0.92 : 0.84);
-    if (webp && webp.size > 0) {
-      return new File([webp], rename(file.name, "webp"), { type: "image/webp" });
+    const qualities = keepAlpha ? [0.82, 0.7] : [0.72, 0.6, 0.5];
+    let last: File | null = null;
+    for (const quality of qualities) {
+      const webp = await blobFromCanvas(canvas, "image/webp", quality);
+      if (webp && webp.size > 0) {
+        last = new File([webp], rename(file.name, "webp"), { type: "image/webp" });
+        if (webp.size <= 420_000) return last;
+      }
     }
+    if (last) return last;
     if (keepAlpha) {
       const png = await blobFromCanvas(canvas, "image/png", 1);
       if (png && png.size > 0) {
         return new File([png], rename(file.name, "png"), { type: "image/png" });
       }
     }
-    const jpeg = await blobFromCanvas(canvas, "image/jpeg", 0.84);
+    const jpeg = await blobFromCanvas(canvas, "image/jpeg", 0.62);
     if (jpeg && jpeg.size > 0) {
       return new File([jpeg], rename(file.name, "jpg"), { type: "image/jpeg" });
     }

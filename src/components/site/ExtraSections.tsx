@@ -9,10 +9,11 @@ export function ExtraSections({ sections }: { sections: PageSection[] }) {
       {sections.map((section) => (
         <section key={section.id} className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
           {section.image_url ? (
-            <div className="relative mb-8 aspect-[16/10] overflow-hidden bg-line md:aspect-[21/9]">
+            <div className="relative mb-8 aspect-[16/10] max-h-[28rem] overflow-hidden bg-line">
               <Photo
                 src={section.image_url}
                 alt={section.title}
+                width={1400}
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>
