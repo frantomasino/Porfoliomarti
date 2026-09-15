@@ -38,19 +38,30 @@ export default async function StudioPage() {
       ) : null}
 
       {services.length ? (
-        <section className="mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-24">
-          <p className="kicker text-stone">{labels.services}</p>
-          <h2 className="display-sm mt-3">{labels.how_works}</h2>
-          <div className="mt-12 divide-y divide-line border-y border-line">
-            {services.map((service, index) => (
-              <article key={service.id} className="grid gap-4 py-8 md:grid-cols-[120px_1fr_1.4fr]">
-                <p className="text-[11px] uppercase tracking-[0.2em] text-bronze">
-                  {String(index + 1).padStart(2, "0")}
-                </p>
-                <h3 className="font-serif text-3xl">{service.title}</h3>
-                <p className="text-sm leading-relaxed text-stone">{service.description}</p>
-              </article>
-            ))}
+        <section className="px-6 py-20 md:px-10 md:py-28">
+          <div className="mx-auto max-w-7xl border-b border-line pb-8 md:pb-10">
+            <p className="kicker text-bronze">{labels.services}</p>
+            <h2 className="mt-2 font-serif text-[clamp(2.6rem,6vw,4.2rem)] font-light leading-none tracking-tight">
+              {labels.how_works}
+            </h2>
+          </div>
+          <div className="mx-auto max-w-7xl md:border-x md:border-b md:border-line">
+            <div className="grid md:grid-cols-3">
+              {services.map((service, index) => (
+                <article
+                  key={service.id}
+                  className="border-b border-line px-0 py-12 md:border-r md:px-10 md:py-14 md:[&:nth-child(3n)]:border-r-0"
+                >
+                  <p className="font-serif text-[2rem] font-light leading-none tracking-[0.05em] text-line">
+                    {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-6 font-serif text-[1.5rem] tracking-wide">{service.title}</h3>
+                  <p className="mt-3 max-w-sm text-[0.82rem] font-light leading-[2] text-stone">
+                    {service.description}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
       ) : null}

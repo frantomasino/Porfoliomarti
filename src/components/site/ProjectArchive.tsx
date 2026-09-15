@@ -6,6 +6,28 @@ import { ProjectCard } from "@/components/site/ProjectCard";
 import type { Project } from "@/lib/types";
 import { cx } from "@/lib/utils";
 
+const layouts = [
+  { col: "md:col-span-7", tall: true },
+  { col: "md:col-span-5", tall: false },
+  { col: "md:col-span-5", tall: false },
+  { col: "md:col-span-7", tall: true },
+];
+
+export function WorksGrid({ projects }: { projects: Project[] }) {
+  return (
+    <div className="grid grid-cols-1 gap-x-5 gap-y-12 md:grid-cols-12">
+      {projects.map((project, index) => {
+        const layout = projects.length === 1 ? { col: "md:col-span-12", tall: true } : layouts[index % 4];
+        return (
+          <div key={project.id} className={layout.col}>
+            <ProjectCard project={project} index={index} tall={layout.tall} />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export function ProjectArchive({ projects }: { projects: Project[] }) {
   const categories = useMemo(
     () => ["Todas", ...Array.from(new Set(projects.map((project) => project.category)))],
@@ -36,10 +58,8 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
         </div>
       ) : null}
       {projects.length ? (
-        <div className={`grid gap-10 md:grid-cols-2 ${showFilters ? "mt-12" : "mt-10"}`}>
-          {visible.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
-          ))}
+        <div className={showFilters ? "mt-12" : "mt-12"}>
+          <WorksGrid projects={visible} />
         </div>
       ) : (
         <EmptyFrame kicker="Archivo" title="El archivo se actualiza con cada encargo." />

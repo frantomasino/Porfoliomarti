@@ -2,7 +2,7 @@ import Link from "next/link";
 import { EmptyFrame } from "@/components/site/EmptyFrame";
 import { ExtraSections } from "@/components/site/ExtraSections";
 import { Photo } from "@/components/site/Photo";
-import { ProjectCard } from "@/components/site/ProjectCard";
+import { WorksGrid } from "@/components/site/ProjectArchive";
 import { SiteShell } from "@/components/site/SiteShell";
 import { WhoSection } from "@/components/site/WhoSection";
 import { siteLabels } from "@/lib/appearance";
@@ -87,25 +87,23 @@ export default async function HomePage() {
 
       <WhoSection site={site} compact />
 
-      <section className="mx-auto max-w-7xl px-6 pb-24 md:px-10">
-        <div className="mb-8 flex items-end justify-between gap-4">
+      <section className="mx-auto max-w-7xl px-6 pb-28 md:px-10">
+        <div className="mb-12 flex items-end justify-between gap-6 border-b border-line pb-8 md:mb-16 md:pb-12">
           <div>
-            <p className="kicker text-stone">{labels.selection}</p>
-            <h2 className="display-sm mt-3">{labels.works}</h2>
+            <p className="kicker text-bronze">{labels.selection}</p>
+            <h2 className="mt-2 font-serif text-[clamp(2.6rem,6vw,4.2rem)] font-light leading-none tracking-tight">
+              {labels.works}
+            </h2>
           </div>
           <Link
             href="/proyectos"
-            className="inline-flex min-h-11 shrink-0 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink"
+            className="mb-1 inline-flex min-h-11 shrink-0 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink"
           >
             {labels.archive}
           </Link>
         </div>
         {works.length ? (
-          <div className="grid gap-12 md:grid-cols-2">
-            {works.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} />
-            ))}
-          </div>
+          <WorksGrid projects={works} />
         ) : (
           <EmptyFrame kicker={labels.archive} title="El archivo se actualiza con cada encargo." />
         )}

@@ -19,10 +19,20 @@ export default async function ProjectsPage() {
 
   return (
     <SiteShell site={site}>
-      <section className="mx-auto max-w-7xl px-6 pb-24 pt-12 md:px-10 md:pt-16">
-        <p className="kicker text-stone">{labels.archive}</p>
-        <h1 className="display mt-4">{labels.nav_projects}</h1>
-        <div className="rule mt-6 max-w-[4rem]" />
+      <section className="mx-auto max-w-7xl px-6 pb-28 pt-12 md:px-10 md:pt-16">
+        <div className="flex items-end justify-between gap-6 border-b border-line pb-8 md:pb-12">
+          <div>
+            <p className="kicker text-bronze">{labels.archive}</p>
+            <h1 className="mt-2 font-serif text-[clamp(2.6rem,6vw,4.2rem)] font-light leading-none tracking-tight">
+              {labels.nav_projects}
+            </h1>
+          </div>
+          {projects.length ? (
+            <p className="mb-1 hidden text-[11px] text-stone md:block">
+              {projects.length} {projects.length === 1 ? "obra" : "obras"}
+            </p>
+          ) : null}
+        </div>
         <ProjectArchive projects={projects} />
       </section>
       <ExtraSections sections={extra} />
