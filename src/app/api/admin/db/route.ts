@@ -56,12 +56,18 @@ export async function POST(request: NextRequest) {
     }
 
     if (body.op === "insert") {
+      if (!body.data) {
+        return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
+      }
       const result = await query.insert(body.data).select();
       const data = body.single ? result.data?.[0] ?? null : result.data;
       return NextResponse.json({ data, error: result.error?.message ?? null });
     }
 
     if (body.op === "update") {
+      if (!body.data) {
+        return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
+      }
       let requestQuery = query.update(body.data);
       Object.entries(body.match || {}).forEach(([key, value]) => {
         requestQuery = requestQuery.eq(key, value);
