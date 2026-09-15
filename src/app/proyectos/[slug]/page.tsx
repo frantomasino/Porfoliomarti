@@ -41,9 +41,7 @@ export default async function ProjectPage({
 
   return (
     <SiteShell site={site}>
-      <div className="bg-ink">
-        <ProjectViewer project={project} prev={prev} next={next} />
-      </div>
+      <ProjectViewer project={project} prev={prev} next={next} />
 
       <section className="mx-auto grid max-w-5xl gap-12 px-6 py-16 md:grid-cols-[0.8fr_1.2fr] md:px-10 md:py-20">
         <dl className="grid gap-6 text-sm">

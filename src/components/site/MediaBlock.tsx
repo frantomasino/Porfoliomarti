@@ -6,13 +6,19 @@ export function MediaBlock({
   item,
   alt,
   className = "",
+  layout = "fill",
 }: {
   item: ProjectImage;
   alt: string;
   className?: string;
+  layout?: "fill" | "natural";
 }) {
   const embed = videoEmbedUrl(item.url);
   const isVideo = item.kind === "video" || Boolean(embed) || isFileVideo(item.url);
+  const natural = layout === "natural";
+  const mediaClass = natural
+    ? `block h-auto max-h-[78vh] w-auto max-w-full ${className}`
+    : `absolute inset-0 h-full w-full object-contain ${className}`;
 
   if (isVideo && embed) {
     return (
@@ -22,7 +28,7 @@ export function MediaBlock({
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
         loading="lazy"
-        className={`absolute inset-0 h-full w-full ${className}`}
+        className={natural ? `aspect-video h-auto max-h-[78vh] w-full max-w-4xl ${className}` : mediaClass}
       />
     );
   }
@@ -34,10 +40,10 @@ export function MediaBlock({
         controls
         playsInline
         preload="metadata"
-        className={`absolute inset-0 h-full w-full object-contain ${className}`}
+        className={mediaClass}
       />
     );
   }
 
-  return <Photo src={item.url} alt={alt} width={1400} className={`absolute inset-0 h-full w-full object-contain ${className}`} />;
+  return <Photo src={item.url} alt={alt} width={1400} className={mediaClass} />;
 }

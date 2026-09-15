@@ -22,9 +22,8 @@ export function ProjectCard({
         photos={photos}
         alt={project.title}
         width={1100}
-        className="aspect-[4/3]"
         empty={
-          <div className="flex h-full items-end bg-ivory px-6 py-6">
+          <div className="flex min-h-64 items-end bg-ivory px-6 py-6">
             <p className="font-serif text-4xl text-line">{number}</p>
           </div>
         }

@@ -33,71 +33,69 @@ export function ProjectViewer({
   }
 
   return (
-    <>
-      <section className="relative overflow-hidden bg-ink">
-        <div
-          className="relative mx-auto aspect-[4/3] max-h-[70vh] w-full max-w-5xl md:aspect-[16/10]"
-          onTouchStart={(event) => {
-            startX.current = event.changedTouches[0]?.clientX ?? null;
-          }}
-          onTouchEnd={(event) => {
-            if (startX.current == null) return;
-            const delta = event.changedTouches[0].clientX - startX.current;
-            startX.current = null;
-            if (Math.abs(delta) > 40) go(delta < 0 ? 1 : -1);
-          }}
-        >
-          {current?.image ? (
-            <MediaBlock item={current.image} alt={project.title} />
-          ) : current?.cover ? (
-            <Photo
-              src={current.cover}
-              alt={project.title}
-              priority
-              width={1400}
-              className="absolute inset-0 h-full w-full object-contain"
-            />
-          ) : (
-            <div className="absolute inset-0 bg-ink" />
-          )}
-          {slides.length > 1 ? (
-            <>
-              <Arrow side="left" onClick={() => go(-1)} />
-              <Arrow side="right" onClick={() => go(1)} />
-              <span className="absolute bottom-4 left-4 z-10 bg-ink/70 px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-ivory">
-                {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-              </span>
-            </>
+    <section className="bg-paper">
+      <div
+        className="relative mx-auto w-fit max-w-full"
+        onTouchStart={(event) => {
+          startX.current = event.changedTouches[0]?.clientX ?? null;
+        }}
+        onTouchEnd={(event) => {
+          if (startX.current == null) return;
+          const delta = event.changedTouches[0].clientX - startX.current;
+          startX.current = null;
+          if (Math.abs(delta) > 40) go(delta < 0 ? 1 : -1);
+        }}
+      >
+        {current?.image ? (
+          <MediaBlock item={current.image} alt={project.title} layout="natural" />
+        ) : current?.cover ? (
+          <Photo
+            src={current.cover}
+            alt={project.title}
+            priority
+            width={1400}
+            className="block h-auto max-h-[78vh] w-auto max-w-full"
+          />
+        ) : (
+          <div className="h-64 w-full max-w-3xl bg-ivory" />
+        )}
+        {slides.length > 1 ? (
+          <>
+            <Arrow side="left" onClick={() => go(-1)} />
+            <Arrow side="right" onClick={() => go(1)} />
+            <span className="absolute bottom-4 left-4 z-10 bg-ink/70 px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-ivory">
+              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+            </span>
+          </>
+        ) : null}
+      </div>
+      <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-4 px-6 py-8 md:px-10">
+        <div>
+          <p className="text-[11px] uppercase tracking-[0.24em] text-stone">
+            {project.category} · {project.year}
+          </p>
+          <h1 className="display-sm mt-2 max-w-[16ch]">{project.title}</h1>
+        </div>
+        <div className="flex gap-3">
+          {prev ? (
+            <Link
+              href={`/proyectos/${prev.slug}`}
+              className="inline-flex h-11 items-center border border-ink px-4 text-[11px] uppercase tracking-[0.18em]"
+            >
+              ← Obra
+            </Link>
+          ) : null}
+          {next ? (
+            <Link
+              href={`/proyectos/${next.slug}`}
+              className="inline-flex h-11 items-center bg-ink px-4 text-[11px] uppercase tracking-[0.18em] text-ivory"
+            >
+              Obra →
+            </Link>
           ) : null}
         </div>
-        <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-4 px-6 py-8 md:px-10">
-          <div className="text-ivory">
-            <p className="text-[11px] uppercase tracking-[0.24em] text-ivory/70">
-              {project.category} · {project.year}
-            </p>
-            <h1 className="display-sm mt-2 max-w-[16ch]">{project.title}</h1>
-          </div>
-          <div className="flex gap-3">
-            {prev ? (
-              <Link
-                href={`/proyectos/${prev.slug}`}
-                className="inline-flex h-11 items-center border border-ivory/40 px-4 text-[11px] uppercase tracking-[0.18em] text-ivory"
-              >
-                ← Obra
-              </Link>
-            ) : null}
-            {next ? (
-              <Link
-                href={`/proyectos/${next.slug}`}
-                className="inline-flex h-11 items-center bg-ivory px-4 text-[11px] uppercase tracking-[0.18em] text-ink"
-              >
-                Obra →
-              </Link>
-            ) : null}
-          </div>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
 

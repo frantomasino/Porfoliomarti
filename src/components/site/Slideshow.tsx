@@ -29,7 +29,7 @@ export function Slideshow({
 
   return (
     <div
-      className={cx("relative overflow-hidden bg-ink", className)}
+      className={cx("relative bg-paper", className)}
       onTouchStart={(event) => {
         startX.current = event.changedTouches[0]?.clientX ?? null;
       }}
@@ -41,7 +41,7 @@ export function Slideshow({
       }}
     >
       {photo ? (
-        <Photo src={photo} alt={alt} width={width} className="absolute inset-0 h-full w-full object-contain" />
+        <Photo src={photo} alt={alt} width={width} className="block h-auto w-full" />
       ) : (
         empty
       )}
