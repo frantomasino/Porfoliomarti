@@ -88,14 +88,14 @@ export default async function HomePage() {
       <WhoSection site={site} compact />
 
       <section className="mx-auto max-w-7xl px-6 pb-24 md:px-10">
-        <div className="mb-10 flex items-end justify-between gap-6">
+        <div className="mb-8 flex items-end justify-between gap-4">
           <div>
             <p className="kicker text-stone">{labels.selection}</p>
             <h2 className="display-sm mt-3">{labels.works}</h2>
           </div>
           <Link
             href="/proyectos"
-            className="min-h-11 text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink"
+            className="hidden min-h-11 shrink-0 text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink sm:inline-flex sm:items-center"
           >
             {labels.archive}
           </Link>

@@ -29,7 +29,10 @@ export function Slideshow({
 
   return (
     <div
-      className={cx("relative bg-paper", className)}
+      className={cx(
+        "relative aspect-[4/5] overflow-hidden bg-line touch-pan-y md:aspect-[4/3]",
+        className,
+      )}
       onTouchStart={(event) => {
         startX.current = event.changedTouches[0]?.clientX ?? null;
       }}
@@ -37,11 +40,16 @@ export function Slideshow({
         if (startX.current == null) return;
         const delta = event.changedTouches[0].clientX - startX.current;
         startX.current = null;
-        if (Math.abs(delta) > 40) go(delta < 0 ? 1 : -1);
+        if (Math.abs(delta) > 50) go(delta < 0 ? 1 : -1);
       }}
     >
       {photo ? (
-        <Photo src={photo} alt={alt} width={width} className="block h-auto w-full" />
+        <Photo
+          src={photo}
+          alt={alt}
+          width={width}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
       ) : (
         empty
       )}
@@ -49,7 +57,7 @@ export function Slideshow({
         <>
           <Arrow side="left" onClick={() => go(-1)} />
           <Arrow side="right" onClick={() => go(1)} />
-          <span className="absolute bottom-3 left-3 z-10 bg-ink/70 px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-ivory">
+          <span className="absolute bottom-3 left-3 z-10 bg-ink/70 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-ivory">
             {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
           </span>
         </>
@@ -64,8 +72,8 @@ function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void 
       type="button"
       aria-label={side === "left" ? "Anterior" : "Siguiente"}
       className={cx(
-        "absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-ivory/92 text-ink",
-        side === "left" ? "left-3" : "right-3",
+        "absolute top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-ivory/95 text-ink",
+        side === "left" ? "left-2" : "right-2",
       )}
       onClick={(event) => {
         event.preventDefault();

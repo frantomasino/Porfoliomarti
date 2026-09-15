@@ -15,6 +15,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 .site-header {
@@ -22,6 +23,7 @@ html {
 }
 
 body {
+  overflow-x: hidden;
   background-color: var(--color-paper);
   background-image: radial-gradient(rgba(27, 24, 20, 0.055) 0.45px, transparent 0.55px);
   background-size: 5px 5px;
@@ -41,19 +43,20 @@ body {
 
 .display {
   font-family: var(--font-cormorant), serif;
-  font-size: clamp(2.35rem, 7.2vw, 5rem);
+  font-size: clamp(2rem, 8vw, 5rem);
   line-height: 1.05;
   letter-spacing: -0.02em;
   text-wrap: balance;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .display-sm {
   font-family: var(--font-cormorant), serif;
-  font-size: clamp(2rem, 4.6vw, 3.35rem);
-  line-height: 1.08;
+  font-size: clamp(1.55rem, 5.4vw, 3.35rem);
+  line-height: 1.12;
   letter-spacing: -0.02em;
   text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .kicker {

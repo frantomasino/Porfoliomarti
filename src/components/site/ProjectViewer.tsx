@@ -35,7 +35,7 @@ export function ProjectViewer({
   return (
     <section className="bg-paper">
       <div
-        className="relative mx-auto w-fit max-w-full"
+        className="relative mx-auto w-full max-w-5xl touch-pan-y bg-paper"
         onTouchStart={(event) => {
           startX.current = event.changedTouches[0]?.clientX ?? null;
         }}
@@ -43,7 +43,7 @@ export function ProjectViewer({
           if (startX.current == null) return;
           const delta = event.changedTouches[0].clientX - startX.current;
           startX.current = null;
-          if (Math.abs(delta) > 40) go(delta < 0 ? 1 : -1);
+          if (Math.abs(delta) > 50) go(delta < 0 ? 1 : -1);
         }}
       >
         {current?.image ? (
@@ -54,33 +54,33 @@ export function ProjectViewer({
             alt={project.title}
             priority
             width={1400}
-            className="block h-auto max-h-[78vh] w-auto max-w-full"
+            className="mx-auto block max-h-[68svh] w-full object-contain"
           />
         ) : (
-          <div className="h-64 w-full max-w-3xl bg-ivory" />
+          <div className="h-64 w-full bg-ivory" />
         )}
         {slides.length > 1 ? (
           <>
             <Arrow side="left" onClick={() => go(-1)} />
             <Arrow side="right" onClick={() => go(1)} />
-            <span className="absolute bottom-4 left-4 z-10 bg-ink/70 px-2 py-1 text-[11px] uppercase tracking-[0.18em] text-ivory">
+            <span className="absolute bottom-3 left-3 z-10 bg-ink/70 px-2 py-1 text-[10px] uppercase tracking-[0.18em] text-ivory md:bottom-4 md:left-4">
               {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </span>
           </>
         ) : null}
       </div>
-      <div className="mx-auto flex max-w-5xl flex-wrap items-end justify-between gap-4 px-6 py-8 md:px-10">
-        <div>
+      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 md:flex-row md:items-end md:justify-between md:px-10">
+        <div className="min-w-0">
           <p className="text-[11px] uppercase tracking-[0.24em] text-stone">
             {project.category} · {project.year}
           </p>
-          <h1 className="display-sm mt-2 max-w-[16ch]">{project.title}</h1>
+          <h1 className="display-sm mt-2 break-words">{project.title}</h1>
         </div>
         <div className="flex gap-3">
           {prev ? (
             <Link
               href={`/proyectos/${prev.slug}`}
-              className="inline-flex h-11 items-center border border-ink px-4 text-[11px] uppercase tracking-[0.18em]"
+              className="inline-flex h-11 flex-1 items-center justify-center border border-ink px-4 text-[11px] uppercase tracking-[0.18em] md:flex-none"
             >
               ← Obra
             </Link>
@@ -88,7 +88,7 @@ export function ProjectViewer({
           {next ? (
             <Link
               href={`/proyectos/${next.slug}`}
-              className="inline-flex h-11 items-center bg-ink px-4 text-[11px] uppercase tracking-[0.18em] text-ivory"
+              className="inline-flex h-11 flex-1 items-center justify-center bg-ink px-4 text-[11px] uppercase tracking-[0.18em] text-ivory md:flex-none"
             >
               Obra →
             </Link>
@@ -105,8 +105,8 @@ function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void 
       type="button"
       aria-label={side === "left" ? "Foto anterior" : "Foto siguiente"}
       className={cx(
-        "absolute top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center bg-ivory/92 text-ink",
-        side === "left" ? "left-3" : "right-3",
+        "absolute top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-ivory/95 text-ink",
+        side === "left" ? "left-2" : "right-2",
       )}
       onClick={onClick}
     >

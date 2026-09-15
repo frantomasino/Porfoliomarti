@@ -74,7 +74,7 @@ export function Header({ name, profession, instagram, logoUrl, home = false, lab
               </span>
             ) : (
               <>
-                <span className="font-serif text-[1.4rem] tracking-[0.02em] md:text-[1.65rem]">{name}</span>
+                <span className="block max-w-[11.5rem] truncate font-serif text-[1.25rem] tracking-[0.02em] md:max-w-none md:text-[1.65rem]">{name}</span>
                 {profession ? (
                   <span className="mt-0.5 hidden truncate text-[10px] uppercase tracking-[0.24em] opacity-70 sm:block">
                     {profession}

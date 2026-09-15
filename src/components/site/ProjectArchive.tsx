@@ -36,7 +36,7 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
         </div>
       ) : null}
       {projects.length ? (
-        <div className={`grid gap-16 md:grid-cols-2 ${showFilters ? "mt-16" : "mt-12"}`}>
+        <div className={`grid gap-10 md:grid-cols-2 ${showFilters ? "mt-12" : "mt-10"}`}>
           {visible.map((project, index) => (
             <ProjectCard key={project.id} project={project} index={index} />
           ))}

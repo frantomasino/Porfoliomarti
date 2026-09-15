@@ -23,7 +23,7 @@ export function ProjectCard({
         alt={project.title}
         width={1100}
         empty={
-          <div className="flex min-h-64 items-end bg-ivory px-6 py-6">
+          <div className="flex h-full items-end bg-ivory px-6 py-6">
             <p className="font-serif text-4xl text-line">{number}</p>
           </div>
         }
@@ -33,7 +33,9 @@ export function ProjectCard({
           <p className="text-[11px] uppercase tracking-[0.18em] text-stone">
             {number} / {project.category} / {project.year}
           </p>
-          <h3 className="display-sm mt-1">{project.title}</h3>
+          <h3 className="mt-1 font-serif text-[1.55rem] leading-[1.15] break-words md:text-[2.1rem]">
+            {project.title}
+          </h3>
           {project.location ? (
             <p className="mt-2 max-w-md text-sm leading-relaxed text-stone">{project.location}</p>
           ) : null}

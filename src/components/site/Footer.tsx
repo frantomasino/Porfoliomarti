@@ -65,8 +65,8 @@ export function Footer({ site }: { site: SiteProfile }) {
           ) : null}
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 border-t border-line px-6 py-5 text-[11px] uppercase tracking-[0.2em] text-stone md:px-10">
-        <span>© {new Date().getFullYear()} {site.studio_name || site.full_name}</span>
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 border-t border-line px-6 py-5 text-[10px] uppercase tracking-[0.18em] text-stone md:px-10 md:text-[11px] md:tracking-[0.2em]">
+        <span className="min-w-0 break-words">© {new Date().getFullYear()} {site.studio_name || site.full_name}</span>
         {site.location ? <span className="hidden text-right md:inline">{site.location}</span> : null}
       </div>
     </footer>

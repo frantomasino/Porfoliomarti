@@ -100,7 +100,7 @@ export function ContactForm({ studioPhone }: { studioPhone: string }) {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="mt-4 w-fit bg-ink px-8 py-3 text-[11px] uppercase tracking-[0.22em] text-ivory transition-opacity hover:opacity-80 disabled:opacity-50"
+        className="mt-4 w-full bg-ink px-8 py-3.5 text-[11px] uppercase tracking-[0.22em] text-ivory transition-opacity hover:opacity-80 disabled:opacity-50 md:w-fit"
       >
         {status === "sending" ? "Enviando…" : urlLabel(studioPhone)}
       </button>
