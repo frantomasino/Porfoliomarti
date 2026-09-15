@@ -1,7 +1,7 @@
 import { cx } from "@/lib/utils";
 
 export const fieldClass =
-  "w-full rounded-none border border-line bg-ivory px-3 py-2.5 text-sm text-ink outline-none transition-colors focus:border-ink";
+  "w-full rounded-none border border-line bg-ivory px-3 py-2.5 text-base text-ink outline-none transition-colors focus:border-ink md:text-sm";
 
 export const labelClass = "text-[11px] uppercase tracking-[0.18em] text-stone";
 

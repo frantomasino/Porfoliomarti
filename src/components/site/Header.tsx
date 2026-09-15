@@ -104,23 +104,12 @@ export function Header({ name, profession, instagram, logoUrl, home = false, lab
 
           <button
             type="button"
-            className="relative flex h-11 w-11 items-center justify-center md:hidden"
+            className="relative flex h-11 min-w-11 items-center justify-center gap-2 md:hidden"
             aria-label={open ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={open}
             onClick={() => setOpen((value) => !value)}
           >
-            <span
-              className={cx(
-                "absolute block h-[1.5px] w-5 bg-current transition-transform duration-200",
-                open ? "rotate-45" : "-translate-y-[5px]",
-              )}
-            />
-            <span
-              className={cx(
-                "absolute block h-[1.5px] w-5 bg-current transition-transform duration-200",
-                open ? "-rotate-45" : "translate-y-[5px]",
-              )}
-            />
+            <span className="text-[11px] uppercase tracking-[0.18em]">{open ? "Cerrar" : "Menú"}</span>
           </button>
         </div>
       </header>

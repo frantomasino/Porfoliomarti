@@ -8,18 +8,18 @@ import { cx } from "@/lib/utils";
 const nav = [
   { href: "/admin", label: "Resumen" },
   { href: "/admin/sitio", label: "Sitio" },
-  { href: "/admin/secciones", label: "Secciones" },
   { href: "/admin/proyectos", label: "Obras" },
   { href: "/admin/trayectoria", label: "Nosotros" },
-  { href: "/admin/servicios", label: "Servicios" },
   { href: "/admin/mensajes", label: "Mensajes" },
+  { href: "/admin/servicios", label: "Servicios" },
+  { href: "/admin/secciones", label: "Secciones" },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <div className="admin-root flex min-h-screen bg-paper">
+    <div className="admin-root flex min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-paper">
       <aside className="hidden w-64 shrink-0 flex-col bg-ink px-6 py-8 text-ivory md:flex">
         <Link href="/" className="font-serif text-2xl">
           ARQ.MR
@@ -65,25 +65,32 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         <div className="sticky top-0 z-30 bg-paper md:hidden">
           <div className="flex items-center justify-between border-b border-line px-4 py-3">
             <span className="font-serif text-xl">ARQ.MR</span>
-            <form action={logoutAdmin}>
-              <button type="submit" className="text-[11px] uppercase tracking-[0.16em]">
-                Salir
-              </button>
-            </form>
+            <div className="flex items-center gap-4">
+              <Link href="/" className="text-[11px] uppercase tracking-[0.16em] text-stone">
+                Ver sitio
+              </Link>
+              <form action={logoutAdmin}>
+                <button type="submit" className="text-[11px] uppercase tracking-[0.16em]">
+                  Salir
+                </button>
+              </form>
+            </div>
           </div>
-          <nav className="flex gap-5 overflow-x-auto border-b border-line px-4 py-3 text-[11px] uppercase tracking-[0.16em]">
-            {nav.map((item) => {
+          <nav className="grid grid-cols-3 border-b border-line">
+            {nav.map((item, index) => {
               const active =
                 item.href === "/admin"
                   ? pathname === "/admin"
                   : pathname.startsWith(item.href);
+              const isLastCol = (index + 1) % 3 === 0;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cx(
-                    "whitespace-nowrap pb-1",
-                    active ? "border-b border-ink text-ink" : "text-stone",
+                    "flex min-h-12 items-center justify-center border-b border-line px-1 text-center text-[10px] uppercase tracking-[0.12em]",
+                    !isLastCol && "border-r",
+                    active ? "bg-ivory text-ink" : "text-stone",
                   )}
                 >
                   {item.label}
