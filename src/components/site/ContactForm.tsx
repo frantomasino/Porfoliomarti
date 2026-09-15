@@ -3,52 +3,49 @@
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/config";
+import { contactWhatsAppText, whatsappUrl } from "@/lib/utils";
 
-export function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+export function ContactForm({ studioPhone }: { studioPhone: string }) {
+  const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const [error, setError] = useState("");
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const phone = String(data.get("phone") || "").trim();
+    const message = String(data.get("message") || "").trim();
+    const url = whatsappUrl(
+      studioPhone,
+      contactWhatsAppText({ name, email, phone, message }),
+    );
 
-    if (!isSupabaseConfigured()) {
+    if (!url) {
       setStatus("error");
-      setError("El formulario se activa cuando el sitio está conectado a Supabase.");
+      setError("Cargá el WhatsApp del estudio en Admin → Sitio (teléfono, con código de país).");
       return;
     }
 
     setStatus("sending");
     setError("");
 
-    try {
-      const supabase = createClient();
-      const { error: insertError } = await supabase.from("contact_messages").insert({
-        name: String(data.get("name") || ""),
-        email: String(data.get("email") || ""),
-        phone: String(data.get("phone") || ""),
-        message: String(data.get("message") || ""),
-      });
-
-      if (insertError) throw insertError;
-      form.reset();
-      setStatus("sent");
-    } catch (err) {
-      setStatus("error");
-      setError(err instanceof Error ? err.message : "No se pudo enviar el mensaje.");
+    if (isSupabaseConfigured()) {
+      try {
+        const supabase = createClient();
+        await supabase.from("contact_messages").insert({
+          name,
+          email,
+          phone,
+          message,
+        });
+      } catch {
+        // WhatsApp is the send path; admin copy is optional.
+      }
     }
-  }
 
-  if (status === "sent") {
-    return (
-      <div>
-        <p className="font-serif text-3xl">Gracias.</p>
-        <p className="mt-3 max-w-md text-sm leading-relaxed text-stone">
-          Recibimos tu mensaje y te responderemos a la brevedad.
-        </p>
-      </div>
-    );
+    window.location.assign(url);
   }
 
   return (
@@ -58,15 +55,16 @@ export function ContactForm() {
         <input
           required
           name="name"
+          autoComplete="name"
           className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none transition-colors focus:border-ink"
         />
       </label>
       <label className="grid gap-2 text-[11px] uppercase tracking-[0.2em] text-stone">
         Email
         <input
-          required
           type="email"
           name="email"
+          autoComplete="email"
           className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none transition-colors focus:border-ink"
         />
       </label>
@@ -74,6 +72,8 @@ export function ContactForm() {
         Teléfono
         <input
           name="phone"
+          autoComplete="tel"
+          inputMode="tel"
           className="border-b border-line bg-transparent py-3 text-base tracking-normal text-ink outline-none transition-colors focus:border-ink"
         />
       </label>
@@ -92,7 +92,7 @@ export function ContactForm() {
         disabled={status === "sending"}
         className="mt-4 w-fit bg-ink px-8 py-3 text-[11px] uppercase tracking-[0.22em] text-ivory transition-opacity hover:opacity-80 disabled:opacity-50"
       >
-        {status === "sending" ? "Enviando…" : "Enviar"}
+        {status === "sending" ? "Abriendo WhatsApp…" : "Enviar por WhatsApp"}
       </button>
     </form>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { fieldClass, ghostButtonClass, labelClass } from "@/components/admin/ui";
+import { fieldClass, ghostButtonClass, labelClass, TrashButton } from "@/components/admin/ui";
 import { adminUpload } from "@/lib/admin/db";
 import { GALLERY_ACCEPT, isAllowedImage, isAllowedVideo, prepareImageForUpload } from "@/lib/admin/images";
 import { mediaKindFromFile, mediaKindFromUrl, videoEmbedUrl } from "@/lib/media";
@@ -69,7 +69,14 @@ export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryP
       <div className="mt-8 grid gap-5">
         {items.map((item) => (
           <article key={item.id} className="grid gap-4 border border-line p-4 md:grid-cols-[220px_1fr]">
-            <MediaPreview item={item} />
+            <div className="relative">
+              <MediaPreview item={item} />
+              <TrashButton
+                label="Eliminar"
+                className="absolute right-2 top-2 z-10"
+                onClick={() => void onRemove(item.id)}
+              />
+            </div>
             <div className="grid gap-3">
               <p className="text-[11px] uppercase tracking-[0.18em] text-bronze">
                 {item.kind === "video" ? "Video" : "Foto"}
@@ -80,17 +87,12 @@ export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryP
                 placeholder="Epígrafe"
                 onChange={(e) => void onChange({ ...item, caption: e.target.value })}
               />
-              <div className="flex flex-wrap gap-3">
-                <input
-                  type="number"
-                  className={`${fieldClass} w-24`}
-                  value={item.sort_order}
-                  onChange={(e) => void onChange({ ...item, sort_order: Number(e.target.value) })}
-                />
-                <button type="button" className={ghostButtonClass} onClick={() => void onRemove(item.id)}>
-                  Quitar
-                </button>
-              </div>
+              <input
+                type="number"
+                className={`${fieldClass} w-24`}
+                value={item.sort_order}
+                onChange={(e) => void onChange({ ...item, sort_order: Number(e.target.value) })}
+              />
             </div>
           </article>
         ))}

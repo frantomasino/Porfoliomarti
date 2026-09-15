@@ -153,8 +153,13 @@ export function SiteForm() {
           <Field label="Email">
             <input className={fieldClass} value={site.email} onChange={(e) => update("email", e.target.value)} />
           </Field>
-          <Field label="Teléfono">
-            <input className={fieldClass} value={site.phone} onChange={(e) => update("phone", e.target.value)} />
+          <Field label="WhatsApp / teléfono">
+            <input
+              className={fieldClass}
+              value={site.phone}
+              onChange={(e) => update("phone", e.target.value)}
+              placeholder="54911..."
+            />
           </Field>
           <Field label="Instagram">
             <input className={fieldClass} value={site.instagram} onChange={(e) => update("instagram", e.target.value)} />
@@ -169,7 +174,6 @@ export function SiteForm() {
             label="Logo"
             folder="brand"
             preview="contain"
-            clearable
             brand
             maxEdge={1600}
             accept={BRAND_ACCEPT}
@@ -182,7 +186,6 @@ export function SiteForm() {
             label="Favicon"
             folder="brand"
             preview="contain"
-            clearable
             brand
             maxEdge={256}
             accept={BRAND_ACCEPT}

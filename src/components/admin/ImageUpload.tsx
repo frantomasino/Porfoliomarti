@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { adminUpload } from "@/lib/admin/db";
 import { IMAGE_ACCEPT, prepareImageForUpload } from "@/lib/admin/images";
-import { ghostButtonClass, labelClass } from "@/components/admin/ui";
+import { labelClass, TrashButton } from "@/components/admin/ui";
 import { cx } from "@/lib/utils";
 
 type ImageUploadProps = {
@@ -14,7 +14,6 @@ type ImageUploadProps = {
   hint?: string;
   emptyLabel?: string;
   preview?: "cover" | "contain";
-  clearable?: boolean;
   accept?: string;
   maxEdge?: number;
   brand?: boolean;
@@ -28,7 +27,6 @@ export function ImageUpload({
   hint = "JPG, PNG o WebP. Desde la computadora o el celular, siempre acá en el admin. La imagen se optimiza sola al subir.",
   emptyLabel = "JPG, PNG o WebP",
   preview = "cover",
-  clearable = false,
   accept = IMAGE_ACCEPT,
   maxEdge,
   brand = false,
@@ -66,6 +64,11 @@ export function ImageUpload({
             alt=""
             className={preview === "contain" ? "max-h-full max-w-full object-contain" : "h-full w-full object-cover"}
           />
+          <TrashButton
+            label="Eliminar foto"
+            className="absolute right-2 top-2 z-10"
+            onClick={() => onChange("")}
+          />
         </div>
       ) : (
         <div
@@ -92,11 +95,6 @@ export function ImageUpload({
             }}
           />
         </label>
-        {clearable && value ? (
-          <button type="button" className={ghostButtonClass} onClick={() => onChange("")}>
-            Quitar
-          </button>
-        ) : null}
       </div>
       <p className="text-xs leading-relaxed text-stone">{hint}</p>
       {error ? <p className="text-sm text-bronze">{error}</p> : null}

@@ -65,7 +65,7 @@ export default async function ContactPage() {
           </div>
         </div>
         <div className="border border-line bg-ivory px-6 py-8 md:px-8 md:py-10">
-          <ContactForm />
+          <ContactForm studioPhone={site.phone} />
         </div>
       </section>
       <ExtraSections sections={extra} />
