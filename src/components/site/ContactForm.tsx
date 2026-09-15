@@ -1,51 +1,61 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
-import { isSupabaseConfigured } from "@/lib/config";
 import { contactWhatsAppText, whatsappUrl } from "@/lib/utils";
 
 export function ContactForm({ studioPhone }: { studioPhone: string }) {
-  const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const name = String(data.get("name") || "").trim();
-    const email = String(data.get("email") || "").trim();
-    const phone = String(data.get("phone") || "").trim();
-    const message = String(data.get("message") || "").trim();
-    const url = whatsappUrl(
-      studioPhone,
-      contactWhatsAppText({ name, email, phone, message }),
-    );
-
-    if (!url) {
-      setStatus("error");
-      setError("Cargá el WhatsApp del estudio en Admin → Sitio (teléfono, con código de país).");
-      return;
-    }
+    const payload = {
+      name: String(data.get("name") || "").trim(),
+      email: String(data.get("email") || "").trim(),
+      phone: String(data.get("phone") || "").trim(),
+      message: String(data.get("message") || "").trim(),
+    };
+    const url = whatsappUrl(studioPhone, contactWhatsAppText(payload));
 
     setStatus("sending");
     setError("");
 
-    if (isSupabaseConfigured()) {
-      try {
-        const supabase = createClient();
-        await supabase.from("contact_messages").insert({
-          name,
-          email,
-          phone,
-          message,
-        });
-      } catch {
-        // WhatsApp is the send path; admin copy is optional.
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = (await response.json()) as { error?: string };
+      if (!response.ok) {
+        throw new Error(json.error || "No se pudo guardar el mensaje.");
       }
+    } catch (err) {
+      setStatus("error");
+      setError(err instanceof Error ? err.message : "No se pudo guardar el mensaje.");
+      return;
     }
 
-    window.location.assign(url);
+    if (url) {
+      window.location.assign(url);
+      return;
+    }
+
+    form.reset();
+    setStatus("sent");
+  }
+
+  if (status === "sent") {
+    return (
+      <div>
+        <p className="font-serif text-3xl">Gracias.</p>
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-stone">
+          Recibimos tu consulta. Queda guardada en el estudio.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -92,8 +102,12 @@ export function ContactForm({ studioPhone }: { studioPhone: string }) {
         disabled={status === "sending"}
         className="mt-4 w-fit bg-ink px-8 py-3 text-[11px] uppercase tracking-[0.22em] text-ivory transition-opacity hover:opacity-80 disabled:opacity-50"
       >
-        {status === "sending" ? "Abriendo WhatsApp…" : "Enviar por WhatsApp"}
+        {status === "sending" ? "Enviando…" : urlLabel(studioPhone)}
       </button>
     </form>
   );
+}
+
+function urlLabel(studioPhone: string) {
+  return whatsappUrl(studioPhone) ? "Enviar por WhatsApp" : "Enviar";
 }

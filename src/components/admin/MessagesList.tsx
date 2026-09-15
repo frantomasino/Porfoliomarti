@@ -48,7 +48,10 @@ export function MessagesList() {
   }
 
   return (
-    <AdminPage title="Mensajes" description="Las consultas del formulario se guardan en Supabase.">
+    <AdminPage
+      title="Mensajes"
+      description="Las consultas del formulario de Contacto se guardan acá. Si hay WhatsApp del estudio, también se abre el chat."
+    >
       {status ? <p className="mb-4 text-sm text-bronze">{status}</p> : null}
       <div className="grid gap-5">
         {messages.map((message) => (
