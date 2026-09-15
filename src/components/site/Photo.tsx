@@ -16,7 +16,9 @@ export function Photo({ src, alt, className, priority }: PhotoProps) {
       alt={alt}
       className={className}
       loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "low"}
       decoding="async"
+      sizes="(max-width: 768px) 100vw, 80vw"
     />
   );
 }

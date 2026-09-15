@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { AdminPage, buttonClass, Field, fieldClass } from "@/components/admin/ui";
 import { adminQuery } from "@/lib/admin/db";
+import { mergeLabels, mergeTheme } from "@/lib/appearance";
 import { seedSite } from "@/lib/seed";
-import type { SiteProfile } from "@/lib/types";
+import type { SiteLabels, SiteProfile, SiteTheme } from "@/lib/types";
 
 export function SiteForm() {
   const [site, setSite] = useState<SiteProfile>(seedSite);
@@ -24,6 +25,8 @@ export function SiteForm() {
           ...seedSite,
           ...data,
           studio_name: data.studio_name || seedSite.studio_name,
+          theme: mergeTheme(data.theme),
+          labels: mergeLabels(data.labels),
         });
       }
     });
@@ -52,6 +55,8 @@ export function SiteForm() {
         seo_title: site.seo_title,
         seo_description: site.seo_description,
         founded_year: Number(site.founded_year) || 2014,
+        theme: site.theme,
+        labels: site.labels,
       };
 
       const existing = await adminQuery<{ id: string }>({
@@ -78,7 +83,12 @@ export function SiteForm() {
       if (result.error) throw new Error(result.error);
       setStatus("Guardado en Supabase.");
     } catch (err) {
-      setStatus(err instanceof Error ? err.message : "No se pudo guardar.");
+      const message = err instanceof Error ? err.message : "No se pudo guardar.";
+      setStatus(
+        /column|theme|labels/i.test(message)
+          ? "Falta correr el SQL de apariencia en Supabase (colores y textos). Pegá migration-appearance.sql y dale Run."
+          : message,
+      );
     } finally {
       setBusy(false);
     }
@@ -88,17 +98,34 @@ export function SiteForm() {
     setSite((current) => ({ ...current, [key]: value }));
   }
 
+  function updateLabel<K extends keyof SiteLabels>(key: K, value: SiteLabels[K]) {
+    setSite((current) => ({
+      ...current,
+      labels: { ...mergeLabels(current.labels), [key]: value },
+    }));
+  }
+
+  function updateTheme<K extends keyof SiteTheme>(key: K, value: SiteTheme[K]) {
+    setSite((current) => ({
+      ...current,
+      theme: { ...mergeTheme(current.theme), [key]: value },
+    }));
+  }
+
+  const labels = mergeLabels(site.labels);
+  const theme = mergeTheme(site.theme);
+
   return (
     <AdminPage
       title="Sitio"
-      description="Nombre, textos de portada, contacto e imágenes principales. Todo se publica en el portafolio."
+      description="Nombre, textos, colores y menú. Lo que guardes acá es lo que se ve en el portafolio."
     >
       <form onSubmit={save} className="grid gap-10">
         <div className="grid gap-5 md:grid-cols-2">
           <Field label="Estudio">
             <input className={fieldClass} value={site.studio_name ?? ""} onChange={(e) => update("studio_name", e.target.value)} />
           </Field>
-          <Field label="Quién es (nombre)">
+          <Field label="Nombre">
             <input className={fieldClass} value={site.full_name} onChange={(e) => update("full_name", e.target.value)} />
           </Field>
           <Field label="Profesión">
@@ -175,6 +202,102 @@ export function SiteForm() {
               onChange={(e) => update("seo_description", e.target.value)}
             />
           </Field>
+        </div>
+
+        <div className="grid gap-5 border-t border-line pt-10">
+          <p className="font-serif text-3xl">Textos del sitio</p>
+          <p className="text-sm text-stone">Estos textos salen en el menú y en cada página: Nosotros, Contacto, Proyectos.</p>
+          <div className="grid gap-5 md:grid-cols-3">
+            <Field label="Menú — proyectos">
+              <input className={fieldClass} value={labels.nav_projects} onChange={(e) => updateLabel("nav_projects", e.target.value)} />
+            </Field>
+            <Field label="Menú — nosotros">
+              <input className={fieldClass} value={labels.nav_about} onChange={(e) => updateLabel("nav_about", e.target.value)} />
+            </Field>
+            <Field label="Menú — contacto">
+              <input className={fieldClass} value={labels.nav_contact} onChange={(e) => updateLabel("nav_contact", e.target.value)} />
+            </Field>
+            <Field label="Título Nosotros">
+              <input className={fieldClass} value={labels.who} onChange={(e) => updateLabel("who", e.target.value)} />
+            </Field>
+            <Field label="Título obras">
+              <input className={fieldClass} value={labels.works} onChange={(e) => updateLabel("works", e.target.value)} />
+            </Field>
+            <Field label="Selección">
+              <input className={fieldClass} value={labels.selection} onChange={(e) => updateLabel("selection", e.target.value)} />
+            </Field>
+            <Field label="Archivo">
+              <input className={fieldClass} value={labels.archive} onChange={(e) => updateLabel("archive", e.target.value)} />
+            </Field>
+            <Field label="Botón ver obras">
+              <input className={fieldClass} value={labels.see_works} onChange={(e) => updateLabel("see_works", e.target.value)} />
+            </Field>
+            <Field label="Botón conocer más">
+              <input className={fieldClass} value={labels.know_more} onChange={(e) => updateLabel("know_more", e.target.value)} />
+            </Field>
+            <Field label="Título contacto">
+              <input className={fieldClass} value={labels.contact} onChange={(e) => updateLabel("contact", e.target.value)} />
+            </Field>
+            <Field label="Antetítulo contacto">
+              <input className={fieldClass} value={labels.conversemos} onChange={(e) => updateLabel("conversemos", e.target.value)} />
+            </Field>
+            <Field label="Servicios">
+              <input className={fieldClass} value={labels.services} onChange={(e) => updateLabel("services", e.target.value)} />
+            </Field>
+            <Field label="Cómo trabaja">
+              <input className={fieldClass} value={labels.how_works} onChange={(e) => updateLabel("how_works", e.target.value)} />
+            </Field>
+            <Field label="Práctica">
+              <input className={fieldClass} value={labels.practice} onChange={(e) => updateLabel("practice", e.target.value)} />
+            </Field>
+            <Field label="Formación">
+              <input className={fieldClass} value={labels.education} onChange={(e) => updateLabel("education", e.target.value)} />
+            </Field>
+            <Field label="Notas">
+              <input className={fieldClass} value={labels.notes} onChange={(e) => updateLabel("notes", e.target.value)} />
+            </Field>
+            <Field label="Texto de contacto" className="md:col-span-3">
+              <textarea
+                rows={3}
+                className={fieldClass}
+                value={labels.contact_intro}
+                onChange={(e) => updateLabel("contact_intro", e.target.value)}
+              />
+            </Field>
+          </div>
+        </div>
+
+        <div className="grid gap-5 border-t border-line pt-10">
+          <p className="font-serif text-3xl">Colores</p>
+          <p className="text-sm text-stone">Se aplican en todo el sitio público.</p>
+          <div className="grid gap-5 md:grid-cols-3">
+            {(
+              [
+                ["paper", "Fondo"],
+                ["ivory", "Marfil"],
+                ["ink", "Texto / negro"],
+                ["stone", "Gris"],
+                ["bronze", "Acento"],
+                ["line", "Líneas"],
+              ] as const
+            ).map(([key, label]) => (
+              <Field key={key} label={label}>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    className="h-10 w-14 cursor-pointer border border-line bg-transparent p-0"
+                    value={theme[key]}
+                    onChange={(e) => updateTheme(key, e.target.value)}
+                  />
+                  <input
+                    className={fieldClass}
+                    value={theme[key]}
+                    onChange={(e) => updateTheme(key, e.target.value)}
+                  />
+                </div>
+              </Field>
+            ))}
+          </div>
         </div>
 
         <div className="flex items-center gap-4">

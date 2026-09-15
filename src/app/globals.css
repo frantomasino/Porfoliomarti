@@ -17,22 +17,16 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  background: var(--color-paper);
-  color: var(--color-ink);
-  font-family: var(--font-outfit), sans-serif;
+.site-header {
+  padding-top: env(safe-area-inset-top);
 }
 
-body::before {
-  content: "";
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  opacity: 0.18;
-  background-image: radial-gradient(#1b1814 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
-  mix-blend-mode: multiply;
+body {
+  background-color: var(--color-paper);
+  background-image: radial-gradient(rgba(27, 24, 20, 0.09) 0.4px, transparent 0.55px);
+  background-size: 4px 4px;
+  color: var(--color-ink);
+  font-family: var(--font-outfit), sans-serif;
 }
 
 ::selection {
@@ -42,6 +36,22 @@ body::before {
 
 .font-serif {
   font-family: var(--font-cormorant), serif;
+}
+
+.display {
+  font-family: var(--font-cormorant), serif;
+  font-size: clamp(2.35rem, 7.2vw, 5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+.display-sm {
+  font-family: var(--font-cormorant), serif;
+  font-size: clamp(2rem, 4.6vw, 3.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 .reveal {
@@ -63,20 +73,46 @@ body::before {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    animation: none;
+  }
+
+  .img-zoom img,
+  .img-zoom {
+    transition: none;
+  }
+}
+
 .img-zoom img,
 .img-zoom {
   transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.group:hover .img-zoom,
-.group:hover .img-zoom img {
-  transform: scale(1.04);
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .img-zoom,
+  .group:hover .img-zoom img {
+    transform: scale(1.04);
+  }
 }
 
 input, textarea, select, button {
   font-family: inherit;
 }
 
-body:has(.admin-root)::before {
-  display: none;
+body:has(.admin-root) {
+  background-image: none;
+}
+
+.admin-root {
+  --color-paper: #f3eee6;
+  --color-ivory: #faf8f3;
+  --color-ink: #1b1814;
+  --color-stone: #746c62;
+  --color-bronze: #9a7b52;
+  --color-line: #ddd4c6;
 }

@@ -2,79 +2,140 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cx } from "@/lib/utils";
-
-const links = [
-  { href: "/proyectos", label: "Proyectos" },
-  { href: "/estudio", label: "Quién es" },
-  { href: "/contacto", label: "Contacto" },
-];
+import type { SiteLabels } from "@/lib/types";
 
 type HeaderProps = {
   name: string;
   profession: string;
+  instagram?: string;
+  home?: boolean;
+  labels: SiteLabels;
 };
 
-export function Header({ name, profession }: HeaderProps) {
+export function Header({ name, profession, instagram, home = false, labels }: HeaderProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const isHome = pathname === "/";
+  const [scrolled, setScrolled] = useState(false);
+  const [path, setPath] = useState("");
+  const dark = home && !scrolled && !open;
+  const links = [
+    { href: "/proyectos", label: labels.nav_projects },
+    { href: "/estudio", label: labels.nav_about },
+    { href: "/contacto", label: labels.nav_contact },
+  ];
+
+  useEffect(() => {
+    const onScroll = () => {
+      const next = window.scrollY > 20;
+      setScrolled((prev) => (prev === next ? prev : next));
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    setPath(pathname);
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
-    <header
-      className={cx(
-        "sticky top-0 z-50 border-b",
-        isHome
-          ? "border-white/10 bg-ink text-ivory"
-          : "border-line bg-paper/90 text-ink backdrop-blur-md",
-      )}
-    >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-10">
-        <Link href="/" className="leading-tight" onClick={() => setOpen(false)}>
-          <span className="font-serif text-xl tracking-wide md:text-2xl">{name}</span>
-          <span className="mt-0.5 block text-[10px] uppercase tracking-[0.28em] opacity-70">
-            {profession}
-          </span>
-        </Link>
+    <>
+      <header
+        className={cx(
+          "site-header sticky top-0 border-b",
+          open ? "z-[80]" : "z-50",
+          dark
+            ? "border-white/10 bg-ink/80 text-ivory backdrop-blur-md"
+            : "border-line bg-paper/92 text-ink backdrop-blur-md",
+          open && "border-white/10 bg-ink text-ivory",
+        )}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 md:px-10 md:py-4">
+          <Link href="/" className="min-w-0 leading-tight" onClick={() => setOpen(false)}>
+            <span className="font-serif text-[1.35rem] tracking-wide md:text-2xl">{name}</span>
+            {profession ? (
+              <span className="mt-0.5 hidden truncate text-[10px] uppercase tracking-[0.24em] opacity-70 sm:block">
+                {profession}
+              </span>
+            ) : null}
+          </Link>
 
-        <nav className="hidden items-center gap-10 text-[11px] uppercase tracking-[0.24em] md:flex">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
+          <nav className="hidden items-center gap-8 text-[11px] uppercase tracking-[0.24em] md:flex">
+            {links.map((link) => {
+              const current = path.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cx(
+                    "inline-flex min-h-11 items-center border-b border-transparent transition-colors",
+                    current ? "border-current opacity-100" : "opacity-60 hover:opacity-100",
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <button
+            type="button"
+            className="relative flex h-11 w-11 items-center justify-center md:hidden"
+            aria-label={open ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={open}
+            onClick={() => setOpen((value) => !value)}
+          >
+            <span
               className={cx(
-                "transition-opacity hover:opacity-100",
-                pathname.startsWith(link.href) ? "opacity-100" : "opacity-70",
+                "absolute block h-[1.5px] w-5 bg-current transition-transform duration-200",
+                open ? "rotate-45" : "-translate-y-[5px]",
               )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        <button
-          type="button"
-          className="flex flex-col gap-1.5 md:hidden"
-          aria-label="Abrir menú"
-          onClick={() => setOpen((value) => !value)}
-        >
-          <span className="block h-px w-6 bg-current" />
-          <span className="block h-px w-4 bg-current" />
-        </button>
-      </div>
+            />
+            <span
+              className={cx(
+                "absolute block h-[1.5px] w-5 bg-current transition-transform duration-200",
+                open ? "-rotate-45" : "translate-y-[5px]",
+              )}
+            />
+          </button>
+        </div>
+      </header>
 
       {open ? (
-        <nav className="border-t border-current/10 px-6 py-6 md:hidden">
-          <div className="flex flex-col gap-5 text-sm uppercase tracking-[0.22em]">
+        <nav className="fixed inset-0 z-[60] flex flex-col justify-between bg-ink px-6 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[calc(env(safe-area-inset-top)+5.75rem)] text-ivory md:hidden">
+          <div className="flex flex-col gap-1">
             {links.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>
+              <Link
+                key={link.href}
+                href={link.href}
+                className="display-sm py-3"
+                onClick={() => setOpen(false)}
+              >
                 {link.label}
               </Link>
             ))}
           </div>
+          {instagram ? (
+            <a
+              href={instagram}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex min-h-11 items-center text-[11px] uppercase tracking-[0.22em] text-ivory/70"
+            >
+              Instagram
+            </a>
+          ) : null}
         </nav>
       ) : null}
-    </header>
+    </>
   );
 }

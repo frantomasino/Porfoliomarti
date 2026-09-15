@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { revalidateSite } from "@/lib/admin/revalidate";
 import { ADMIN_COOKIE, isValidAdminToken } from "@/lib/admin/session";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -20,6 +21,7 @@ const tables = new Set([
   "timeline_items",
   "services",
   "contact_messages",
+  "page_sections",
 ]);
 
 export async function POST(request: NextRequest) {
@@ -60,6 +62,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Faltan datos" }, { status: 400 });
       }
       const result = await query.insert(body.data).select();
+      if (!result.error) revalidateSite();
       const data = body.single ? result.data?.[0] ?? null : result.data;
       return NextResponse.json({ data, error: result.error?.message ?? null });
     }
@@ -73,6 +76,7 @@ export async function POST(request: NextRequest) {
         requestQuery = requestQuery.eq(key, value);
       });
       const result = await requestQuery.select();
+      if (!result.error) revalidateSite();
       return NextResponse.json({ data: result.data, error: result.error?.message ?? null });
     }
 
@@ -82,6 +86,7 @@ export async function POST(request: NextRequest) {
         requestQuery = requestQuery.eq(key, value);
       });
       const result = await requestQuery;
+      if (!result.error) revalidateSite();
       return NextResponse.json({ data: result.data, error: result.error?.message ?? null });
     }
 

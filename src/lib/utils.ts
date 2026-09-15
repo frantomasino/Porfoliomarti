@@ -10,3 +10,9 @@ export function slugify(value: string) {
 export function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
+
+export function whatsappUrl(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length < 8) return "";
+  return `https://wa.me/${digits}`;
+}

@@ -8,6 +8,7 @@ import { cx } from "@/lib/utils";
 const nav = [
   { href: "/admin", label: "Resumen" },
   { href: "/admin/sitio", label: "Sitio" },
+  { href: "/admin/secciones", label: "Secciones" },
   { href: "/admin/proyectos", label: "Proyectos" },
   { href: "/admin/trayectoria", label: "Trayectoria" },
   { href: "/admin/servicios", label: "Servicios" },

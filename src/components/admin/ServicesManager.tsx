@@ -72,7 +72,7 @@ export function ServicesManager() {
   }
 
   return (
-    <AdminPage title="Servicios" description="Los servicios aparecen en la página Estudio.">
+    <AdminPage title="Servicios" description="Los servicios aparecen en Nosotros.">
       {status ? <p className="mb-6 text-sm text-stone">{status}</p> : null}
       <form onSubmit={add} className="mb-12 grid gap-4 border border-line p-5">
         <p className="font-serif text-2xl">Nuevo servicio</p>

@@ -6,8 +6,6 @@ import { Photo } from "@/components/site/Photo";
 import { SiteShell } from "@/components/site/SiteShell";
 import { getProjectBySlug, getPublishedProjects, getSiteProfile } from "@/lib/content";
 
-export const dynamic = "force-dynamic";
-
 export async function generateMetadata({
   params,
 }: {
@@ -42,22 +40,22 @@ export default async function ProjectPage({
 
   return (
     <SiteShell site={site}>
-      <section className="relative min-h-[70vh] overflow-hidden bg-ink">
+      <section className="relative min-h-[70svh] overflow-hidden bg-ink">
         {project.cover_url ? (
           <Photo
             src={project.cover_url}
             alt={project.title}
             priority
-            className="absolute inset-0 h-full w-full object-cover opacity-80"
+            className="absolute inset-0 h-full w-full object-cover object-[center_70%] opacity-80"
           />
         ) : null}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/20 to-transparent" />
-        <div className="relative mx-auto flex min-h-[70vh] max-w-7xl items-end px-6 pb-14 md:px-10">
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/45 to-ink/20" />
+        <div className="relative mx-auto flex min-h-[70svh] max-w-7xl items-end px-6 pb-10 md:px-10 md:pb-14">
           <div className="text-ivory">
             <p className="text-[11px] uppercase tracking-[0.24em] text-ivory/70">
               {project.category} · {project.year}
             </p>
-            <h1 className="mt-3 font-serif text-6xl md:text-8xl">{project.title}</h1>
+            <h1 className="display mt-3 max-w-[14ch]">{project.title}</h1>
           </div>
         </div>
       </section>
@@ -105,7 +103,7 @@ export default async function ProjectPage({
           <Link href={`/proyectos/${next.slug}`} className="group mx-auto flex max-w-7xl items-end justify-between px-6 py-16 md:px-10">
             <div>
               <p className="text-[11px] uppercase tracking-[0.22em] text-stone">Siguiente obra</p>
-              <p className="mt-2 font-serif text-4xl md:text-5xl">{next.title}</p>
+              <p className="display-sm mt-2">{next.title}</p>
             </div>
             <span className="text-[11px] uppercase tracking-[0.22em] text-bronze">Continuar</span>
           </Link>

@@ -16,6 +16,47 @@ export type SiteProfile = {
   seo_title: string;
   seo_description: string;
   founded_year: number;
+  theme?: SiteTheme;
+  labels?: SiteLabels;
+};
+
+export type SiteTheme = {
+  paper: string;
+  ivory: string;
+  ink: string;
+  stone: string;
+  bronze: string;
+  line: string;
+};
+
+export type SiteLabels = {
+  nav_projects: string;
+  nav_about: string;
+  nav_contact: string;
+  who: string;
+  works: string;
+  selection: string;
+  archive: string;
+  contact: string;
+  conversemos: string;
+  see_works: string;
+  know_more: string;
+  services: string;
+  how_works: string;
+  practice: string;
+  education: string;
+  notes: string;
+  contact_intro: string;
+};
+
+export type PageSection = {
+  id: string;
+  title: string;
+  body: string;
+  image_url: string;
+  placement: "home" | "estudio" | "contacto" | "proyectos" | "both" | "all";
+  published: boolean;
+  sort_order: number;
 };
 
 export type MediaKind = "image" | "video";

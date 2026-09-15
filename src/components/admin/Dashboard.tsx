@@ -42,7 +42,7 @@ export function Dashboard() {
     { href: "/admin/proyectos", label: "Obras", value: stats.projects, note: `${stats.published} publicadas` },
     { href: "/admin/mensajes", label: "Mensajes", value: stats.messages, note: `${stats.unread} sin leer` },
     { href: "/admin/sitio", label: "Sitio", value: "Editar", note: "Perfil, textos e imágenes" },
-    { href: "/admin/trayectoria", label: "Estudio", value: "CV", note: "Práctica, formación y premios" },
+    { href: "/admin/trayectoria", label: "Nosotros", value: "CV", note: "Práctica, formación y premios" },
   ];
 
   return (

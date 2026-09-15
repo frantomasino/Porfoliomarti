@@ -1,26 +1,30 @@
+import { ExtraSections } from "@/components/site/ExtraSections";
 import { ProjectArchive } from "@/components/site/ProjectArchive";
 import { SiteShell } from "@/components/site/SiteShell";
-import { getPublishedProjects, getSiteProfile } from "@/lib/content";
+import { siteLabels } from "@/lib/appearance";
+import { getPageSections, getPublishedProjects, getSiteProfile } from "@/lib/content";
 
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Proyectos" };
+export async function generateMetadata() {
+  const site = await getSiteProfile();
+  return { title: siteLabels(site).nav_projects };
+}
 
 export default async function ProjectsPage() {
-  const [site, projects] = await Promise.all([
+  const [site, projects, extra] = await Promise.all([
     getSiteProfile(),
     getPublishedProjects(),
+    getPageSections("proyectos"),
   ]);
+  const labels = siteLabels(site);
 
   return (
     <SiteShell site={site}>
-      <section className="mx-auto max-w-7xl px-6 pb-24 pt-16 md:px-10">
-        <p className="text-[11px] uppercase tracking-[0.24em] text-stone">Archivo</p>
-        <h1 className="mt-3 font-serif text-6xl md:text-7xl">Proyectos</h1>
-        <p className="mt-6 max-w-2xl text-sm leading-relaxed text-stone">
-          Una selección de obras construidas y proyectos en curso. El archivo se actualiza desde el estudio.
-        </p>
+      <section className="mx-auto max-w-7xl px-6 pb-24 pt-12 md:px-10 md:pt-16">
+        <p className="text-[11px] uppercase tracking-[0.24em] text-stone">{labels.archive}</p>
+        <h1 className="display mt-3">{labels.nav_projects}</h1>
         <ProjectArchive projects={projects} />
       </section>
+      <ExtraSections sections={extra} />
     </SiteShell>
   );
 }

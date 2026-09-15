@@ -9,12 +9,7 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "80mb",
     },
-  },
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "*.supabase.co" },
-    ],
+    optimizePackageImports: ["@supabase/supabase-js"],
   },
 };
 

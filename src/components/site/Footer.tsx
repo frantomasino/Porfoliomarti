@@ -1,50 +1,64 @@
+import Link from "next/link";
+import { siteLabels } from "@/lib/appearance";
 import type { SiteProfile } from "@/lib/types";
 
 export function Footer({ site }: { site: SiteProfile }) {
+  const labels = siteLabels(site);
   const instagramLabel = site.instagram.includes("instagram.com/")
     ? `@${site.instagram.split("instagram.com/")[1]?.replace(/\/$/, "")}`
     : "Instagram";
 
   return (
-    <footer className="border-t border-line bg-paper">
-      <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-[1.4fr_1fr_1fr] md:px-10">
+    <footer className="border-t border-line bg-paper pb-[env(safe-area-inset-bottom)]">
+      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-10 md:grid md:grid-cols-[1.4fr_1fr_1fr] md:gap-12 md:px-10 md:py-16">
         <div>
-          <p className="font-serif text-4xl leading-none md:text-5xl">
+          <p className="font-serif text-3xl leading-none md:text-[2.6rem]">
             {site.studio_name || site.full_name}
           </p>
-          <p className="mt-3 text-sm uppercase tracking-[0.22em] text-stone">
-            {site.full_name} · {site.profession}
+          <p className="mt-3 hidden text-sm uppercase tracking-[0.18em] text-stone md:block">
+            {[site.full_name, site.profession].filter(Boolean).join(" · ")}
           </p>
+          <nav className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[11px] uppercase tracking-[0.2em] text-stone">
+            <Link href="/proyectos" className="inline-flex min-h-11 items-center hover:text-ink">
+              {labels.nav_projects}
+            </Link>
+            <Link href="/estudio" className="inline-flex min-h-11 items-center hover:text-ink">
+              {labels.nav_about}
+            </Link>
+            <Link href="/contacto" className="inline-flex min-h-11 items-center hover:text-ink">
+              {labels.nav_contact}
+            </Link>
+          </nav>
         </div>
-        <div className="space-y-2 text-sm text-stone">
-          <p>{site.location}</p>
+        <div className="hidden space-y-2 text-sm text-stone md:block">
+          {site.location ? <p>{site.location}</p> : null}
           {site.email ? (
-            <a className="block hover:text-ink" href={`mailto:${site.email}`}>
+            <a className="block min-h-11 hover:text-ink" href={`mailto:${site.email}`}>
               {site.email}
             </a>
           ) : null}
           {site.phone ? (
-            <a className="block hover:text-ink" href={`tel:${site.phone}`}>
+            <a className="block min-h-11 hover:text-ink" href={`tel:${site.phone}`}>
               {site.phone}
             </a>
           ) : null}
         </div>
-        <div className="space-y-2 text-sm text-stone">
+        <div className="text-sm text-stone">
           {site.instagram ? (
-            <a className="block hover:text-ink" href={site.instagram} target="_blank" rel="noreferrer">
+            <a className="inline-flex min-h-11 items-center hover:text-ink" href={site.instagram} target="_blank" rel="noreferrer">
               {instagramLabel}
             </a>
           ) : null}
           {site.linkedin ? (
-            <a className="block hover:text-ink" href={site.linkedin} target="_blank" rel="noreferrer">
+            <a className="mt-2 hidden min-h-11 hover:text-ink md:block" href={site.linkedin} target="_blank" rel="noreferrer">
               LinkedIn
             </a>
           ) : null}
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl justify-between border-t border-line px-6 py-6 text-[11px] uppercase tracking-[0.2em] text-stone md:px-10">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 border-t border-line px-6 py-5 text-[11px] uppercase tracking-[0.2em] text-stone md:px-10">
         <span>© {new Date().getFullYear()} {site.studio_name || site.full_name}</span>
-        <span>Buenos Aires</span>
+        {site.location ? <span className="hidden text-right md:inline">{site.location}</span> : null}
       </div>
     </footer>
   );

@@ -88,7 +88,7 @@ export function TimelineManager() {
   return (
     <AdminPage
       title="Trayectoria"
-      description="Experiencia, formación y premios que se muestran en la página Estudio."
+      description="Experiencia, formación y premios que se muestran en Nosotros."
     >
       {status ? <p className="mb-6 text-sm text-stone">{status}</p> : null}
 

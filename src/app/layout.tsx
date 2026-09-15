@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, Outfit } from "next/font/google";
 import { getSiteProfile } from "@/lib/content";
+import { mergeTheme, themeStyle } from "@/lib/appearance";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -12,9 +13,17 @@ const outfit = Outfit({
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
   display: "swap",
 });
+
+export const revalidate = 120;
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const site = await getSiteProfile();
@@ -33,11 +42,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const site = await getSiteProfile();
+
   return (
     <html
       lang="es"
       className={`${outfit.variable} ${cormorant.variable} h-full antialiased`}
+      style={themeStyle(mergeTheme(site.theme))}
     >
       <body className="min-h-full bg-paper text-ink">{children}</body>
     </html>

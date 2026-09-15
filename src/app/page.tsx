@@ -1,51 +1,70 @@
 import Link from "next/link";
+import { ExtraSections } from "@/components/site/ExtraSections";
 import { Photo } from "@/components/site/Photo";
 import { ProjectCard } from "@/components/site/ProjectCard";
 import { SiteShell } from "@/components/site/SiteShell";
 import { WhoSection } from "@/components/site/WhoSection";
-import { getPublishedProjects, getSiteProfile } from "@/lib/content";
-
-export const dynamic = "force-dynamic";
+import { siteLabels } from "@/lib/appearance";
+import { getPageSections, getPublishedProjects, getSiteProfile } from "@/lib/content";
 
 export default async function HomePage() {
-  const [site, projects] = await Promise.all([
+  const [site, projects, extra] = await Promise.all([
     getSiteProfile(),
     getPublishedProjects(),
+    getPageSections("home"),
   ]);
-  const featured = projects.filter((project) => project.featured).slice(0, 4);
-  const works = featured.length ? featured : projects.slice(0, 4);
+  const labels = siteLabels(site);
+  const featured = projects.filter((project) => project.featured).slice(0, 3);
+  const works = featured.length ? featured : projects.slice(0, 3);
 
   return (
-    <SiteShell site={site}>
-      <section className="relative min-h-[88vh] overflow-hidden bg-ink text-ivory">
+    <SiteShell site={site} home={Boolean(site.hero_image_url)}>
+      <section
+        className={`relative isolate min-h-[78svh] overflow-hidden md:min-h-svh ${
+          site.hero_image_url ? "bg-ink text-ivory" : "bg-paper text-ink"
+        }`}
+      >
         {site.hero_image_url ? (
-          <Photo
-            src={site.hero_image_url}
-            alt={site.studio_name || site.full_name}
-            priority
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+          <>
+            <Photo
+              src={site.hero_image_url}
+              alt={site.studio_name || site.full_name}
+              priority
+              className="absolute inset-0 h-full w-full object-cover object-[center_78%] md:object-[center_70%]"
+            />
+            <div className="absolute inset-0 bg-ink/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/25" />
+          </>
         ) : null}
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/25" />
-        <div className="relative mx-auto flex min-h-[88vh] max-w-7xl flex-col justify-end px-6 pb-16 pt-28 md:px-10 md:pb-20">
-          <p className="reveal text-[11px] uppercase tracking-[0.32em] text-ivory/70">
-            {site.location}
-          </p>
-          <h1 className="reveal reveal-delay-1 mt-4 max-w-4xl font-serif text-6xl leading-[0.9] md:text-8xl">
-            {site.tagline}
+        <div className="relative mx-auto flex min-h-[78svh] max-w-7xl flex-col justify-end px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-28 md:min-h-svh md:px-10 md:pb-16">
+          {site.location ? (
+            <p className="reveal text-[11px] uppercase tracking-[0.28em] opacity-70">
+              {site.location}
+            </p>
+          ) : null}
+          <h1 className="display reveal reveal-delay-1 mt-4 max-w-[16ch]">
+            {site.tagline || site.studio_name}
           </h1>
-          <div className="reveal reveal-delay-2 mt-8 flex flex-wrap items-center gap-8">
+          <div className="reveal reveal-delay-2 mt-8 flex flex-wrap items-center gap-3 pb-6">
             <Link
               href="/proyectos"
-              className="border border-ivory/40 px-7 py-3 text-[11px] uppercase tracking-[0.22em] hover:bg-ivory hover:text-ink"
+              className={`inline-flex min-h-11 items-center px-6 text-[11px] uppercase tracking-[0.22em] ${
+                site.hero_image_url
+                  ? "bg-ivory text-ink"
+                  : "bg-ink text-ivory"
+              }`}
             >
-              Ver obras
+              {labels.see_works}
             </Link>
             <Link
               href="/estudio"
-              className="text-[11px] uppercase tracking-[0.22em] text-ivory/75 hover:text-ivory"
+              className={`inline-flex min-h-11 items-center border px-6 text-[11px] uppercase tracking-[0.22em] ${
+                site.hero_image_url
+                  ? "border-ivory/50 text-ivory"
+                  : "border-ink text-ink"
+              }`}
             >
-              Quién es
+              {labels.nav_about}
             </Link>
           </div>
         </div>
@@ -54,54 +73,34 @@ export default async function HomePage() {
       <WhoSection site={site} compact />
 
       <section className="mx-auto max-w-7xl px-6 pb-24 md:px-10">
-        <div className="mb-10 flex items-end justify-between">
+        <div className="mb-10 flex items-end justify-between gap-6">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.24em] text-stone">Selección</p>
-            <h2 className="mt-2 font-serif text-5xl">Obras</h2>
+            <p className="text-[11px] uppercase tracking-[0.24em] text-stone">{labels.selection}</p>
+            <h2 className="display-sm mt-2">{labels.works}</h2>
           </div>
           <Link
             href="/proyectos"
-            className="hidden text-[11px] uppercase tracking-[0.22em] text-bronze md:block"
+            className="min-h-11 text-[11px] uppercase tracking-[0.22em] text-bronze"
           >
-            Archivo completo
+            {labels.archive}
           </Link>
         </div>
-        <div className="grid gap-14">
-          {works[0] ? <ProjectCard project={works[0]} index={0} large /> : null}
-          <div className="grid gap-14 md:grid-cols-2">
-            {works.slice(1, 3).map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index + 1} />
-            ))}
+        {works.length ? (
+          <div className="grid gap-12">
+            {works[0] ? <ProjectCard project={works[0]} index={0} large /> : null}
+            {works.length > 1 ? (
+              <div className="grid gap-12 md:grid-cols-2">
+                {works.slice(1).map((project, index) => (
+                  <ProjectCard key={project.id} project={project} index={index + 1} />
+                ))}
+              </div>
+            ) : null}
           </div>
-          {works[3] ? <ProjectCard project={works[3]} index={3} large /> : null}
-        </div>
+        ) : (
+          <p className="text-sm text-stone">Todavía no hay obras publicadas.</p>
+        )}
       </section>
-
-      <section className="border-y border-line bg-ivory">
-        <div className="mx-auto grid max-w-7xl gap-10 px-6 py-20 md:grid-cols-3 md:px-10">
-          <Principle number="01" title="Proyecto integral" text="Arquitectura e interiorismo en un mismo proceso: del primer croquis a la obra." />
-          <Principle number="02" title="Interiorismo" text="Materiales, mobiliario y luz pensados para el uso real de cada espacio." />
-          <Principle number="03" title="Reformas" text="Intervenir lo existente con precisión, sin perder el carácter del lugar." />
-        </div>
-      </section>
+      <ExtraSections sections={extra} />
     </SiteShell>
-  );
-}
-
-function Principle({
-  number,
-  title,
-  text,
-}: {
-  number: string;
-  title: string;
-  text: string;
-}) {
-  return (
-    <article>
-      <p className="text-[11px] uppercase tracking-[0.24em] text-bronze">{number}</p>
-      <h3 className="mt-3 font-serif text-3xl">{title}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-stone">{text}</p>
-    </article>
   );
 }
