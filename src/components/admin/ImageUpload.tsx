@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { adminUpload } from "@/lib/admin/db";
+import { IMAGE_ACCEPT, prepareImageForUpload } from "@/lib/admin/images";
 import { fieldClass, labelClass } from "@/components/admin/ui";
 
 type ImageUploadProps = {
@@ -24,7 +25,8 @@ export function ImageUpload({
     setBusy(true);
     setError("");
     try {
-      const url = await adminUpload(file, folder);
+      const prepared = await prepareImageForUpload(file);
+      const url = await adminUpload(prepared, folder);
       onChange(url);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo subir la imagen a Supabase.");
@@ -43,20 +45,14 @@ export function ImageUpload({
         </div>
       ) : (
         <div className="flex h-48 items-center justify-center border border-dashed border-line text-sm text-stone">
-          Sin imagen
+          JPG, PNG o WebP
         </div>
       )}
-      <input
-        className={fieldClass}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder="URL de la imagen"
-      />
-      <label className="w-fit cursor-pointer border border-line px-4 py-2 text-[11px] uppercase tracking-[0.18em] hover:border-ink">
-        {busy ? "Subiendo a Supabase…" : "Subir archivo"}
+      <label className="flex min-h-14 w-full cursor-pointer items-center justify-center border border-ink bg-ink px-4 text-[11px] uppercase tracking-[0.18em] text-ivory md:w-fit">
+        {busy ? "Subiendo…" : "Elegir foto"}
         <input
           type="file"
-          accept="image/*"
+          accept={IMAGE_ACCEPT}
           className="hidden"
           disabled={busy}
           onChange={(event) => {
@@ -66,6 +62,10 @@ export function ImageUpload({
           }}
         />
       </label>
+      <p className="text-xs leading-relaxed text-stone">
+        JPG, PNG o WebP. Desde la computadora o el celular, siempre acá en el admin. La imagen se
+        optimiza sola al subir.
+      </p>
       {error ? <p className="text-sm text-bronze">{error}</p> : null}
     </div>
   );

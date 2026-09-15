@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { fieldClass, ghostButtonClass, labelClass } from "@/components/admin/ui";
 import { adminUpload } from "@/lib/admin/db";
+import { GALLERY_ACCEPT, isAllowedImage, isAllowedVideo, prepareImageForUpload } from "@/lib/admin/images";
 import { mediaKindFromFile, mediaKindFromUrl, videoEmbedUrl } from "@/lib/media";
 import type { MediaKind, ProjectImage } from "@/lib/types";
 
@@ -23,7 +24,16 @@ export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryP
     setError("");
     try {
       for (const file of Array.from(files)) {
-        const url = await adminUpload(file, "projects/gallery");
+        const ready =
+          isAllowedVideo(file)
+            ? file
+            : isAllowedImage(file)
+              ? await prepareImageForUpload(file)
+              : null;
+        if (!ready) {
+          throw new Error("Fotos: JPG, PNG o WebP. Videos: MP4, MOV o WebM.");
+        }
+        const url = await adminUpload(ready, "projects/gallery");
         await onAdd(url, file.name.replace(/\.[^.]+$/, ""), mediaKindFromFile(file));
       }
     } catch (err) {
@@ -52,8 +62,8 @@ export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryP
     <section className="mt-16 border-t border-line pt-10">
       <h2 className="font-serif text-3xl">Fotos y videos</h2>
       <p className="mt-2 max-w-2xl text-sm text-stone">
-        Cada obra puede tener muchas fotos y videos. Se suben a Supabase y aparecen en la ficha del proyecto.
-        También podés pegar un link de YouTube o Vimeo.
+        Cada obra puede tener muchas fotos (JPG, PNG, WebP) y videos. Se suben a Supabase desde
+        la computadora o el celular. También podés pegar un link de YouTube o Vimeo.
       </p>
 
       <div className="mt-8 grid gap-5">
@@ -88,13 +98,14 @@ export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryP
 
       <div className="mt-8 grid gap-5 border border-dashed border-line p-5">
         <span className={labelClass}>Subir varios archivos</span>
-        <label className="flex cursor-pointer flex-col items-center justify-center gap-2 bg-ivory px-6 py-10 text-center hover:bg-paper">
+        <label className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 bg-ivory px-6 py-10 text-center hover:bg-paper">
           <span className="text-sm">
-            {busy ? "Subiendo a Supabase…" : "Elegí varias fotos o videos (mp4, mov, webm)"}
+            {busy ? "Subiendo a Supabase…" : "Elegir fotos o videos"}
           </span>
+          <span className="text-xs text-stone">JPG, PNG, WebP · MP4, MOV, WebM · varias a la vez</span>
           <input
             type="file"
-            accept="image/*,video/*"
+            accept={GALLERY_ACCEPT}
             multiple
             className="hidden"
             disabled={busy}
