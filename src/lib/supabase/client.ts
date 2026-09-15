@@ -1,8 +1,9 @@
 import { createBrowserClient } from "@supabase/ssr";
+import { getSupabaseAnonKey, getSupabaseUrl } from "@/lib/supabase/env";
 
 export function createClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = getSupabaseUrl();
+  const key = getSupabaseAnonKey();
 
   if (!url || !key) {
     throw new Error("Supabase no está configurado.");

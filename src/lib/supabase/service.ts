@@ -1,12 +1,20 @@
 import { createClient } from "@supabase/supabase-js";
+import { getSupabaseServiceKey, getSupabaseUrl } from "@/lib/supabase/env";
 
 export function createServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key =
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = getSupabaseUrl();
+  const key = getSupabaseServiceKey();
 
-  if (!url || !key) {
-    throw new Error("Supabase no está configurado.");
+  if (!url) {
+    throw new Error(
+      "Falta NEXT_PUBLIC_SUPABASE_URL en Vercel. Nombre exacto, Production, sin espacios, y Redeploy.",
+    );
+  }
+
+  if (!key) {
+    throw new Error(
+      "Falta SUPABASE_SERVICE_ROLE_KEY en Vercel. Nombre exacto, Production, sin espacios, y Redeploy.",
+    );
   }
 
   return createClient(url, key, {
