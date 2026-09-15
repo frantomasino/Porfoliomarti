@@ -36,7 +36,6 @@ export default async function HomePage() {
               src={site.hero_image_url}
               alt={site.studio_name || site.full_name}
               priority
-              width={1600}
               className="absolute inset-0 h-full w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-ink/40" />

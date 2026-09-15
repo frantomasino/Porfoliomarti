@@ -20,7 +20,6 @@ export function ProjectCard({
       <Slideshow
         photos={photos}
         alt={project.title}
-        width={1400}
         className="aspect-[4/5] w-full md:aspect-[4/3]"
         empty={
           <div className="flex h-full items-end bg-ivory px-6 py-6">
@@ -44,7 +43,7 @@ export function ProjectCard({
             <p className="mt-2 text-sm leading-relaxed text-stone">{project.location}</p>
           ) : null}
         </div>
-        <span className="inline-flex w-fit shrink-0 border border-ink px-3 py-2 text-[11px] uppercase tracking-[0.18em]">
+        <span className="inline-flex w-fit shrink-0 border border-ink px-3 py-2 text-[11px] uppercase tracking-[0.18em] transition-colors hover:bg-ink hover:text-ivory">
           Ver
         </span>
       </Link>

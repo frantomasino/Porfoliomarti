@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Photo } from "@/components/site/Photo";
 import { siteLabels } from "@/lib/appearance";
 import type { SiteProfile } from "@/lib/types";
+import { instagramLabel } from "@/lib/utils";
 
 export function WhoSection({
   site,
@@ -11,9 +12,6 @@ export function WhoSection({
   compact?: boolean;
 }) {
   const labels = siteLabels(site);
-  const instagramLabel = site.instagram.includes("instagram.com/")
-    ? `@${site.instagram.split("instagram.com/")[1]?.replace(/\/$/, "")}`
-    : "Instagram";
   const hasPortrait = Boolean(site.portrait_url);
 
   return (
@@ -31,7 +29,6 @@ export function WhoSection({
           <Photo
             src={site.portrait_url}
             alt={site.full_name}
-            width={900}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
         </div>
@@ -65,7 +62,7 @@ export function WhoSection({
               rel="noreferrer"
               className="inline-flex min-h-11 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink"
             >
-              {instagramLabel}
+              {instagramLabel(site.instagram)}
             </a>
           ) : null}
         </div>

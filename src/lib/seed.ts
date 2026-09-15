@@ -1,15 +1,8 @@
 import { defaultLabels, defaultTheme } from "@/lib/appearance";
-import type {
-  Project,
-  Service,
-  SiteProfile,
-  TimelineItem,
-} from "@/lib/types";
-
-export const SITE_ID = "11111111-1111-4111-8111-111111111111";
+import type { SiteProfile } from "@/lib/types";
 
 export const seedSite: SiteProfile = {
-  id: SITE_ID,
+  id: "11111111-1111-4111-8111-111111111111",
   full_name: "Martina",
   studio_name: "Estudio ARQ.MR",
   profession: "Arquitecta e interiorista",
@@ -32,7 +25,3 @@ export const seedSite: SiteProfile = {
   theme: defaultTheme,
   labels: defaultLabels,
 };
-
-export const seedProjects: Project[] = [];
-export const seedTimeline: TimelineItem[] = [];
-export const seedServices: Service[] = [];

@@ -9,7 +9,6 @@ export function PageBanner({ src, alt }: { src?: string; alt: string }) {
         <Photo
           src={src}
           alt={alt}
-          width={1800}
           priority
           className="absolute inset-0 h-full w-full object-cover object-center"
         />

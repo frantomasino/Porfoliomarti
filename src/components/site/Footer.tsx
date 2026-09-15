@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { siteLabels } from "@/lib/appearance";
 import type { SiteProfile } from "@/lib/types";
+import { instagramLabel } from "@/lib/utils";
 
 export function Footer({ site }: { site: SiteProfile }) {
   const labels = siteLabels(site);
-  const instagramLabel = site.instagram.includes("instagram.com/")
-    ? `@${site.instagram.split("instagram.com/")[1]?.replace(/\/$/, "")}`
-    : "Instagram";
-
   return (
-    <footer className="border-t border-line bg-paper pb-[env(safe-area-inset-bottom)]">
+    <footer
+      className="border-t border-line bg-paper pb-[env(safe-area-inset-bottom)]"
+      style={{ viewTransitionName: "site-footer" }}
+    >
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-12 md:grid md:grid-cols-[1.5fr_1fr_0.8fr] md:gap-16 md:px-10 md:py-20">
         <div>
           {site.logo_url ? (
@@ -57,7 +57,7 @@ export function Footer({ site }: { site: SiteProfile }) {
         <div className="text-sm text-stone">
           {site.instagram ? (
             <a className="inline-flex min-h-11 items-center hover:text-ink" href={site.instagram} target="_blank" rel="noreferrer">
-              {instagramLabel}
+              {instagramLabel(site.instagram)}
             </a>
           ) : null}
           {site.linkedin ? (

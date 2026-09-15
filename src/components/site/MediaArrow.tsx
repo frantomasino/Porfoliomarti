@@ -1,4 +1,22 @@
+"use client";
+
+import { useRef, type TouchEvent } from "react";
 import { cx } from "@/lib/utils";
+
+export function useSwipe(go: (step: number) => void) {
+  const startX = useRef<number | null>(null);
+  return {
+    onTouchStart(event: TouchEvent) {
+      startX.current = event.changedTouches[0]?.clientX ?? null;
+    },
+    onTouchEnd(event: TouchEvent) {
+      if (startX.current == null) return;
+      const delta = event.changedTouches[0].clientX - startX.current;
+      startX.current = null;
+      if (Math.abs(delta) > 50) go(delta < 0 ? 1 : -1);
+    },
+  };
+}
 
 export function MediaArrow({
   side,

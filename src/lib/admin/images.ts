@@ -5,15 +5,15 @@ export const GALLERY_ACCEPT = `${IMAGE_ACCEPT},video/mp4,video/webm,video/quickt
 const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/jpg"]);
 const VIDEO_TYPES = new Set(["video/mp4", "video/webm", "video/quicktime"]);
 
-export function isHeic(file: File) {
+function isHeic(file: File) {
   return /heic|heif/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
 }
 
-export function isSvg(file: File) {
+function isSvg(file: File) {
   return file.type === "image/svg+xml" || /\.svg$/i.test(file.name);
 }
 
-export function isIco(file: File) {
+function isIco(file: File) {
   return (
     file.type === "image/x-icon" ||
     file.type === "image/vnd.microsoft.icon" ||
@@ -34,21 +34,6 @@ export function isAllowedBrand(file: File) {
 
 export function isAllowedVideo(file: File) {
   return VIDEO_TYPES.has(file.type.toLowerCase()) || /\.(mp4|webm|mov)$/i.test(file.name);
-}
-
-export function extensionForUpload(file: File) {
-  const type = file.type.toLowerCase();
-  if (type === "image/webp") return "webp";
-  if (type === "image/png") return "png";
-  if (type === "image/svg+xml") return "svg";
-  if (type === "image/x-icon" || type === "image/vnd.microsoft.icon") return "ico";
-  if (type === "image/jpeg" || type === "image/jpg") return "jpg";
-  if (type === "video/webm") return "webm";
-  if (type === "video/quicktime") return "mov";
-  if (type === "video/mp4") return "mp4";
-  const fromName = file.name.split(".").pop()?.toLowerCase();
-  if (fromName === "jpeg") return "jpg";
-  return fromName || "jpg";
 }
 
 function rename(name: string, ext: string) {

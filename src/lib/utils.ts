@@ -11,7 +11,7 @@ export function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-export function whatsappDigits(phone: string) {
+function whatsappDigits(phone: string) {
   let digits = phone.replace(/\D/g, "");
   if (digits.startsWith("00")) digits = digits.slice(2);
   if (digits.startsWith("54")) return digits;
@@ -39,4 +39,10 @@ export function contactWhatsAppText(input: {
   if (input.phone) lines.push(`Teléfono: ${input.phone}`);
   lines.push("", input.message);
   return lines.join("\n").trim();
+}
+
+export function instagramLabel(url: string) {
+  if (!url.includes("instagram.com/")) return "Instagram";
+  const handle = url.split("instagram.com/")[1]?.replace(/\/$/, "");
+  return handle ? `@${handle}` : "Instagram";
 }

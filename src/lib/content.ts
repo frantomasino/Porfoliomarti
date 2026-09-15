@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { cache } from "react";
-import { isSupabaseConfigured } from "@/lib/config";
-import { seedProjects, seedServices, seedSite, seedTimeline } from "@/lib/seed";
+import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { seedSite } from "@/lib/seed";
 import { createPublicClient } from "@/lib/supabase/public";
 import { mediaKindFromUrl } from "@/lib/media";
 import { mergeLabels, mergeTheme } from "@/lib/appearance";
@@ -177,71 +177,20 @@ const loadPageSections = unstable_cache(
   cacheOptions,
 );
 
-export const getSiteProfile = cache(async function getSiteProfile(): Promise<SiteProfile> {
-  if (!isSupabaseConfigured()) return seedSite;
+async function readCached<T>(fallback: T, load: () => Promise<T>) {
+  if (!isSupabaseConfigured()) return fallback;
   try {
-    return await loadSiteProfile();
+    return await load();
   } catch {
-    return seedSite;
+    return fallback;
   }
-});
+}
 
-export const getPublishedProjects = cache(async function getPublishedProjects(): Promise<Project[]> {
-  if (!isSupabaseConfigured()) return seedProjects.filter((project) => project.published);
-  try {
-    return await loadPublishedProjects();
-  } catch {
-    return [];
-  }
-});
-
-export const getProjectBySlug = cache(async function getProjectBySlug(
-  slug: string,
-): Promise<Project | null> {
-  if (!isSupabaseConfigured()) {
-    const project = seedProjects.find((item) => item.slug === slug && item.published) ?? null;
-    return project ? { ...project, images: sortImages(project.images) } : null;
-  }
-
-  try {
-    return await loadProjectBySlug(slug);
-  } catch {
-    return null;
-  }
-});
-
-export const getTimeline = cache(async function getTimeline(): Promise<TimelineItem[]> {
-  if (!isSupabaseConfigured()) {
-    return [...seedTimeline].sort((a, b) => a.sort_order - b.sort_order);
-  }
-
-  try {
-    return await loadTimeline();
-  } catch {
-    return [];
-  }
-});
-
-export const getServices = cache(async function getServices(): Promise<Service[]> {
-  if (!isSupabaseConfigured()) {
-    return [...seedServices].sort((a, b) => a.sort_order - b.sort_order);
-  }
-
-  try {
-    return await loadServices();
-  } catch {
-    return [];
-  }
-});
-
-export const getPageSections = cache(async function getPageSections(
-  placement: SectionPage,
-): Promise<PageSection[]> {
-  if (!isSupabaseConfigured()) return [];
-
-  try {
-    return await loadPageSections(placement);
-  } catch {
-    return [];
-  }
-});
+export const getSiteProfile = cache(() => readCached(seedSite, loadSiteProfile));
+export const getPublishedProjects = cache(() => readCached([], loadPublishedProjects));
+export const getProjectBySlug = cache((slug: string) => readCached(null, () => loadProjectBySlug(slug)));
+export const getTimeline = cache(() => readCached([], loadTimeline));
+export const getServices = cache(() => readCached([], loadServices));
+export const getPageSections = cache((placement: SectionPage) =>
+  readCached([], () => loadPageSections(placement)),
+);

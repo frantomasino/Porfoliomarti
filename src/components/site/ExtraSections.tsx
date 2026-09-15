@@ -13,7 +13,6 @@ export function ExtraSections({ sections }: { sections: PageSection[] }) {
               <Photo
                 src={section.image_url}
                 alt={section.title}
-                width={1400}
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </div>

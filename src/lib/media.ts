@@ -13,14 +13,14 @@ export function isFileVideo(url: string) {
   return /\.(mp4|webm|ogg|mov|m4v)(\?|$)/i.test(url);
 }
 
-export function youtubeId(url: string) {
+function youtubeId(url: string) {
   const match = url.match(
     /(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/,
   );
   return match?.[1] ?? null;
 }
 
-export function vimeoId(url: string) {
+function vimeoId(url: string) {
   const match = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   return match?.[1] ?? null;
 }
@@ -31,10 +31,6 @@ export function videoEmbedUrl(url: string) {
   const vimeo = vimeoId(url);
   if (vimeo) return `https://player.vimeo.com/video/${vimeo}`;
   return null;
-}
-
-export function displayImageUrl(src: string, _width = 1400) {
-  return src;
 }
 
 export function projectPhotoUrls(project: Project) {

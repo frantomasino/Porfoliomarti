@@ -2,6 +2,7 @@ import { Footer } from "@/components/site/Footer";
 import { Header } from "@/components/site/Header";
 import { siteLabels } from "@/lib/appearance";
 import type { SiteProfile } from "@/lib/types";
+import { ViewTransition } from "react";
 
 export function SiteShell({
   site,
@@ -22,7 +23,9 @@ export function SiteShell({
         home={home}
         labels={siteLabels(site)}
       />
-      <main className="flex-1">{children}</main>
+      <ViewTransition>
+        <main className="flex-1">{children}</main>
+      </ViewTransition>
       <Footer site={site} />
     </div>
   );

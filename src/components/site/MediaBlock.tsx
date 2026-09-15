@@ -45,5 +45,5 @@ export function MediaBlock({
     );
   }
 
-  return <Photo src={item.url} alt={alt} width={1400} className={mediaClass} />;
+  return <Photo src={item.url} alt={alt} className={mediaClass} />;
 }

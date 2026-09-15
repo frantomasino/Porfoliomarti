@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { MediaArrow, SlideIndex } from "@/components/site/MediaArrow";
+import { useState } from "react";
+import { MediaArrow, SlideIndex, useSwipe } from "@/components/site/MediaArrow";
 import { MediaBlock } from "@/components/site/MediaBlock";
 import { Photo } from "@/components/site/Photo";
 import type { Project, ProjectImage } from "@/lib/types";
@@ -23,7 +23,6 @@ export function ProjectViewer({
   }
 
   const [index, setIndex] = useState(0);
-  const startX = useRef<number | null>(null);
   const total = Math.max(slides.length, 1);
   const current = slides[index];
 
@@ -32,19 +31,13 @@ export function ProjectViewer({
     setIndex((value) => (value + step + slides.length) % slides.length);
   }
 
+  const swipe = useSwipe(go);
+
   return (
     <section className="bg-paper">
       <div
         className="relative mx-auto flex w-full max-w-5xl touch-pan-y justify-center bg-paper"
-        onTouchStart={(event) => {
-          startX.current = event.changedTouches[0]?.clientX ?? null;
-        }}
-        onTouchEnd={(event) => {
-          if (startX.current == null) return;
-          const delta = event.changedTouches[0].clientX - startX.current;
-          startX.current = null;
-          if (Math.abs(delta) > 50) go(delta < 0 ? 1 : -1);
-        }}
+        {...swipe}
       >
         <div className="relative mx-auto w-fit max-w-full">
           {current?.image ? (
@@ -54,7 +47,6 @@ export function ProjectViewer({
               src={current.cover}
               alt={project.title}
               priority
-              width={1400}
               className="mx-auto block max-h-[62svh] w-auto max-w-full object-contain md:max-h-[68svh]"
             />
           ) : (

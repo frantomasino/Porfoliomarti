@@ -57,6 +57,7 @@ export function Header({ name, profession, instagram, logoUrl, home = false, lab
               ? "z-50 border-white/10 bg-ink/80 text-ivory backdrop-blur-md"
               : "z-50 border-line bg-paper/92 text-ink backdrop-blur-md",
         )}
+        style={{ viewTransitionName: "site-header" }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 md:px-10 md:py-4">
           <Link href="/" className="min-w-0 leading-tight" onClick={() => setOpen(false)}>

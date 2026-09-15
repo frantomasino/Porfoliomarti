@@ -3,7 +3,7 @@ import { ExtraSections } from "@/components/site/ExtraSections";
 import { SiteShell } from "@/components/site/SiteShell";
 import { siteLabels } from "@/lib/appearance";
 import { getPageSections, getSiteProfile } from "@/lib/content";
-import { whatsappUrl } from "@/lib/utils";
+import { instagramLabel, whatsappUrl } from "@/lib/utils";
 
 export async function generateMetadata() {
   const site = await getSiteProfile();
@@ -13,9 +13,6 @@ export async function generateMetadata() {
 export default async function ContactPage() {
   const [site, extra] = await Promise.all([getSiteProfile(), getPageSections("contacto")]);
   const labels = siteLabels(site);
-  const instagramLabel = site.instagram.includes("instagram.com/")
-    ? `@${site.instagram.split("instagram.com/")[1]?.replace(/\/$/, "")}`
-    : "Instagram";
   const whatsapp = whatsappUrl(site.phone);
   const hasAside =
     Boolean(labels.contact_intro) || Boolean(site.location) || Boolean(site.email) || Boolean(site.phone);
@@ -44,7 +41,7 @@ export default async function ContactPage() {
                 rel="noreferrer"
                 className="inline-flex min-h-11 items-center bg-ink px-6 text-[11px] uppercase tracking-[0.22em] text-ivory"
               >
-                {instagramLabel}
+                {instagramLabel(site.instagram)}
               </a>
             ) : null}
             {whatsapp ? (

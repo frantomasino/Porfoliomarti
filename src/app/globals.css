@@ -7,8 +7,6 @@
   --color-stone: #746c62;
   --color-bronze: #9a7b52;
   --color-line: #ddd4c6;
-  --color-moss: #3e463c;
-  --color-admin: #161412;
   --font-sans: var(--font-outfit);
   --font-serif: var(--font-cormorant);
 }
@@ -85,7 +83,6 @@ textarea:focus-visible {
 
 .reveal-delay-1 { animation-delay: 0.1s; }
 .reveal-delay-2 { animation-delay: 0.2s; }
-.reveal-delay-3 { animation-delay: 0.3s; }
 
 @keyframes reveal-up {
   from {
@@ -103,26 +100,56 @@ textarea:focus-visible {
     scroll-behavior: auto;
   }
 
-  .reveal {
+  .reveal,
+  .photo-fade {
     animation: none;
   }
 
-  .img-zoom img,
-  .img-zoom {
-    transition: none;
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }
 
-.img-zoom img,
-.img-zoom {
-  transition: transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+.photo-fade {
+  animation: photo-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .group:hover .img-zoom,
-  .group:hover .img-zoom img {
-    transform: scale(1.04);
+@keyframes photo-in {
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.42s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+::view-transition-group(site-header),
+::view-transition-group(site-footer) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(site-header),
+::view-transition-old(site-footer) {
+  display: none;
+}
+
+::view-transition-new(site-header),
+::view-transition-new(site-footer) {
+  animation: none;
 }
 
 input, textarea, select, button {
