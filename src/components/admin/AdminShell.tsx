@@ -62,22 +62,39 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center justify-between border-b border-line px-4 py-4 md:hidden">
-          <span className="font-serif text-xl">ARQ.MR</span>
-          <form action={logoutAdmin}>
-            <button type="submit" className="text-[11px] uppercase tracking-[0.16em]">
-              Salir
-            </button>
-          </form>
+        <div className="sticky top-0 z-30 bg-paper md:hidden">
+          <div className="flex items-center justify-between border-b border-line px-4 py-3">
+            <span className="font-serif text-xl">ARQ.MR</span>
+            <form action={logoutAdmin}>
+              <button type="submit" className="text-[11px] uppercase tracking-[0.16em]">
+                Salir
+              </button>
+            </form>
+          </div>
+          <nav className="flex gap-5 overflow-x-auto border-b border-line px-4 py-3 text-[11px] uppercase tracking-[0.16em]">
+            {nav.map((item) => {
+              const active =
+                item.href === "/admin"
+                  ? pathname === "/admin"
+                  : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cx(
+                    "whitespace-nowrap pb-1",
+                    active ? "border-b border-ink text-ink" : "text-stone",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
         </div>
-        <nav className="flex gap-4 overflow-x-auto border-b border-line px-4 py-3 text-[11px] uppercase tracking-[0.16em] md:hidden">
-          {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="whitespace-nowrap text-stone">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <div className="flex-1 px-5 py-8 md:px-12 md:py-12">{children}</div>
+        <div className="flex-1 px-5 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] md:px-12 md:py-12">
+          {children}
+        </div>
       </div>
     </div>
   );

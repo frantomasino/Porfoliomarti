@@ -50,19 +50,19 @@ export function Dashboard({ configured }: { configured: boolean }) {
     {
       done: Boolean(site?.phone),
       label: "WhatsApp del estudio",
-      detail: "Sitio → WhatsApp / teléfono, con código de país (54911…)",
+      detail: "Con código de país, tipo 54911…",
       href: "/admin/sitio",
     },
     {
       done: Boolean(site?.bio),
       label: "Quiénes somos",
-      detail: "Sitio → Biografía. Es el texto de Nosotros.",
+      detail: "La biografía que sale en Nosotros.",
       href: "/admin/sitio",
     },
     {
       done: Boolean(site?.portrait_url),
       label: "Retrato",
-      detail: "Una foto de Martina o del estudio, no de una obra.",
+      detail: "Foto de Martina o del estudio, no de una obra.",
       href: "/admin/sitio",
     },
     {
@@ -73,24 +73,50 @@ export function Dashboard({ configured }: { configured: boolean }) {
     },
     {
       done: stats.published > 0,
-      label: "Obras con título real",
-      detail: "Proyectos → cada obra: título, fotos, publicar.",
+      label: "Obras publicadas",
+      detail: "Título real, fotos y publicar.",
       href: "/admin/proyectos",
     },
   ];
   const pending = steps.filter((step) => !step.done);
 
-  const cards = [
-    { href: "/admin/proyectos", label: "Obras", value: stats.projects, note: `${stats.published} publicadas` },
-    { href: "/admin/mensajes", label: "Mensajes", value: stats.messages, note: `${stats.unread} sin leer` },
-    { href: "/admin/sitio", label: "Sitio", value: "Editar", note: "Nombre, logo, fotos y textos" },
-    { href: "/admin/trayectoria", label: "Nosotros", value: "CV", note: "Práctica, formación y premios" },
+  const shortcuts = [
+    {
+      href: "/admin/sitio",
+      label: "Sitio",
+      note: "WhatsApp, bio, retrato y portada",
+    },
+    {
+      href: "/admin/proyectos",
+      label: "Obras",
+      note:
+        stats.projects === 0
+          ? "Todavía no hay obras"
+          : stats.published === 1
+            ? "1 publicada"
+            : `${stats.published} publicadas · ${stats.projects} en total`,
+    },
+    {
+      href: "/admin/mensajes",
+      label: "Mensajes",
+      note:
+        stats.messages === 0
+          ? "Todavía no hay consultas"
+          : stats.unread
+            ? `${stats.unread} sin leer`
+            : `${stats.messages} guardados`,
+    },
+    {
+      href: "/admin/trayectoria",
+      label: "Nosotros",
+      note: "Práctica, formación y premios",
+    },
   ];
 
   return (
     <AdminPage
       title="Resumen"
-      description="Primero completá lo de abajo. Después el visitante ve eso en el sitio."
+      description="Completá lo que falta. Eso es lo que ve el visitante."
     >
       {!configured ? (
         <p className="mb-8 border border-line bg-ivory px-5 py-4 text-sm text-stone">
@@ -100,15 +126,25 @@ export function Dashboard({ configured }: { configured: boolean }) {
         </p>
       ) : null}
 
-      <div className="mb-10 border border-line bg-ivory px-5 py-6">
-        <p className="text-[11px] uppercase tracking-[0.18em] text-stone">Para que el sitio se vea completo</p>
+      <section className="mb-10">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-stone">
+          {pending.length ? "Falta completar" : "Sitio listo"}
+        </p>
         {pending.length ? (
-          <ul className="mt-4 grid gap-3">
+          <ul className="mt-4 divide-y divide-line border-y border-line">
             {pending.map((step) => (
               <li key={step.label}>
-                <Link href={step.href} className="block hover:text-bronze">
-                  <span className="font-medium">{step.label}</span>
-                  <span className="mt-1 block text-sm text-stone">{step.detail}</span>
+                <Link
+                  href={step.href}
+                  className="flex min-h-16 items-center justify-between gap-4 py-4"
+                >
+                  <span>
+                    <span className="block font-medium">{step.label}</span>
+                    <span className="mt-1 block text-sm text-stone">{step.detail}</span>
+                  </span>
+                  <span className="shrink-0 text-sm text-bronze" aria-hidden>
+                    Ir
+                  </span>
                 </Link>
               </li>
             ))}
@@ -116,17 +152,28 @@ export function Dashboard({ configured }: { configured: boolean }) {
         ) : (
           <p className="mt-3 text-sm text-stone">Lo esencial está. Cargá más obras cuando las tengas.</p>
         )}
-      </div>
+      </section>
 
-      <div className="grid gap-5 md:grid-cols-2">
-        {cards.map((card) => (
-          <Link key={card.href} href={card.href} className="border border-line p-6 transition-colors hover:border-ink">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-stone">{card.label}</p>
-            <p className="mt-3 font-serif text-4xl">{card.value}</p>
-            <p className="mt-2 text-sm text-stone">{card.note}</p>
-          </Link>
-        ))}
-      </div>
+      <section>
+        <p className="text-[11px] uppercase tracking-[0.18em] text-stone">Ir a</p>
+        <div className="mt-4 divide-y divide-line border-y border-line">
+          {shortcuts.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="flex min-h-16 items-center justify-between gap-4 py-4"
+            >
+              <span>
+                <span className="block text-[11px] uppercase tracking-[0.18em] text-stone">{item.label}</span>
+                <span className="mt-1 block text-base">{item.note}</span>
+              </span>
+              <span className="shrink-0 text-sm text-bronze" aria-hidden>
+                Ir
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
     </AdminPage>
   );
 }

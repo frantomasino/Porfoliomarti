@@ -112,9 +112,9 @@ export function AdminPage({
 }) {
   return (
     <div>
-      <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4 md:mb-10">
         <div>
-          <h1 className="font-serif text-4xl text-ink">{title}</h1>
+          <h1 className="font-serif text-3xl text-ink md:text-4xl">{title}</h1>
           {description ? <p className="mt-2 max-w-xl text-sm text-stone">{description}</p> : null}
         </div>
         {actions}
