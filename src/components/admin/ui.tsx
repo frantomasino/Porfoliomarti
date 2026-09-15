@@ -41,6 +41,47 @@ export function TrashButton({
   );
 }
 
+export function OrderButtons({
+  onUp,
+  onDown,
+  disableUp,
+  disableDown,
+}: {
+  onUp: () => void;
+  onDown: () => void;
+  disableUp?: boolean;
+  disableDown?: boolean;
+}) {
+  return (
+    <div className="flex">
+      <button
+        type="button"
+        aria-label="Subir"
+        title="Subir"
+        disabled={disableUp}
+        onClick={onUp}
+        className="flex h-11 w-11 items-center justify-center border border-line text-ink transition-colors hover:border-ink disabled:opacity-30"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path d="M6 14l6-6 6 6" stroke="currentColor" strokeWidth="1.6" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        aria-label="Bajar"
+        title="Bajar"
+        disabled={disableDown}
+        onClick={onDown}
+        className="-ml-px flex h-11 w-11 items-center justify-center border border-line text-ink transition-colors hover:border-ink disabled:opacity-30"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <path d="M6 10l6 6 6-6" stroke="currentColor" strokeWidth="1.6" />
+        </svg>
+      </button>
+    </div>
+  );
+}
+
 export function Field({
   label,
   children,

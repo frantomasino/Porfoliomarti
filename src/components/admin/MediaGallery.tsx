@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { fieldClass, ghostButtonClass, labelClass, TrashButton } from "@/components/admin/ui";
+import { fieldClass, ghostButtonClass, labelClass, OrderButtons, TrashButton } from "@/components/admin/ui";
 import { adminUpload } from "@/lib/admin/db";
 import { GALLERY_ACCEPT, isAllowedImage, isAllowedVideo, prepareImageForUpload } from "@/lib/admin/images";
 import { mediaKindFromFile, mediaKindFromUrl, videoEmbedUrl } from "@/lib/media";
@@ -12,9 +12,10 @@ type MediaGalleryProps = {
   onAdd: (url: string, caption: string, kind: MediaKind) => Promise<void>;
   onChange: (item: ProjectImage) => Promise<void>;
   onRemove: (id: string) => Promise<void>;
+  onMove?: (index: number, direction: -1 | 1) => Promise<void>;
 };
 
-export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryProps) {
+export function MediaGallery({ items, onAdd, onChange, onRemove, onMove }: MediaGalleryProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [link, setLink] = useState("");
@@ -67,7 +68,7 @@ export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryP
       </p>
 
       <div className="mt-8 grid gap-5">
-        {items.map((item) => (
+        {items.map((item, index) => (
           <article key={item.id} className="grid gap-4 border border-line p-4 md:grid-cols-[220px_1fr]">
             <div className="relative">
               <MediaPreview item={item} />
@@ -78,20 +79,24 @@ export function MediaGallery({ items, onAdd, onChange, onRemove }: MediaGalleryP
               />
             </div>
             <div className="grid gap-3">
-              <p className="text-[11px] uppercase tracking-[0.18em] text-bronze">
-                {item.kind === "video" ? "Video" : "Foto"}
-              </p>
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-bronze">
+                  {item.kind === "video" ? "Video" : "Foto"}
+                </p>
+                {onMove ? (
+                  <OrderButtons
+                    disableUp={index === 0}
+                    disableDown={index === items.length - 1}
+                    onUp={() => void onMove(index, -1)}
+                    onDown={() => void onMove(index, 1)}
+                  />
+                ) : null}
+              </div>
               <input
                 className={fieldClass}
                 value={item.caption}
                 placeholder="Epígrafe"
                 onChange={(e) => void onChange({ ...item, caption: e.target.value })}
-              />
-              <input
-                type="number"
-                className={`${fieldClass} w-24`}
-                value={item.sort_order}
-                onChange={(e) => void onChange({ ...item, sort_order: Number(e.target.value) })}
               />
             </div>
           </article>

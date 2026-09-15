@@ -106,6 +106,12 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
         if (error) throw new Error(error);
         setStatus("Guardado en Supabase.");
       } else {
+        const existing = await adminQuery<Pick<Project, "sort_order">[]>({
+          table: "projects",
+          op: "select",
+          select: "sort_order",
+        });
+        payload.sort_order = Math.max(0, ...(existing.data ?? []).map((item) => item.sort_order)) + 1;
         const { data, error } = await adminQuery<{ id: string }>({
           table: "projects",
           op: "insert",
@@ -178,6 +184,27 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
     setImages((current) => current.filter((item) => item.id !== id));
   }
 
+  async function moveImage(index: number, direction: -1 | 1) {
+    const target = index + direction;
+    if (target < 0 || target >= images.length) return;
+    const next = [...images];
+    const current = next[index];
+    next[index] = next[target];
+    next[target] = current;
+    const reindexed = next.map((item, order) => ({ ...item, sort_order: order + 1 }));
+    setImages(reindexed);
+    await Promise.all(
+      reindexed.map((item) =>
+        adminQuery({
+          table: "project_images",
+          op: "update",
+          data: { sort_order: item.sort_order },
+          match: { id: item.id },
+        }),
+      ),
+    );
+  }
+
   return (
     <AdminPage
       title={projectId ? "Editar obra" : "Nueva obra"}
@@ -235,14 +262,6 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
               ))}
             </select>
           </Field>
-          <Field label="Orden">
-            <input
-              type="number"
-              className={fieldClass}
-              value={project.sort_order}
-              onChange={(e) => update("sort_order", Number(e.target.value))}
-            />
-          </Field>
         </div>
 
         <Field label="Extracto">
@@ -297,6 +316,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           onAdd={addMedia}
           onChange={updateImage}
           onRemove={removeImage}
+          onMove={moveImage}
         />
       ) : (
         <p className="mt-10 text-sm text-stone">
