@@ -28,6 +28,7 @@ export function SiteForm() {
           studio_name: data.studio_name || seedSite.studio_name,
           logo_url: data.logo_url || "",
           favicon_url: data.favicon_url || "",
+          banner_url: data.banner_url || "",
           theme: mergeTheme(data.theme),
           labels: mergeLabels(data.labels),
         });
@@ -57,6 +58,7 @@ export function SiteForm() {
         portrait_url: site.portrait_url,
         logo_url: site.logo_url,
         favicon_url: site.favicon_url,
+        banner_url: site.banner_url,
         seo_title: site.seo_title,
         seo_description: site.seo_description,
         founded_year: Number(site.founded_year) || 2014,
@@ -72,26 +74,39 @@ export function SiteForm() {
         single: true,
       });
 
-      const result = existing.data
-        ? await adminQuery({
-            table: "site_profile",
-            op: "update",
-            data: payload,
-            match: { id: existing.data.id },
-          })
-        : await adminQuery({
-            table: "site_profile",
-            op: "insert",
-            data: payload,
-          });
+      const write = (data: Record<string, unknown>) =>
+        existing.data
+          ? adminQuery({
+              table: "site_profile",
+              op: "update",
+              data,
+              match: { id: existing.data.id },
+            })
+          : adminQuery({
+              table: "site_profile",
+              op: "insert",
+              data,
+            });
+
+      let result = await write(payload);
+      if (result.error && /banner/i.test(result.error)) {
+        const { banner_url: _banner, ...withoutBanner } = payload;
+        result = await write(withoutBanner);
+        if (!result.error) {
+          setStatus(
+            "Guardado. Para activar el banner, en Supabase → SQL Editor pegá supabase/migration-banner.sql y dale Run. Después volvé a guardar el banner.",
+          );
+          return;
+        }
+      }
 
       if (result.error) throw new Error(result.error);
       setStatus("Guardado en Supabase.");
     } catch (err) {
       const message = err instanceof Error ? err.message : "No se pudo guardar.";
       setStatus(
-        /column|theme|labels|logo|favicon/i.test(message)
-          ? "Falta correr un SQL en Supabase. Pegá supabase/migration-brand.sql (logo y favicon) o migration-appearance.sql y dale Run."
+        /column|theme|labels|logo|favicon|banner/i.test(message)
+          ? "Falta correr un SQL en Supabase. Pegá supabase/migration-banner.sql (banner) o migration-brand.sql (logo y favicon) y dale Run."
           : message,
       );
     } finally {
@@ -161,6 +176,16 @@ export function SiteForm() {
               onChange={(url) => update("hero_image_url", url)}
               hint="La primera imagen grande de la home. Si no hay, la home arranca más corta."
             />
+            <div className="md:col-span-2">
+              <ImageUpload
+                label="Banner de obras (opcional)"
+                folder="banner"
+                value={site.banner_url ?? ""}
+                onChange={(url) => update("banner_url", url)}
+                hint="Foto ancha arriba de Proyectos. Si no la subís, esa página empieza con el título."
+                emptyLabel="Sin banner"
+              />
+            </div>
           </div>
         </div>
 

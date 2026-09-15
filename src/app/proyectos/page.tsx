@@ -1,4 +1,5 @@
 import { ExtraSections } from "@/components/site/ExtraSections";
+import { PageBanner } from "@/components/site/PageBanner";
 import { ProjectArchive } from "@/components/site/ProjectArchive";
 import { SiteShell } from "@/components/site/SiteShell";
 import { siteLabels } from "@/lib/appearance";
@@ -19,6 +20,7 @@ export default async function ProjectsPage() {
 
   return (
     <SiteShell site={site}>
+      <PageBanner src={site.banner_url} alt={labels.nav_projects} />
       <section className="mx-auto max-w-7xl px-6 pb-28 pt-12 md:px-10 md:pt-16">
         <div className="flex items-end justify-between gap-6 border-b border-line pb-8 md:pb-12">
           <div>

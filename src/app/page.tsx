@@ -3,6 +3,7 @@ import { EmptyFrame } from "@/components/site/EmptyFrame";
 import { ExtraSections } from "@/components/site/ExtraSections";
 import { Photo } from "@/components/site/Photo";
 import { WorksGrid } from "@/components/site/ProjectArchive";
+import { PageBanner } from "@/components/site/PageBanner";
 import { SiteShell } from "@/components/site/SiteShell";
 import { WhoSection } from "@/components/site/WhoSection";
 import { siteLabels } from "@/lib/appearance";
@@ -87,7 +88,9 @@ export default async function HomePage() {
 
       <WhoSection site={site} compact />
 
-      <section className="mx-auto max-w-7xl px-6 pb-28 md:px-10">
+      <PageBanner src={site.banner_url} alt={labels.works} />
+
+      <section className={`mx-auto max-w-7xl px-6 pb-28 md:px-10 ${site.banner_url ? "pt-12 md:pt-16" : ""}`}>
         <div className="mb-12 flex items-end justify-between gap-6 border-b border-line pb-8 md:mb-16 md:pb-12">
           <div>
             <p className="kicker text-bronze">{labels.selection}</p>

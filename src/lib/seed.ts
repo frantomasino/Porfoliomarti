@@ -25,6 +25,7 @@ export const seedSite: SiteProfile = {
   portrait_url: "",
   logo_url: "",
   favicon_url: "",
+  banner_url: "",
   seo_title: "Estudio ARQ.MR",
   seo_description: "",
   founded_year: 2020,

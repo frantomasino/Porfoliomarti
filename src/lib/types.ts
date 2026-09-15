@@ -15,6 +15,7 @@ export type SiteProfile = {
   portrait_url: string;
   logo_url: string;
   favicon_url: string;
+  banner_url: string;
   seo_title: string;
   seo_description: string;
   founded_year: number;
