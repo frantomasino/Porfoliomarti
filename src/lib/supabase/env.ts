@@ -1,30 +1,30 @@
-function readEnv(name: string) {
-  return (process.env[name] ?? "").trim();
+function trim(value: string | undefined) {
+  return (value ?? "").trim();
 }
 
 export function getSupabaseUrl() {
   return (
-    readEnv("NEXT_PUBLIC_SUPABASE_URL") ||
-    readEnv("SUPABASE_URL") ||
+    trim(process.env.NEXT_PUBLIC_SUPABASE_URL) ||
+    trim(process.env.SUPABASE_URL) ||
     "https://bvavokmdpfcsvtcpwbr.supabase.co"
   );
 }
 
 export function getSupabaseAnonKey() {
   return (
-    readEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY") ||
-    readEnv("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY")
+    trim(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) ||
+    trim(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)
   );
 }
 
 export function getSupabaseServiceKey() {
   return (
-    readEnv("SUPABASE_SERVICE_ROLE_KEY") ||
-    readEnv("SUPABASE_SECRET_KEY") ||
+    trim(process.env.SUPABASE_SERVICE_ROLE_KEY) ||
+    trim(process.env.SUPABASE_SECRET_KEY) ||
     getSupabaseAnonKey()
   );
 }
 
 export function isSupabaseConfigured() {
-  return Boolean(getSupabaseUrl() && getSupabaseAnonKey());
+  return Boolean(getSupabaseUrl() && getSupabaseServiceKey());
 }

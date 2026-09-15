@@ -4,9 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AdminPage } from "@/components/admin/ui";
 import { adminQuery } from "@/lib/admin/db";
-import { isSupabaseConfigured } from "@/lib/config";
 
-export function Dashboard() {
+export function Dashboard({ configured }: { configured: boolean }) {
   const [stats, setStats] = useState({
     projects: 0,
     published: 0,
@@ -50,9 +49,11 @@ export function Dashboard() {
       title="Resumen"
       description="Todo lo que edites acá se guarda en Supabase y se publica en el portafolio."
     >
-      {!isSupabaseConfigured() ? (
+      {!configured ? (
         <p className="mb-8 border border-line bg-ivory px-5 py-4 text-sm text-stone">
-          Falta conectar Supabase en `.env.local` para que los cambios y las fotos se suban a la nube.
+          Falta la clave de Supabase en Vercel. En Environment Variables, Production, tiene que estar
+          `SUPABASE_SERVICE_ROLE_KEY` (la sb_secret) y `NEXT_PUBLIC_SUPABASE_ANON_KEY` (la sb_publishable),
+          sin espacios, y después Redeploy.
         </p>
       ) : null}
       <div className="grid gap-5 md:grid-cols-2">
