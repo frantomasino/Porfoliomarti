@@ -22,18 +22,21 @@ export function MediaArrow({
   side,
   onClick,
   label,
+  always = false,
 }: {
   side: "left" | "right";
   onClick: () => void;
   label: string;
+  always?: boolean;
 }) {
   return (
     <button
       type="button"
       aria-label={label}
       className={cx(
-        "absolute top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 touch-manipulation items-center justify-center",
-        side === "left" ? "left-1 md:left-2" : "right-1 md:right-2",
+        "absolute top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 touch-manipulation items-center justify-center transition-opacity duration-300",
+        side === "left" ? "left-1.5 md:left-2.5" : "right-1.5 md:right-2.5",
+        always ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100",
       )}
       onClick={(event) => {
         event.preventDefault();
@@ -41,12 +44,12 @@ export function MediaArrow({
         onClick();
       }}
     >
-      <span className="flex h-8 w-8 items-center justify-center rounded-full border border-ivory/70 bg-ivory/40 text-ink backdrop-blur-[3px] md:h-9 md:w-9">
+      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink/45 text-ivory backdrop-blur-[4px] transition-colors hover:bg-ink/70">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
             d={side === "left" ? "M14.5 5.5 8 12l6.5 6.5" : "M9.5 5.5 16 12l-6.5 6.5"}
             stroke="currentColor"
-            strokeWidth="1.05"
+            strokeWidth="1.2"
             strokeLinecap="round"
             strokeLinejoin="round"
           />

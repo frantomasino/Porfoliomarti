@@ -54,8 +54,8 @@ export function ProjectViewer({
           )}
           {slides.length > 1 ? (
             <>
-              <MediaArrow side="left" label="Foto anterior" onClick={() => go(-1)} />
-              <MediaArrow side="right" label="Foto siguiente" onClick={() => go(1)} />
+              <MediaArrow always side="left" label="Foto anterior" onClick={() => go(-1)} />
+              <MediaArrow always side="right" label="Foto siguiente" onClick={() => go(1)} />
               <SlideIndex index={index} total={total} />
             </>
           ) : null}

@@ -9,6 +9,7 @@
   --color-line: #ddd4c6;
   --font-sans: var(--font-outfit);
   --font-serif: var(--font-cormorant);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
@@ -101,8 +102,15 @@ textarea:focus-visible {
   }
 
   .reveal,
-  .photo-fade {
-    animation: none;
+  .photo-fade,
+  .hero-ken,
+  .slide-zoom,
+  .reveal-io,
+  .film-reel-track {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
   }
 
   ::view-transition-old(*),
@@ -110,6 +118,100 @@ textarea:focus-visible {
   ::view-transition-group(*) {
     animation-duration: 0s !important;
     animation-delay: 0s !important;
+  }
+}
+
+.hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+.hero-slide.is-on {
+  opacity: 1;
+}
+
+.hero-ken {
+  animation: ken-drift 18s var(--ease-out) alternate infinite;
+  transform: scale(1.08);
+  transform-origin: center;
+}
+
+@keyframes ken-drift {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.reveal-io {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s var(--ease-out),
+    transform 0.9s var(--ease-out);
+}
+
+.reveal-io.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.slide-zoom {
+  opacity: 0.88;
+  transform: scale(1.02);
+  transition:
+    transform 0.7s var(--ease-out),
+    opacity 0.5s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .group:hover .slide-zoom {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.film-reel {
+  overflow: hidden;
+  border-block: 1px solid var(--color-line);
+  background: var(--color-ink);
+}
+
+.film-reel-track {
+  display: flex;
+  width: max-content;
+  gap: 0.55rem;
+  padding-block: 0.55rem;
+  animation: film-reel 70s linear infinite;
+}
+
+.film-reel:hover .film-reel-track {
+  animation-play-state: paused;
+}
+
+.film-reel-item {
+  height: min(28svh, 13.5rem);
+  width: auto;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  flex-shrink: 0;
+  opacity: 0.82;
+}
+
+.film-reel-item img {
+  display: block;
+}
+
+@keyframes film-reel {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 

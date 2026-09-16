@@ -18,7 +18,6 @@ export function Slideshow({
 }) {
   const [index, setIndex] = useState(0);
   const total = photos.length;
-  const photo = photos[index] ?? "";
 
   function go(step: number) {
     if (total < 2) return;
@@ -28,9 +27,23 @@ export function Slideshow({
   const swipe = useSwipe(go);
 
   return (
-    <div className={cx("relative overflow-hidden bg-line touch-pan-y", className)} {...swipe}>
-      {photo ? (
-        <Photo src={photo} alt={alt} priority className="absolute inset-0 h-full w-full object-cover" />
+    <div className={cx("group relative overflow-hidden bg-line touch-pan-y", className)} {...swipe}>
+      {total ? (
+        <div
+          className="flex h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {photos.map((src, photoIndex) => (
+            <div key={`${src}-${photoIndex}`} className="relative h-full min-w-full overflow-hidden">
+              <Photo
+                src={src}
+                alt={alt}
+                priority={photoIndex === 0}
+                className="slide-zoom absolute inset-0 h-full w-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="absolute inset-0">{empty}</div>
       )}

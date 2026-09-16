@@ -43,3 +43,15 @@ export function projectPhotoUrls(project: Project) {
   for (const item of project.images ?? []) add(item.url);
   return urls;
 }
+
+export function collectionPhotoUrls(projects: Project[], limit = 10) {
+  const urls: string[] = [];
+  for (const project of projects) {
+    for (const url of projectPhotoUrls(project)) {
+      if (urls.includes(url)) continue;
+      urls.push(url);
+      if (urls.length >= limit) return urls;
+    }
+  }
+  return urls;
+}

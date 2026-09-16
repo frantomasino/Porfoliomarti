@@ -22,14 +22,14 @@ export function WhoSection({
     >
       {hasPortrait ? (
         <div
-          className={`relative order-2 aspect-[4/5] overflow-hidden bg-line md:order-1 ${
+          className={`group relative order-2 aspect-[4/5] overflow-hidden bg-line md:order-1 ${
             compact ? "max-h-[36svh] md:max-h-[28rem]" : "max-h-[38svh] md:max-h-none"
           }`}
         >
           <Photo
             src={site.portrait_url}
             alt={site.full_name}
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            className="slide-zoom absolute inset-0 h-full w-full object-cover object-center"
           />
         </div>
       ) : null}

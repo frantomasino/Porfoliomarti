@@ -1,4 +1,5 @@
 import { ExtraSections } from "@/components/site/ExtraSections";
+import { Reveal } from "@/components/site/Reveal";
 import { SiteShell } from "@/components/site/SiteShell";
 import { WhoSection } from "@/components/site/WhoSection";
 import { siteLabels } from "@/lib/appearance";
@@ -25,7 +26,9 @@ export default async function StudioPage() {
 
   return (
     <SiteShell site={site}>
-      <WhoSection site={site} />
+      <Reveal>
+        <WhoSection site={site} />
+      </Reveal>
 
       {experience.length || education.length || awards.length ? (
         <section className="border-y border-line bg-ivory">

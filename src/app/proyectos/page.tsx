@@ -1,9 +1,11 @@
 import { ExtraSections } from "@/components/site/ExtraSections";
+import { FilmReel } from "@/components/site/FilmReel";
 import { PageBanner } from "@/components/site/PageBanner";
 import { ProjectArchive } from "@/components/site/ProjectArchive";
 import { SiteShell } from "@/components/site/SiteShell";
 import { siteLabels } from "@/lib/appearance";
 import { getPageSections, getPublishedProjects, getSiteProfile } from "@/lib/content";
+import { collectionPhotoUrls } from "@/lib/media";
 
 export async function generateMetadata() {
   const site = await getSiteProfile();
@@ -17,10 +19,18 @@ export default async function ProjectsPage() {
     getPageSections("proyectos"),
   ]);
   const labels = siteLabels(site);
+  const fromWorks = collectionPhotoUrls(projects);
+  const reelPhotos = site.banner_url
+    ? [site.banner_url, ...fromWorks.filter((url) => url !== site.banner_url)].slice(0, 10)
+    : fromWorks;
 
   return (
     <SiteShell site={site}>
-      <PageBanner src={site.banner_url} alt={labels.nav_projects} />
+      {reelPhotos.length > 1 ? (
+        <FilmReel photos={reelPhotos} alt={labels.nav_projects} />
+      ) : (
+        <PageBanner src={site.banner_url} alt={labels.nav_projects} />
+      )}
       <section className="mx-auto max-w-7xl px-6 pb-24 pt-8 md:px-10 md:pb-28 md:pt-16">
         <div className="flex items-end justify-between gap-4 border-b border-line pb-6 md:pb-12">
           <div>

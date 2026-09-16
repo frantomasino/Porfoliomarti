@@ -1,13 +1,16 @@
 import Link from "next/link";
 import { EmptyFrame } from "@/components/site/EmptyFrame";
 import { ExtraSections } from "@/components/site/ExtraSections";
-import { Photo } from "@/components/site/Photo";
+import { FilmReel } from "@/components/site/FilmReel";
+import { HeroStage } from "@/components/site/HeroStage";
 import { WorksGrid } from "@/components/site/ProjectArchive";
 import { PageBanner } from "@/components/site/PageBanner";
+import { Reveal } from "@/components/site/Reveal";
 import { SiteShell } from "@/components/site/SiteShell";
 import { WhoSection } from "@/components/site/WhoSection";
 import { siteLabels } from "@/lib/appearance";
 import { getPageSections, getPublishedProjects, getSiteProfile } from "@/lib/content";
+import { collectionPhotoUrls } from "@/lib/media";
 
 export default async function HomePage() {
   const [site, projects, extra] = await Promise.all([
@@ -22,6 +25,11 @@ export default async function HomePage() {
   const showWho = Boolean(site.bio);
   const headline = (site.tagline || "").trim();
   const kicker = site.profession || site.location;
+  const reelPhotos = (() => {
+    const fromWorks = collectionPhotoUrls(projects);
+    if (!site.banner_url) return fromWorks;
+    return [site.banner_url, ...fromWorks.filter((url) => url !== site.banner_url)].slice(0, 10);
+  })();
 
   return (
     <SiteShell site={site} home={hasHero}>
@@ -32,12 +40,7 @@ export default async function HomePage() {
       >
         {hasHero ? (
           <>
-            <Photo
-              src={site.hero_image_url}
-              alt={site.studio_name || site.full_name}
-              priority
-              className="absolute inset-0 h-full w-full object-cover object-center"
-            />
+            <HeroStage photos={[site.hero_image_url]} alt={site.studio_name || site.full_name} />
             <div className="absolute inset-0 bg-ink/40" />
             <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/25" />
           </>
@@ -94,13 +97,21 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {showWho ? <WhoSection site={site} compact /> : null}
+      {showWho ? (
+        <Reveal>
+          <WhoSection site={site} compact />
+        </Reveal>
+      ) : null}
 
-      <PageBanner src={site.banner_url} alt={labels.works} />
+      {reelPhotos.length > 1 ? (
+        <FilmReel photos={reelPhotos} alt={labels.works} />
+      ) : (
+        <PageBanner src={site.banner_url} alt={labels.works} />
+      )}
 
       <section
         className={`mx-auto max-w-7xl px-6 pb-28 md:px-10 ${
-          site.banner_url || !showWho ? "pt-10 md:pt-24" : ""
+          reelPhotos.length || site.banner_url || !showWho ? "pt-10 md:pt-24" : ""
         }`}
       >
         <div className="mb-10 flex items-end justify-between gap-4 border-b border-line pb-6 md:mb-16 md:pb-12">
