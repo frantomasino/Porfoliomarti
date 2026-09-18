@@ -1,7 +1,5 @@
-import { ProjectList } from "@/components/admin/ProjectList";
-
-export const metadata = { title: "Proyectos" };
+import { redirect } from "next/navigation";
 
 export default function AdminProjectsPage() {
-  return <ProjectList />;
+  redirect("/admin#obras");
 }

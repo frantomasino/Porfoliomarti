@@ -1,7 +1,5 @@
-import { TimelineManager } from "@/components/admin/TimelineManager";
-
-export const metadata = { title: "Trayectoria" };
+import { redirect } from "next/navigation";
 
 export default function TimelinePage() {
-  return <TimelineManager />;
+  redirect("/admin#trayectoria");
 }

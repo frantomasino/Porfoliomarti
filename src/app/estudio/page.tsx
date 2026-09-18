@@ -1,24 +1,33 @@
 import { ExtraSections } from "@/components/site/ExtraSections";
+import { JsonLd } from "@/components/site/JsonLd";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteShell } from "@/components/site/SiteShell";
 import { WhoSection } from "@/components/site/WhoSection";
-import { siteLabels } from "@/lib/appearance";
-import { getPageSections, getServices, getSiteProfile, getTimeline } from "@/lib/content";
+import { mergeTheme, sectionStyle, siteLabels } from "@/lib/appearance";
+import { getPageSections, getSiteProfile, getTimeline } from "@/lib/content";
+import { breadcrumbJsonLd, clipMeta, publicPageMetadata, siteDescription } from "@/lib/seo";
 import type { TimelineItem } from "@/lib/types";
 
 export async function generateMetadata() {
   const site = await getSiteProfile();
-  return { title: siteLabels(site).nav_about };
+  const labels = siteLabels(site);
+  return publicPageMetadata({
+    site,
+    title: labels.nav_about,
+    description: clipMeta(siteDescription(site) || `${labels.nav_about} — ${site.studio_name || site.full_name}`),
+    path: "/estudio",
+    image: site.portrait_url || undefined,
+  });
 }
 
 export default async function StudioPage() {
-  const [site, timeline, services, extra] = await Promise.all([
+  const [site, timeline, extra] = await Promise.all([
     getSiteProfile(),
     getTimeline(),
-    getServices(),
     getPageSections("estudio"),
   ]);
   const labels = siteLabels(site);
+  const theme = mergeTheme(site.theme);
 
   const experience = timeline.filter((item) => item.kind === "experience");
   const education = timeline.filter((item) => item.kind === "education");
@@ -26,45 +35,30 @@ export default async function StudioPage() {
 
   return (
     <SiteShell site={site}>
-      <Reveal>
-        <WhoSection site={site} />
-      </Reveal>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: site.studio_name || site.full_name, path: "/" },
+          { name: labels.nav_about, path: "/estudio" },
+        ])}
+      />
+      <div style={sectionStyle(theme, "about")}>
+        <Reveal>
+          <WhoSection site={site} />
+        </Reveal>
+      </div>
 
       {experience.length || education.length || awards.length ? (
         <section className="border-y border-line bg-ivory">
-          <div className="mx-auto grid max-w-7xl gap-12 px-6 py-20 md:grid-cols-3 md:px-10">
+          <div className="mx-auto grid max-w-7xl gap-16 px-6 py-24 md:grid-cols-3 md:px-12 lg:px-16">
+            <Reveal delay={0}>
             <TimelineColumn title={labels.practice} items={experience} />
+            </Reveal>
+            <Reveal delay={90}>
             <TimelineColumn title={labels.education} items={education} />
+            </Reveal>
+            <Reveal delay={180}>
             <TimelineColumn title={labels.notes} items={awards} />
-          </div>
-        </section>
-      ) : null}
-
-      {services.length ? (
-        <section className="px-6 py-20 md:px-10 md:py-28">
-          <div className="mx-auto max-w-7xl border-b border-line pb-8 md:pb-10">
-            <p className="kicker text-bronze">{labels.services}</p>
-            <h2 className="mt-2 font-serif text-[clamp(2.6rem,6vw,4.2rem)] font-light leading-none tracking-tight">
-              {labels.how_works}
-            </h2>
-          </div>
-          <div className="mx-auto max-w-7xl md:border-x md:border-b md:border-line">
-            <div className="grid md:grid-cols-3">
-              {services.map((service, index) => (
-                <article
-                  key={service.id}
-                  className="border-b border-line px-0 py-12 md:border-r md:px-10 md:py-14 md:[&:nth-child(3n)]:border-r-0"
-                >
-                  <p className="font-serif text-[2rem] font-light leading-none tracking-[0.05em] text-line">
-                    {String(index + 1).padStart(2, "0")}
-                  </p>
-                  <h3 className="mt-6 font-serif text-[1.5rem] tracking-wide">{service.title}</h3>
-                  <p className="mt-3 max-w-sm text-[0.82rem] font-light leading-[2] text-stone">
-                    {service.description}
-                  </p>
-                </article>
-              ))}
-            </div>
+            </Reveal>
           </div>
         </section>
       ) : null}

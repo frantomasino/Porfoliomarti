@@ -16,8 +16,11 @@ export async function POST(request: NextRequest) {
     const phone = text(body.phone, 60);
     const message = text(body.message, 4000);
 
-    if (!name || !message) {
-      return NextResponse.json({ error: "Completá nombre y mensaje." }, { status: 400 });
+    if (!name || !email || !message) {
+      return NextResponse.json({ error: "Completá nombre, email y mensaje." }, { status: 400 });
+    }
+    if (!email.includes("@")) {
+      return NextResponse.json({ error: "Ingresá un email válido." }, { status: 400 });
     }
 
     const supabase = createServiceClient();

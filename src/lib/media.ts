@@ -55,3 +55,17 @@ export function collectionPhotoUrls(projects: Project[], limit = 10) {
   }
   return urls;
 }
+
+export function collectionMediaUrls(projects: Project[], limit = 12) {
+  const urls: string[] = [];
+  const add = (url?: string) => {
+    if (!url || urls.includes(url)) return;
+    urls.push(url);
+  };
+  for (const project of projects) {
+    add(project.cover_url);
+    for (const item of project.images ?? []) add(item.url);
+    if (urls.length >= limit) return urls.slice(0, limit);
+  }
+  return urls;
+}

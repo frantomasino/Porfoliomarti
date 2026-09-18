@@ -1,7 +1,5 @@
-import { ServicesManager } from "@/components/admin/ServicesManager";
-
-export const metadata = { title: "Servicios" };
+import { redirect } from "next/navigation";
 
 export default function ServicesPage() {
-  return <ServicesManager />;
+  redirect("/admin#proceso");
 }

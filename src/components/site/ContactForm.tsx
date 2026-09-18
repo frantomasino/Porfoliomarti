@@ -1,11 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { contactWhatsAppText, whatsappUrl } from "@/lib/utils";
+import { contactWhatsAppText, mailtoUrl, whatsappUrl } from "@/lib/utils";
 
-export function ContactForm({ studioPhone }: { studioPhone: string }) {
+export function ContactForm({
+  studioPhone,
+  studioEmail = "",
+}: {
+  studioPhone: string;
+  studioEmail?: string;
+}) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState("");
+  const mail = mailtoUrl(studioEmail);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -17,7 +24,7 @@ export function ContactForm({ studioPhone }: { studioPhone: string }) {
       phone: String(data.get("phone") || "").trim(),
       message: String(data.get("message") || "").trim(),
     };
-    const url = whatsappUrl(studioPhone, contactWhatsAppText(payload));
+    const chat = whatsappUrl(studioPhone, contactWhatsAppText(payload));
 
     setStatus("sending");
     setError("");
@@ -30,16 +37,16 @@ export function ContactForm({ studioPhone }: { studioPhone: string }) {
       });
       const json = (await response.json()) as { error?: string };
       if (!response.ok) {
-        throw new Error(json.error || "No se pudo guardar el mensaje.");
+        throw new Error(json.error || "No se pudo enviar la consulta.");
       }
     } catch (err) {
       setStatus("error");
-      setError(err instanceof Error ? err.message : "No se pudo guardar el mensaje.");
+      setError(err instanceof Error ? err.message : "No se pudo enviar la consulta.");
       return;
     }
 
-    if (url) {
-      window.location.assign(url);
+    if (chat) {
+      window.location.assign(chat);
       return;
     }
 
@@ -54,6 +61,11 @@ export function ContactForm({ studioPhone }: { studioPhone: string }) {
         <p className="mt-3 max-w-md text-sm leading-relaxed text-stone">
           Recibimos tu consulta. Queda guardada en el estudio.
         </p>
+        {mail ? (
+          <a className="mt-6 inline-flex min-h-11 items-center text-[11px] uppercase tracking-[0.18em] text-bronze" href={mail}>
+            Escribir por mail
+          </a>
+        ) : null}
       </div>
     );
   }
@@ -72,6 +84,7 @@ export function ContactForm({ studioPhone }: { studioPhone: string }) {
       <label className="grid gap-2 text-[11px] uppercase tracking-[0.2em] text-stone">
         Email
         <input
+          required
           type="email"
           name="email"
           autoComplete="email"
@@ -102,12 +115,8 @@ export function ContactForm({ studioPhone }: { studioPhone: string }) {
         disabled={status === "sending"}
         className="mt-4 w-full bg-ink px-8 py-3.5 text-[11px] uppercase tracking-[0.22em] text-ivory transition-opacity hover:opacity-80 disabled:opacity-50 md:w-fit"
       >
-        {status === "sending" ? "Enviando…" : urlLabel(studioPhone)}
+        {status === "sending" ? "Enviando…" : "Enviar consulta"}
       </button>
     </form>
   );
-}
-
-function urlLabel(studioPhone: string) {
-  return whatsappUrl(studioPhone) ? "Enviar por WhatsApp" : "Enviar consulta";
 }

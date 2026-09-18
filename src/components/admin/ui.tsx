@@ -107,22 +107,38 @@ export function AdminPage({
   description,
   actions,
   children,
+  embedded = false,
+  id,
 }: {
   title: string;
   description?: string;
   actions?: React.ReactNode;
   children: React.ReactNode;
+  embedded?: boolean;
+  id?: string;
 }) {
+  const Heading = embedded ? "h2" : "h1";
   return (
-    <div>
+    <section
+      id={id}
+      className={embedded ? "scroll-mt-36 border-t border-line pt-10 md:scroll-mt-10 md:pt-16" : undefined}
+    >
       <div className="mb-6 flex flex-col gap-4 md:mb-10 md:flex-row md:flex-wrap md:items-end md:justify-between">
         <div>
-          <h1 className="font-serif text-[1.85rem] leading-tight text-ink md:text-4xl">{title}</h1>
+          <Heading
+            className={
+              embedded
+                ? "font-serif text-[1.65rem] leading-tight text-ink md:text-3xl"
+                : "font-serif text-[1.85rem] leading-tight text-ink md:text-4xl"
+            }
+          >
+            {title}
+          </Heading>
           {description ? <p className="mt-2 max-w-xl text-sm leading-relaxed text-stone">{description}</p> : null}
         </div>
         {actions ? <div className="w-full md:w-auto">{actions}</div> : null}
       </div>
       {children}
-    </div>
+    </section>
   );
 }

@@ -1,7 +1,5 @@
-import { SectionsManager } from "@/components/admin/SectionsManager";
-
-export const metadata = { title: "Secciones" };
+import { redirect } from "next/navigation";
 
 export default function AdminSectionsPage() {
-  return <SectionsManager />;
+  redirect("/admin#extras");
 }

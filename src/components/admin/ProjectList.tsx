@@ -6,7 +6,7 @@ import { AdminPage, buttonClass, ghostButtonClass, OrderButtons } from "@/compon
 import { adminQuery } from "@/lib/admin/db";
 import type { Project } from "@/lib/types";
 
-export function ProjectList() {
+export function ProjectList({ embedded = false }: { embedded?: boolean } = {}) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
@@ -76,10 +76,12 @@ export function ProjectList() {
 
   return (
     <AdminPage
+      id={embedded ? "obras" : undefined}
+      embedded={embedded}
       title="Obras"
-      description="El orden de esta lista es el que se ve en el sitio. Flechas para subir o bajar."
+      description="Título humano, barrio y estado. El orden de esta lista es el que se ve en el sitio."
       actions={
-        <Link href="/admin/proyectos/nuevo" className={buttonClass}>
+        <Link href="/admin?obra=nuevo#obras" className={buttonClass}>
           Nueva obra
         </Link>
       }
@@ -109,13 +111,14 @@ export function ProjectList() {
                 <p className="break-words text-base font-medium">{project.title || "Sin título"}</p>
                 <p className="mt-1 text-sm text-stone">
                   {project.published ? "Publicada" : "Borrador"}
+                  {project.status ? ` · ${project.status}` : ""}
+                  {project.location ? ` · ${project.location}` : ""}
                   {project.year ? ` · ${project.year}` : ""}
-                  {project.category ? ` · ${project.category}` : ""}
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Link href={`/admin/proyectos/${project.id}`} className={`${ghostButtonClass} flex-1 md:flex-none`}>
+              <Link href={`/admin?obra=${project.id}#obras`} className={`${ghostButtonClass} flex-1 md:flex-none`}>
                 Editar
               </Link>
               <button type="button" className={`${ghostButtonClass} flex-1 md:flex-none`} onClick={() => void remove(project.id)}>

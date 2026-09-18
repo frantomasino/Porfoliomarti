@@ -6,6 +6,7 @@ import { MediaArrow, SlideIndex, useSwipe } from "@/components/site/MediaArrow";
 import { MediaBlock } from "@/components/site/MediaBlock";
 import { Photo } from "@/components/site/Photo";
 import type { Project, ProjectImage } from "@/lib/types";
+import { statusLabel } from "@/lib/utils";
 
 export function ProjectViewer({
   project,
@@ -61,29 +62,39 @@ export function ProjectViewer({
           ) : null}
         </div>
       </div>
-      <div className="mx-auto flex max-w-5xl flex-col gap-6 px-6 py-8 md:flex-row md:items-end md:justify-between md:px-10">
+      <div className="mx-auto flex max-w-5xl flex-col gap-8 px-6 py-12 md:flex-row md:items-end md:justify-between md:px-12 md:py-16">
         <div className="min-w-0">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-stone">
-            {project.category} · {project.year}
+          <p className="text-[11px] uppercase tracking-[0.24em] text-bronze">
+            {[project.location, project.category, statusLabel(project.status) || project.year].filter(Boolean).join(" · ")}
           </p>
-          <h1 className="display-sm mt-2 break-words">{project.title}</h1>
+          <h1 className="display-sm mt-3 break-words">{project.title}</h1>
         </div>
-        <div className="flex gap-3">
-          {prev ? (
-            <Link
-              href={`/proyectos/${prev.slug}`}
-              className="inline-flex h-11 flex-1 items-center justify-center border border-ink px-4 text-[11px] uppercase tracking-[0.18em] md:flex-none"
-            >
-              ← Obra
-            </Link>
-          ) : null}
-          {next ? (
-            <Link
-              href={`/proyectos/${next.slug}`}
-              className="inline-flex h-11 flex-1 items-center justify-center bg-ink px-4 text-[11px] uppercase tracking-[0.18em] text-ivory md:flex-none"
-            >
-              Obra →
-            </Link>
+        <div className="flex w-full flex-col gap-3 md:w-auto md:flex-row md:flex-wrap md:items-center">
+          <Link
+            href="/contacto"
+            className="inline-flex h-11 items-center justify-center bg-ink px-5 text-[11px] uppercase tracking-[0.18em] text-ivory"
+          >
+            Conversemos
+          </Link>
+          {prev || next ? (
+            <div className="flex gap-3">
+              {prev ? (
+                <Link
+                  href={`/proyectos/${prev.slug}`}
+                  className="inline-flex h-11 flex-1 items-center justify-center whitespace-nowrap border border-ink px-4 text-[11px] uppercase tracking-[0.18em] md:flex-none"
+                >
+                  ← Obra
+                </Link>
+              ) : null}
+              {next ? (
+                <Link
+                  href={`/proyectos/${next.slug}`}
+                  className="inline-flex h-11 flex-1 items-center justify-center whitespace-nowrap border border-ink px-4 text-[11px] uppercase tracking-[0.18em] md:flex-none"
+                >
+                  Obra →
+                </Link>
+              ) : null}
+            </div>
           ) : null}
         </div>
       </div>

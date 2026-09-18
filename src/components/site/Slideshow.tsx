@@ -10,11 +10,13 @@ export function Slideshow({
   alt,
   className,
   empty,
+  children,
 }: {
   photos: string[];
   alt: string;
   className?: string;
   empty?: React.ReactNode;
+  children?: React.ReactNode;
 }) {
   const [index, setIndex] = useState(0);
   const total = photos.length;
@@ -30,7 +32,7 @@ export function Slideshow({
     <div className={cx("group relative overflow-hidden bg-line touch-pan-y", className)} {...swipe}>
       {total ? (
         <div
-          className="flex h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+          className="pointer-events-none flex h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
           {photos.map((src, photoIndex) => (
@@ -47,11 +49,12 @@ export function Slideshow({
       ) : (
         <div className="absolute inset-0">{empty}</div>
       )}
+      {children}
       {total > 1 ? (
         <>
           <MediaArrow side="left" label="Anterior" onClick={() => go(-1)} />
           <MediaArrow side="right" label="Siguiente" onClick={() => go(1)} />
-          <SlideIndex index={index} total={total} />
+          <SlideIndex index={index} total={total} placement="top" />
         </>
       ) : null}
     </div>

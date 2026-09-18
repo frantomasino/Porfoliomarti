@@ -6,4 +6,5 @@ export function revalidateSite() {
   revalidatePath("/proyectos");
   revalidatePath("/estudio");
   revalidatePath("/contacto");
+  revalidatePath("/sitemap.xml");
 }

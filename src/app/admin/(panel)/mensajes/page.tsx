@@ -1,7 +1,5 @@
-import { MessagesList } from "@/components/admin/MessagesList";
-
-export const metadata = { title: "Mensajes" };
+import { redirect } from "next/navigation";
 
 export default function MessagesPage() {
-  return <MessagesList />;
+  redirect("/admin#mensajes");
 }

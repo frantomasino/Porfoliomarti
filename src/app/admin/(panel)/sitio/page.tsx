@@ -1,7 +1,5 @@
-import { SiteForm } from "@/components/admin/SiteForm";
-
-export const metadata = { title: "Sitio" };
+import { redirect } from "next/navigation";
 
 export default function AdminSitePage() {
-  return <SiteForm />;
+  redirect("/admin#estudio");
 }

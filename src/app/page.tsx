@@ -4,59 +4,86 @@ import { ExtraSections } from "@/components/site/ExtraSections";
 import { FilmReel } from "@/components/site/FilmReel";
 import { HeroStage } from "@/components/site/HeroStage";
 import { WorksGrid } from "@/components/site/ProjectArchive";
-import { PageBanner } from "@/components/site/PageBanner";
 import { Reveal } from "@/components/site/Reveal";
+import { HowWeWork } from "@/components/site/HowWeWork";
 import { SiteShell } from "@/components/site/SiteShell";
 import { WhoSection } from "@/components/site/WhoSection";
-import { siteLabels } from "@/lib/appearance";
-import { getPageSections, getPublishedProjects, getSiteProfile } from "@/lib/content";
+import { homeHeroPhotos, mergeTheme, sectionStyle, showReel, siteLabels } from "@/lib/appearance";
+import { getPageSections, getPublishedProjects, getServices, getSiteProfile } from "@/lib/content";
 import { collectionPhotoUrls } from "@/lib/media";
 
+function splitHeroTitle(text: string) {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length < 4) return { lead: text.trim(), accent: "" };
+  const cut = words.length >= 5 ? 2 : 1;
+  return {
+    lead: words.slice(0, cut).join(" "),
+    accent: words.slice(cut).join(" "),
+  };
+}
+
 export default async function HomePage() {
-  const [site, projects, extra] = await Promise.all([
+  const [site, projects, extra, services] = await Promise.all([
     getSiteProfile(),
     getPublishedProjects(),
     getPageSections("home"),
+    getServices(),
   ]);
   const labels = siteLabels(site);
+  const theme = mergeTheme(site.theme);
   const featured = projects.filter((project) => project.featured).slice(0, 3);
   const works = featured.length ? featured : projects.slice(0, 3);
-  const hasHero = Boolean(site.hero_image_url);
-  const showWho = Boolean(site.bio);
+  const heroPhotos = homeHeroPhotos(site, collectionPhotoUrls(works, 4));
+  const hasHero = heroPhotos.length > 0;
+  const showWho = Boolean(site.bio || site.portrait_url || site.philosophy);
   const headline = (site.tagline || "").trim();
-  const kicker = site.profession || site.location;
-  const reelPhotos = (() => {
-    const fromWorks = collectionPhotoUrls(projects);
-    if (!site.banner_url) return fromWorks;
-    return [site.banner_url, ...fromWorks.filter((url) => url !== site.banner_url)].slice(0, 10);
-  })();
+  const title = splitHeroTitle(headline);
 
   return (
     <SiteShell site={site} home={hasHero}>
       <section
         className={`relative isolate overflow-hidden ${
-          hasHero ? "min-h-[78svh] bg-ink text-ivory md:min-h-svh" : "bg-paper text-ink"
+          hasHero ? "min-h-[100svh] bg-ink text-ivory" : "bg-paper text-ink"
         }`}
+        style={sectionStyle(theme, "hero")}
       >
         {hasHero ? (
           <>
-            <HeroStage photos={[site.hero_image_url]} alt={site.studio_name || site.full_name} />
-            <div className="absolute inset-0 bg-ink/40" />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/25" />
+            <HeroStage photos={heroPhotos} alt={site.studio_name || site.full_name} />
+            <div className="hero-veil pointer-events-none absolute inset-0" />
           </>
         ) : null}
         <div
-          className={`relative mx-auto flex max-w-7xl flex-col px-6 md:px-10 ${
+          className={`relative z-10 flex flex-col ${
             hasHero
-              ? "min-h-[78svh] justify-end pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-28 md:min-h-svh md:pb-16"
-              : "border-b border-line pb-10 pt-8 md:pb-16 md:pt-28"
+              ? "min-h-[100svh] w-full justify-end px-6 pb-[max(4.5rem,env(safe-area-inset-bottom))] pt-28 md:px-16 md:pb-20 lg:px-24"
+              : "mx-auto max-w-7xl border-b border-line px-6 pb-10 pt-8 md:px-10 md:pb-16 md:pt-28"
           }`}
         >
           {headline ? (
             <>
-              {kicker ? <p className="kicker reveal opacity-70">{kicker}</p> : null}
-              <h1 className="display reveal reveal-delay-1 mt-5 max-w-[16ch]">{headline}</h1>
-              {site.studio_name || site.location ? (
+              {site.profession ? (
+                <p className={`kicker reveal ${hasHero ? "text-ivory" : "opacity-70"}`}>
+                  {site.profession}
+                </p>
+              ) : null}
+              {site.location ? (
+                <p className={`reveal mt-2 text-[10px] uppercase tracking-[0.2em] ${hasHero ? "text-ivory/80" : "opacity-55"}`}>
+                  {site.location}
+                </p>
+              ) : null}
+              <h1 className={`${hasHero ? "display-hero drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]" : "display"} reveal reveal-delay-1 mt-5 max-w-[22rem] md:max-w-[28rem]`}>
+                {title.accent ? (
+                  <>
+                    {title.lead}
+                    <br />
+                    <em>{title.accent}</em>
+                  </>
+                ) : (
+                  headline
+                )}
+              </h1>
+              {!hasHero && (site.studio_name || site.location) ? (
                 <p className="reveal reveal-delay-1 mt-5 max-w-md text-sm leading-relaxed opacity-70">
                   {[site.studio_name, site.location].filter(Boolean).join(" · ")}
                 </p>
@@ -74,66 +101,89 @@ export default async function HomePage() {
               ) : null}
             </>
           )}
-          <div className="reveal reveal-delay-2 mt-10 flex flex-wrap items-center gap-3">
-            <Link
-              href="/proyectos"
-              className={`inline-flex min-h-11 items-center px-6 text-[11px] uppercase tracking-[0.22em] transition-opacity hover:opacity-80 ${
-                hasHero ? "bg-ivory text-ink" : "bg-ink text-ivory"
-              }`}
-            >
-              {labels.see_works}
-            </Link>
-            <Link
-              href="/estudio"
-              className={`inline-flex min-h-11 items-center border px-6 text-[11px] uppercase tracking-[0.22em] transition-colors ${
-                hasHero
-                  ? "border-ivory/50 text-ivory hover:border-ivory"
-                  : "border-ink text-ink hover:bg-ink hover:text-ivory"
-              }`}
-            >
-              {labels.nav_about}
-            </Link>
-          </div>
+          {hasHero ? (
+            <div className="reveal reveal-delay-2 mt-10 flex flex-wrap items-center gap-3 pb-4 md:mt-16 md:pb-0">
+              <Link
+                href="/contacto"
+                className="inline-flex min-h-11 items-center bg-ivory px-6 text-[11px] uppercase tracking-[0.22em] text-ink transition-opacity hover:opacity-80"
+              >
+                {labels.conversemos}
+              </Link>
+              <a
+                href="#obras"
+                className="inline-flex min-h-11 items-center border border-ivory/45 px-6 text-[11px] uppercase tracking-[0.22em] text-ivory transition-colors hover:border-ivory"
+              >
+                {labels.see_works}
+              </a>
+            </div>
+          ) : (
+            <div className="reveal reveal-delay-2 mt-10 flex flex-wrap items-center gap-3">
+              <Link
+                href="/contacto"
+                className="inline-flex min-h-11 items-center bg-ink px-6 text-[11px] uppercase tracking-[0.22em] text-ivory transition-opacity hover:opacity-80"
+              >
+                {labels.conversemos}
+              </Link>
+              <Link
+                href="/proyectos"
+                className="inline-flex min-h-11 items-center border border-ink px-6 text-[11px] uppercase tracking-[0.22em] text-ink transition-colors hover:bg-ink hover:text-ivory"
+              >
+                {labels.see_works}
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
-      {showWho ? (
-        <Reveal>
-          <WhoSection site={site} compact />
-        </Reveal>
+      {showReel(theme, "home") ? (
+        <FilmReel photos={collectionPhotoUrls(works, 8)} alt={labels.works} />
       ) : null}
 
-      {reelPhotos.length > 1 ? (
-        <FilmReel photos={reelPhotos} alt={labels.works} />
-      ) : (
-        <PageBanner src={site.banner_url} alt={labels.works} />
-      )}
-
       <section
-        className={`mx-auto max-w-7xl px-6 pb-28 md:px-10 ${
-          reelPhotos.length || site.banner_url || !showWho ? "pt-10 md:pt-24" : ""
-        }`}
+        id="obras"
+        className="mx-auto max-w-7xl scroll-mt-28 px-6 pb-24 pt-16 md:px-12 md:pb-36 md:pt-32 lg:px-16"
+        style={sectionStyle(theme, "works")}
       >
-        <div className="mb-10 flex items-end justify-between gap-4 border-b border-line pb-6 md:mb-16 md:pb-12">
-          <div>
-            <p className="kicker text-bronze">{labels.selection}</p>
-            <h2 className="mt-2 font-serif text-[clamp(2.2rem,11vw,4.2rem)] font-light leading-none tracking-tight">
+        <Reveal>
+          <div className="mb-12 flex items-end justify-between gap-6 border-b border-line pb-8 md:mb-20 md:pb-16">
+            <h2 className="font-serif text-[clamp(2.2rem,11vw,4.2rem)] font-light leading-[0.92] tracking-tight">
               {labels.works}
             </h2>
+            <Link
+              href="/proyectos"
+              className="mb-1 hidden min-h-11 shrink-0 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink md:inline-flex"
+            >
+              {labels.archive}
+            </Link>
           </div>
-          <Link
-            href="/proyectos"
-            className="mb-1 hidden min-h-11 shrink-0 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink md:inline-flex"
-          >
-            {labels.archive}
-          </Link>
-        </div>
+        </Reveal>
         {works.length ? (
           <WorksGrid projects={works} />
         ) : (
           <EmptyFrame kicker={labels.archive} title="El archivo se actualiza con cada encargo." />
         )}
+        {works.length ? (
+          <div className="mt-14 md:hidden">
+            <Link
+              href="/proyectos"
+              className="inline-flex min-h-11 items-center border border-ink px-6 text-[11px] uppercase tracking-[0.22em]"
+            >
+              {labels.archive}
+            </Link>
+          </div>
+        ) : null}
       </section>
+
+      <HowWeWork site={site} services={services} />
+
+      {showWho ? (
+        <div style={sectionStyle(theme, "about")}>
+          <Reveal>
+            <WhoSection site={site} compact />
+          </Reveal>
+        </div>
+      ) : null}
+
       <ExtraSections sections={extra} />
     </SiteShell>
   );

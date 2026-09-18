@@ -1,15 +1,25 @@
 import { ExtraSections } from "@/components/site/ExtraSections";
 import { FilmReel } from "@/components/site/FilmReel";
+import { JsonLd } from "@/components/site/JsonLd";
 import { PageBanner } from "@/components/site/PageBanner";
 import { ProjectArchive } from "@/components/site/ProjectArchive";
+import { Reveal } from "@/components/site/Reveal";
 import { SiteShell } from "@/components/site/SiteShell";
-import { siteLabels } from "@/lib/appearance";
+import { mergeTheme, reelMedia, sectionStyle, showReel, siteLabels } from "@/lib/appearance";
 import { getPageSections, getPublishedProjects, getSiteProfile } from "@/lib/content";
-import { collectionPhotoUrls } from "@/lib/media";
+import { collectionMediaUrls } from "@/lib/media";
+import { breadcrumbJsonLd, clipMeta, publicPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata() {
   const site = await getSiteProfile();
-  return { title: siteLabels(site).nav_projects };
+  const labels = siteLabels(site);
+  const brand = site.studio_name || site.full_name;
+  return publicPageMetadata({
+    site,
+    title: labels.nav_projects,
+    description: clipMeta(`${labels.nav_projects} de ${brand}${site.location ? ` en ${site.location}` : ""}.`),
+    path: "/proyectos",
+  });
 }
 
 export default async function ProjectsPage() {
@@ -19,32 +29,40 @@ export default async function ProjectsPage() {
     getPageSections("proyectos"),
   ]);
   const labels = siteLabels(site);
-  const fromWorks = collectionPhotoUrls(projects);
-  const reelPhotos = site.banner_url
-    ? [site.banner_url, ...fromWorks.filter((url) => url !== site.banner_url)].slice(0, 10)
-    : fromWorks;
+  const theme = mergeTheme(site.theme);
+  const brand = site.studio_name || site.full_name;
+  const reelPhotos = reelMedia(site, collectionMediaUrls(projects));
+  const reel = showReel(theme, "proyectos");
 
   return (
     <SiteShell site={site}>
-      {reelPhotos.length > 1 ? (
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: brand, path: "/" },
+          { name: labels.nav_projects, path: "/proyectos" },
+        ])}
+      />
+      {reel && reelPhotos.length > 1 ? (
         <FilmReel photos={reelPhotos} alt={labels.nav_projects} />
       ) : (
         <PageBanner src={site.banner_url} alt={labels.nav_projects} />
       )}
-      <section className="mx-auto max-w-7xl px-6 pb-24 pt-8 md:px-10 md:pb-28 md:pt-16">
-        <div className="flex items-end justify-between gap-4 border-b border-line pb-6 md:pb-12">
-          <div>
-            <p className="kicker text-bronze">{labels.archive}</p>
-            <h1 className="mt-2 font-serif text-[clamp(2.2rem,11vw,4.2rem)] font-light leading-none tracking-tight">
-              {labels.nav_projects}
-            </h1>
+      <section className="mx-auto max-w-7xl px-6 pb-28 pt-14 md:px-12 md:pb-36 md:pt-24 lg:px-16" style={sectionStyle(theme, "works")}>
+        <Reveal>
+          <div className="flex items-end justify-between gap-6 border-b border-line pb-8 md:pb-16">
+            <div>
+              <p className="kicker text-bronze">{labels.archive}</p>
+              <h1 className="mt-4 font-serif text-[clamp(2.2rem,11vw,4.2rem)] font-light leading-[0.92] tracking-tight">
+                {labels.nav_projects}
+              </h1>
+            </div>
+            {projects.length ? (
+              <p className="mb-1 hidden text-[11px] text-stone md:block">
+                {projects.length} {projects.length === 1 ? "obra" : "obras"}
+              </p>
+            ) : null}
           </div>
-          {projects.length ? (
-            <p className="mb-1 hidden text-[11px] text-stone md:block">
-              {projects.length} {projects.length === 1 ? "obra" : "obras"}
-            </p>
-          ) : null}
-        </div>
+        </Reveal>
         <ProjectArchive projects={projects} />
       </section>
       <ExtraSections sections={extra} />

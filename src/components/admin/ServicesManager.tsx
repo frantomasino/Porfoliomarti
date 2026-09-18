@@ -11,7 +11,7 @@ const blank: Omit<Service, "id"> = {
   sort_order: 0,
 };
 
-export function ServicesManager() {
+export function ServicesManager({ embedded = false }: { embedded?: boolean } = {}) {
   const [services, setServices] = useState<Service[]>([]);
   const [draft, setDraft] = useState(blank);
   const [status, setStatus] = useState("");
@@ -72,7 +72,12 @@ export function ServicesManager() {
   }
 
   return (
-    <AdminPage title="Servicios" description="Cómo trabaja el estudio. Sale en Nosotros, en tres columnas.">
+    <AdminPage
+      id={embedded ? "proceso" : undefined}
+      embedded={embedded}
+      title="Cómo trabaja"
+      description="Si cargás pasos acá, reemplazan los tres textos del estudio. Si lo dejás vacío, el sitio usa Conversación, Proyecto y Obra."
+    >
       {status ? <p className="mb-6 text-sm text-stone">{status}</p> : null}
       <form onSubmit={add} className="mb-12 grid gap-4 border border-line p-5">
         <p className="text-base font-medium">Nuevo servicio</p>

@@ -1,5 +1,11 @@
 import Link from "next/link";
 import { getSiteProfile } from "@/lib/content";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Página no encontrada",
+  robots: { index: false, follow: false },
+};
 
 export default async function NotFound() {
   const site = await getSiteProfile();

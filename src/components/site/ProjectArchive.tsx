@@ -12,7 +12,7 @@ export function WorksGrid({ projects }: { projects: Project[] }) {
       className={
         projects.length === 1
           ? "max-w-3xl"
-          : "grid grid-cols-1 gap-x-8 gap-y-14 md:grid-cols-2"
+          : "grid grid-cols-1 gap-x-10 gap-y-16 md:grid-cols-2 md:gap-x-16 md:gap-y-24 lg:gap-x-20 lg:gap-y-28"
       }
     >
       {projects.map((project, index) => (
@@ -35,7 +35,7 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
   return (
     <>
       {showFilters ? (
-        <div className="mt-10 flex flex-wrap gap-3">
+        <div className="mt-12 flex flex-wrap gap-3">
           {categories.map((category) => (
             <button
               key={category}
@@ -52,7 +52,7 @@ export function ProjectArchive({ projects }: { projects: Project[] }) {
         </div>
       ) : null}
       {projects.length ? (
-        <div className="mt-12">
+        <div className="mt-16 md:mt-20">
           <WorksGrid projects={visible} />
         </div>
       ) : (

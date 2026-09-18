@@ -34,9 +34,11 @@ export function MediaArrow({
       type="button"
       aria-label={label}
       className={cx(
-        "absolute top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 touch-manipulation items-center justify-center transition-opacity duration-300",
+        "absolute top-1/2 z-20 h-11 w-11 -translate-y-1/2 touch-manipulation items-center justify-center transition-opacity duration-300",
         side === "left" ? "left-1.5 md:left-2.5" : "right-1.5 md:right-2.5",
-        always ? "opacity-100" : "opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100",
+        always
+          ? "flex opacity-100"
+          : "hidden md:flex md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100",
       )}
       onClick={(event) => {
         event.preventDefault();
@@ -59,9 +61,22 @@ export function MediaArrow({
   );
 }
 
-export function SlideIndex({ index, total }: { index: number; total: number }) {
+export function SlideIndex({
+  index,
+  total,
+  placement = "bottom",
+}: {
+  index: number;
+  total: number;
+  placement?: "top" | "bottom";
+}) {
   return (
-    <span className="absolute bottom-3 left-3 z-10 text-[10px] uppercase tracking-[0.22em] text-ivory drop-shadow-[0_1px_6px_rgba(27,24,20,0.55)] md:bottom-4 md:left-4">
+    <span
+      className={cx(
+        "pointer-events-none absolute left-3 z-10 bg-ink/40 px-2 py-1 text-[8px] uppercase tracking-[0.18em] text-ivory/80 backdrop-blur-[4px] md:left-4",
+        placement === "top" ? "top-3 md:top-4" : "bottom-3 md:bottom-4",
+      )}
+    >
       {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
     </span>
   );

@@ -21,13 +21,6 @@ function whatsappDigits(phone: string) {
   return digits;
 }
 
-export function whatsappUrl(phone: string, text = "") {
-  const digits = whatsappDigits(phone);
-  if (digits.length < 10) return "";
-  const base = `https://wa.me/${digits}`;
-  return text ? `${base}?text=${encodeURIComponent(text)}` : base;
-}
-
 export function contactWhatsAppText(input: {
   name: string;
   email: string;
@@ -41,8 +34,48 @@ export function contactWhatsAppText(input: {
   return lines.join("\n").trim();
 }
 
+export function whatsappUrl(phone: string, text = "") {
+  const digits = whatsappDigits(phone);
+  if (digits.length < 10) return "";
+  const base = `https://wa.me/${digits}`;
+  return text ? `${base}?text=${encodeURIComponent(text)}` : base;
+}
+
+export function telUrl(phone: string) {
+  const digits = whatsappDigits(phone);
+  return digits.length >= 10 ? `tel:+${digits}` : "";
+}
+
+export function formatPhoneDisplay(phone: string) {
+  let digits = phone.replace(/\D/g, "");
+  if (digits.startsWith("00")) digits = digits.slice(2);
+  if (digits.startsWith("549") && digits.length >= 12) digits = digits.slice(3);
+  else if (digits.startsWith("54") && digits.length >= 11) digits = digits.slice(2);
+  if (digits.startsWith("9") && digits.length === 11) digits = digits.slice(1);
+  if (digits.length === 10) return `${digits.slice(0, 2)} ${digits.slice(2, 6)} ${digits.slice(6)}`;
+  return digits || phone;
+}
+
+export function mailtoUrl(email: string) {
+  const value = email.replace(/^mailto:/i, "").replace(/\s+/g, "").trim();
+  if (!value.includes("@")) return "";
+  return `mailto:${value}`;
+}
+
 export function instagramLabel(url: string) {
   if (!url.includes("instagram.com/")) return "Instagram";
   const handle = url.split("instagram.com/")[1]?.replace(/\/$/, "");
   return handle ? `@${handle}` : "Instagram";
+}
+
+export function statusLabel(value?: string) {
+  const text = (value || "").trim();
+  if (!text) return "";
+  const key = text.toLowerCase();
+  if (key === "proyecto") return "En proyecto";
+  if (key === "obra" || key === "terminado" || key === "finalizado" || key === "construido") {
+    return "Obra realizada";
+  }
+  if (key === "en obra" || key === "ejecucion" || key === "ejecución") return "En obra";
+  return text;
 }

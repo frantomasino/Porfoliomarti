@@ -15,7 +15,7 @@ const blank: Omit<PageSection, "id"> = {
   sort_order: 0,
 };
 
-export function SectionsManager() {
+export function SectionsManager({ embedded = false }: { embedded?: boolean } = {}) {
   const [sections, setSections] = useState<PageSection[]>([]);
   const [draft, setDraft] = useState(blank);
   const [status, setStatus] = useState("");
@@ -85,6 +85,8 @@ export function SectionsManager() {
 
   return (
     <AdminPage
+      id={embedded ? "extras" : undefined}
+      embedded={embedded}
       title="Extras"
       description="Bloques opcionales de título, texto y foto. Podés mostrarlos en Inicio, Nosotros, Contacto o Proyectos."
     >

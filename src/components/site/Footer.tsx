@@ -1,16 +1,17 @@
 import Link from "next/link";
 import { siteLabels } from "@/lib/appearance";
 import type { SiteProfile } from "@/lib/types";
-import { instagramLabel } from "@/lib/utils";
+import { formatPhoneDisplay, instagramLabel, mailtoUrl, telUrl } from "@/lib/utils";
+import type { CSSProperties } from "react";
 
-export function Footer({ site }: { site: SiteProfile }) {
+export function Footer({ site, palette }: { site: SiteProfile; palette?: CSSProperties }) {
   const labels = siteLabels(site);
   return (
     <footer
-      className="border-t border-line bg-paper pb-[env(safe-area-inset-bottom)]"
-      style={{ viewTransitionName: "site-footer" }}
+      className="border-t border-line bg-paper pb-[max(5.5rem,env(safe-area-inset-bottom))] md:pb-[env(safe-area-inset-bottom)]"
+      style={{ viewTransitionName: "site-footer", ...palette }}
     >
-      <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-12 md:grid md:grid-cols-[1.5fr_1fr_0.8fr] md:gap-16 md:px-10 md:py-20">
+      <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 py-16 md:grid md:grid-cols-[1.5fr_1fr_0.8fr] md:gap-16 md:px-12 md:py-24 lg:px-16">
         <div>
           {site.logo_url ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -43,33 +44,32 @@ export function Footer({ site }: { site: SiteProfile }) {
           <div className="space-y-2 text-sm text-stone">
             {site.location ? <p>{site.location}</p> : null}
             {site.email ? (
-              <a className="block min-h-11 hover:text-ink" href={`mailto:${site.email}`}>
-                {site.email}
+              <a className="inline-flex min-h-11 items-center hover:text-ink" href={mailtoUrl(site.email)}>
+                {site.email.trim()}
               </a>
             ) : null}
             {site.phone ? (
-              <a className="block min-h-11 hover:text-ink" href={`tel:${site.phone}`}>
-                {site.phone}
+              <a className="block min-h-11 hover:text-ink" href={telUrl(site.phone)}>
+                {formatPhoneDisplay(site.phone)}
               </a>
             ) : null}
           </div>
         ) : null}
-        <div className="text-sm text-stone">
+        <div className="space-y-3 text-sm text-stone">
           {site.instagram ? (
-            <a className="inline-flex min-h-11 items-center hover:text-ink" href={site.instagram} target="_blank" rel="noreferrer">
+            <a className="flex min-h-11 items-center hover:text-ink" href={site.instagram} target="_blank" rel="noreferrer">
               {instagramLabel(site.instagram)}
             </a>
           ) : null}
           {site.linkedin ? (
-            <a className="mt-2 hidden min-h-11 hover:text-ink md:block" href={site.linkedin} target="_blank" rel="noreferrer">
+            <a className="hidden min-h-11 items-center hover:text-ink md:flex" href={site.linkedin} target="_blank" rel="noreferrer">
               LinkedIn
             </a>
           ) : null}
         </div>
       </div>
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 border-t border-line px-6 py-5 text-[10px] uppercase tracking-[0.18em] text-stone md:px-10 md:text-[11px] md:tracking-[0.2em]">
+      <div className="mx-auto max-w-7xl border-t border-line px-6 py-5 text-[10px] uppercase tracking-[0.18em] text-stone md:px-12 md:text-[11px] md:tracking-[0.2em] lg:px-16">
         <span className="min-w-0 break-words">© {new Date().getFullYear()} {site.studio_name || site.full_name}</span>
-        {site.location ? <span className="hidden text-right md:inline">{site.location}</span> : null}
       </div>
     </footer>
   );

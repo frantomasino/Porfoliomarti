@@ -2,14 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { HeroSlides } from "@/components/admin/HeroSlides";
+import { ReelSlides } from "@/components/admin/ReelSlides";
 import { AdminPage, buttonClass, Field, fieldClass } from "@/components/admin/ui";
 import { BRAND_ACCEPT } from "@/lib/admin/images";
 import { adminQuery } from "@/lib/admin/db";
-import { mergeLabels, mergeTheme } from "@/lib/appearance";
+import {
+  headingFonts,
+  mergeLabels,
+  mergeTheme,
+  reelPlacements,
+  sectionColorFields,
+  themeSections,
+} from "@/lib/appearance";
 import { seedSite } from "@/lib/seed";
-import type { SiteLabels, SiteProfile, SiteTheme } from "@/lib/types";
+import type { ReelPlacement, SectionPalette, SiteLabels, SiteProfile, SiteTheme, ThemeSectionId } from "@/lib/types";
 
-export function SiteForm() {
+export function SiteForm({ embedded = false }: { embedded?: boolean } = {}) {
   const [site, setSite] = useState<SiteProfile>(seedSite);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
@@ -130,13 +139,31 @@ export function SiteForm() {
     }));
   }
 
+  function updateSection(id: ThemeSectionId, key: keyof SectionPalette, value: string) {
+    setSite((current) => {
+      const next = mergeTheme(current.theme);
+      return {
+        ...current,
+        theme: {
+          ...next,
+          sections: {
+            ...next.sections,
+            [id]: { ...next.sections[id], [key]: value },
+          },
+        },
+      };
+    });
+  }
+
   const labels = mergeLabels(site.labels);
   const theme = mergeTheme(site.theme);
 
   return (
     <AdminPage
+      id={embedded ? "estudio" : undefined}
+      embedded={embedded}
       title="El estudio"
-      description="Empezá por WhatsApp, la bio y las fotos. Guardá abajo cuando termines: el botón queda fijo en el celular."
+      description="WhatsApp, bio, retrato y datos. Guardá abajo cuando termines."
     >
       <form onSubmit={save} className="grid gap-10 pb-24">
         <div className="grid gap-5 border border-line bg-ivory px-5 py-6">
@@ -168,21 +195,24 @@ export function SiteForm() {
               onChange={(url) => update("portrait_url", url)}
               hint="Foto de Martina o del estudio. No uses una foto de obra acá."
             />
-            <ImageUpload
-              label="Imagen de portada"
-              folder="hero"
-              value={site.hero_image_url}
-              onChange={(url) => update("hero_image_url", url)}
-              hint="La primera imagen grande de la home. Si no hay, la home arranca más corta."
+            <HeroSlides
+              slides={theme.hero_slides.length ? theme.hero_slides : [site.hero_image_url].filter(Boolean)}
+              onChange={(urls) => {
+                setSite((current) => ({
+                  ...current,
+                  hero_image_url: urls[0] ?? "",
+                  theme: { ...mergeTheme(current.theme), hero_slides: urls },
+                }));
+              }}
             />
             <div className="md:col-span-2">
               <ImageUpload
-                label="Banner de obras (opcional)"
+                label="Foto del cubo / marca"
                 folder="banner"
                 value={site.banner_url ?? ""}
                 onChange={(url) => update("banner_url", url)}
-                hint="Foto ancha arriba de Proyectos. Si no la subís, esa página empieza con el título."
-                emptyLabel="Sin banner"
+                hint="Sale al lado del texto del estudio, no sola. Abajo pueden pasar fotos o videos."
+                emptyLabel="Sin marca"
               />
             </div>
           </div>
@@ -227,6 +257,55 @@ export function SiteForm() {
           </Field>
         </div>
 
+        <div className="grid gap-5 border border-line bg-ivory px-5 py-6">
+          <p className="text-sm font-medium">Apariencia</p>
+          <Field
+            label="Tipografía de títulos"
+            hint="Sale en el lema de la home, obras y títulos. Elegí la que se sienta más del estudio."
+          >
+            <div className="grid gap-3 sm:grid-cols-2">
+              {headingFonts.map((font) => {
+                const active = theme.heading === font.id;
+                return (
+                  <button
+                    key={font.id}
+                    type="button"
+                    onClick={() => updateTheme("heading", font.id)}
+                    className={`min-h-16 border px-4 py-3 text-left transition-colors ${
+                      active ? "border-ink bg-paper" : "border-line bg-ivory hover:border-ink"
+                    }`}
+                  >
+                    <span className="block text-[1.65rem] font-light leading-none" style={{ fontFamily: font.family }}>
+                      {font.name}
+                    </span>
+                    <span className="mt-2 block text-[11px] uppercase tracking-[0.18em] text-stone">{font.hint}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </Field>
+          <Field
+            label="Cinta de fotos"
+            hint="Las fotos de las obras pasan en una tira bajo el hero. Si el cliente la quiere, acá se prende."
+          >
+            <select
+              className={fieldClass}
+              value={theme.reel}
+              onChange={(e) => updateTheme("reel", e.target.value as ReelPlacement)}
+            >
+              {reelPlacements.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <ReelSlides
+            slides={theme.reel_media}
+            onChange={(urls) => updateTheme("reel_media", urls)}
+          />
+        </div>
+
         <div className="grid gap-8 border-t border-line pt-10 md:grid-cols-2">
           <ImageUpload
             label="Logo"
@@ -263,16 +342,63 @@ export function SiteForm() {
           />
         </Field>
 
-        <div className="grid gap-5 md:grid-cols-2">
-          <Field label="Título SEO">
-            <input className={fieldClass} value={site.seo_title} onChange={(e) => update("seo_title", e.target.value)} />
-          </Field>
-          <Field label="Descripción SEO">
+        <div className="grid gap-5">
+          <Field
+            label="Título SEO"
+            hint={`${(site.seo_title || "").length}/60. Lo que Google muestra como título azul. Si lo dejás vacío, usa el nombre del estudio.`}
+          >
             <input
+              className={fieldClass}
+              value={site.seo_title}
+              onChange={(e) => update("seo_title", e.target.value)}
+              maxLength={70}
+            />
+          </Field>
+          <Field
+            label="Descripción SEO"
+            hint={`${(site.seo_description || "").length}/160. Un párrafo corto: quiénes son y qué hacen. El dominio se suma después.`}
+          >
+            <textarea
+              rows={3}
               className={fieldClass}
               value={site.seo_description}
               onChange={(e) => update("seo_description", e.target.value)}
+              maxLength={180}
             />
+          </Field>
+          <div className="border border-line bg-ivory px-4 py-4">
+            <p className="text-[11px] uppercase tracking-[0.18em] text-stone">Así se ve en Google</p>
+            <p className="mt-3 text-base text-[#1a0dab]">
+              {site.seo_title || site.studio_name || site.full_name || "Título del estudio"}
+            </p>
+            <p className="mt-1 text-sm text-stone">
+              {site.seo_description || site.tagline || site.bio || "La descripción sale de este campo, o del slogan si está vacío."}
+            </p>
+          </div>
+        </div>
+
+        <div className="grid gap-5 border border-line bg-ivory px-5 py-6">
+          <p className="text-sm font-medium">Cómo trabaja</p>
+          <p className="text-sm leading-relaxed text-stone">
+            Estos tres pasos salen en el sitio si no cargás servicios más abajo.
+          </p>
+          <Field label="1 — título">
+            <input className={fieldClass} value={labels.how_1_title} onChange={(e) => updateLabel("how_1_title", e.target.value)} />
+          </Field>
+          <Field label="1 — texto">
+            <textarea rows={2} className={fieldClass} value={labels.how_1_body} onChange={(e) => updateLabel("how_1_body", e.target.value)} />
+          </Field>
+          <Field label="2 — título">
+            <input className={fieldClass} value={labels.how_2_title} onChange={(e) => updateLabel("how_2_title", e.target.value)} />
+          </Field>
+          <Field label="2 — texto">
+            <textarea rows={2} className={fieldClass} value={labels.how_2_body} onChange={(e) => updateLabel("how_2_body", e.target.value)} />
+          </Field>
+          <Field label="3 — título">
+            <input className={fieldClass} value={labels.how_3_title} onChange={(e) => updateLabel("how_3_title", e.target.value)} />
+          </Field>
+          <Field label="3 — texto">
+            <textarea rows={2} className={fieldClass} value={labels.how_3_body} onChange={(e) => updateLabel("how_3_body", e.target.value)} />
           </Field>
         </div>
 
@@ -339,10 +465,14 @@ export function SiteForm() {
           </div>
         </details>
 
-        <details className="border-t border-line pt-8">
-          <summary className="cursor-pointer text-sm text-stone">Colores (opcional)</summary>
-          <p className="mt-3 text-sm text-stone">Solo si querés cambiar la paleta del sitio.</p>
-          <div className="mt-5 grid gap-5 md:grid-cols-3">
+        <div className="grid gap-6 border border-line bg-ivory px-5 py-6">
+          <div>
+            <p className="text-sm font-medium">Colores</p>
+            <p className="mt-2 text-sm text-stone">
+              La paleta general vale para todo el sitio. Después podés cambiar cada sección.
+            </p>
+          </div>
+          <div className="grid gap-5 md:grid-cols-3">
             {(
               [
                 ["paper", "Fondo"],
@@ -353,24 +483,47 @@ export function SiteForm() {
                 ["line", "Líneas"],
               ] as const
             ).map(([key, label]) => (
-              <Field key={key} label={label}>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="color"
-                    className="h-10 w-14 cursor-pointer border border-line bg-transparent p-0"
-                    value={theme[key]}
-                    onChange={(e) => updateTheme(key, e.target.value)}
-                  />
-                  <input
-                    className={fieldClass}
-                    value={theme[key]}
-                    onChange={(e) => updateTheme(key, e.target.value)}
-                  />
-                </div>
-              </Field>
+              <ColorField
+                key={key}
+                label={label}
+                value={theme[key]}
+                fallback={theme[key]}
+                onChange={(value) => updateTheme(key, value)}
+              />
             ))}
           </div>
-        </details>
+          <div className="grid gap-4">
+            {themeSections.map((section) => (
+              <details key={section.id} className="border border-line bg-paper px-4 py-3">
+                <summary className="cursor-pointer text-sm">
+                  {section.name}
+                  <span className="ml-2 text-stone">— {section.hint}</span>
+                </summary>
+                <div className="mt-4 grid gap-4 md:grid-cols-3">
+                  {sectionColorFields.map((field) => (
+                    <ColorField
+                      key={field.key}
+                      label={field.label}
+                      value={theme.sections[section.id][field.key]}
+                      fallback={
+                        field.key === "bg"
+                          ? theme.paper
+                          : field.key === "text"
+                            ? theme.ink
+                            : field.key === "muted"
+                              ? theme.stone
+                              : field.key === "accent"
+                                ? theme.bronze
+                                : theme.line
+                      }
+                      onChange={(value) => updateSection(section.id, field.key, value)}
+                    />
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
 
         <div className="sticky bottom-0 z-10 -mx-5 flex items-center gap-3 border-t border-line bg-paper/95 px-5 py-3 backdrop-blur-md md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
           <button type="submit" disabled={busy} className={buttonClass}>
@@ -380,5 +533,37 @@ export function SiteForm() {
         </div>
       </form>
     </AdminPage>
+  );
+}
+
+function ColorField({
+  label,
+  value,
+  fallback,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  fallback: string;
+  onChange: (value: string) => void;
+}) {
+  const swatch = /^#[0-9a-fA-F]{6}$/.test(value) ? value : fallback;
+  return (
+    <Field label={label}>
+      <div className="flex items-center gap-3">
+        <input
+          type="color"
+          className="h-10 w-14 cursor-pointer border border-line bg-transparent p-0"
+          value={swatch}
+          onChange={(e) => onChange(e.target.value)}
+        />
+        <input
+          className={fieldClass}
+          value={value}
+          placeholder={fallback}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </div>
+    </Field>
   );
 }

@@ -1,27 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { logoutAdmin } from "@/app/admin/actions";
-import { cx } from "@/lib/utils";
 
-const nav = [
-  { href: "/admin", label: "Inicio" },
-  { href: "/admin/sitio", label: "Estudio" },
-  { href: "/admin/proyectos", label: "Obras" },
-  { href: "/admin/mensajes", label: "Mensajes" },
-  { href: "/admin/trayectoria", label: "Trayectoria" },
-  { href: "/admin/servicios", label: "Servicios" },
-  { href: "/admin/secciones", label: "Extras" },
+const sections = [
+  { id: "estudio", label: "Estudio" },
+  { id: "obras", label: "Obras" },
+  { id: "proceso", label: "Cómo trabaja" },
+  { id: "trayectoria", label: "Trayectoria" },
+  { id: "mensajes", label: "Mensajes" },
+  { id: "extras", label: "Extras" },
 ];
 
-function isActive(pathname: string, href: string) {
-  return href === "/admin" ? pathname === "/admin" : pathname.startsWith(href);
-}
-
 export function AdminShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-
   return (
     <div className="admin-root flex min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-paper">
       <aside className="hidden w-64 shrink-0 flex-col bg-ink px-6 py-8 text-ivory md:flex">
@@ -30,17 +21,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         </Link>
         <p className="mt-1 text-[11px] text-ivory/50">Editar el sitio</p>
         <nav className="mt-10 flex flex-col gap-1">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cx(
-                "px-3 py-2.5 text-sm transition-colors",
-                isActive(pathname, item.href) ? "bg-ivory/10 text-ivory" : "text-ivory/55 hover:text-ivory",
-              )}
+          {sections.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className="px-3 py-2.5 text-sm text-ivory/55 transition-colors hover:text-ivory"
             >
               {item.label}
-            </Link>
+            </a>
           ))}
         </nav>
         <div className="mt-auto space-y-3 pt-10">
@@ -69,19 +57,15 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               </form>
             </div>
           </div>
-          <nav className="grid grid-cols-2 border-b border-line">
-            {nav.map((item, index) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cx(
-                  "flex min-h-12 items-center justify-center border-b border-line px-2 text-[13px]",
-                  index % 2 === 0 && "border-r",
-                  isActive(pathname, item.href) ? "bg-ivory font-medium text-ink" : "text-stone",
-                )}
+          <nav className="flex gap-1 overflow-x-auto border-b border-line px-3 py-2">
+            {sections.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="shrink-0 px-3 py-2 text-[13px] text-stone"
               >
                 {item.label}
-              </Link>
+              </a>
             ))}
           </nav>
         </div>

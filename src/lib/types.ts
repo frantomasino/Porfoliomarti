@@ -23,6 +23,18 @@ export type SiteProfile = {
   labels?: SiteLabels;
 };
 
+export type HeadingFont = "cormorant" | "bodoni" | "garamond" | "playfair";
+export type ReelPlacement = "off" | "home" | "proyectos" | "both";
+export type ThemeSectionId = "header" | "hero" | "works" | "brand" | "about" | "contact" | "footer";
+
+export type SectionPalette = {
+  bg: string;
+  text: string;
+  muted: string;
+  accent: string;
+  line: string;
+};
+
 export type SiteTheme = {
   paper: string;
   ivory: string;
@@ -30,6 +42,11 @@ export type SiteTheme = {
   stone: string;
   bronze: string;
   line: string;
+  heading: HeadingFont;
+  reel: ReelPlacement;
+  hero_slides: string[];
+  reel_media: string[];
+  sections: Record<ThemeSectionId, SectionPalette>;
 };
 
 export type SiteLabels = {
@@ -50,6 +67,12 @@ export type SiteLabels = {
   education: string;
   notes: string;
   contact_intro: string;
+  how_1_title: string;
+  how_1_body: string;
+  how_2_title: string;
+  how_2_body: string;
+  how_3_title: string;
+  how_3_body: string;
 };
 
 export type PageSection = {

@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Photo } from "@/components/site/Photo";
 import { siteLabels } from "@/lib/appearance";
 import type { SiteProfile } from "@/lib/types";
-import { instagramLabel } from "@/lib/utils";
 
 export function WhoSection({
   site,
@@ -16,14 +15,14 @@ export function WhoSection({
 
   return (
     <section
-      className={`mx-auto grid max-w-7xl items-end gap-6 px-6 py-10 md:gap-16 md:px-10 md:py-28 ${
+      className={`mx-auto grid max-w-7xl items-end gap-10 px-6 py-16 md:gap-20 md:px-12 md:py-32 lg:px-16 ${
         hasPortrait ? "md:grid-cols-[0.9fr_1.1fr]" : ""
       }`}
     >
       {hasPortrait ? (
         <div
-          className={`group relative order-2 aspect-[4/5] overflow-hidden bg-line md:order-1 ${
-            compact ? "max-h-[36svh] md:max-h-[28rem]" : "max-h-[38svh] md:max-h-none"
+          className={`group relative aspect-[4/5] overflow-hidden bg-line ${
+            compact ? "max-h-[42svh] md:max-h-[28rem]" : "max-h-[48svh] md:max-h-none"
           }`}
         >
           <Photo
@@ -33,7 +32,7 @@ export function WhoSection({
           />
         </div>
       ) : null}
-      <div className="order-1 md:order-2">
+      <div>
         <p className="kicker text-stone">{labels.who}</p>
         <h2 className="display-sm mt-4">{site.full_name}</h2>
         <div className="rule mt-6 max-w-[4rem]" />
@@ -46,7 +45,7 @@ export function WhoSection({
         {!compact && site.philosophy ? (
           <p className="mt-5 max-w-xl text-[0.95rem] leading-[1.75] text-stone">{site.philosophy}</p>
         ) : null}
-        <div className={`flex flex-wrap items-center gap-3 ${site.bio ? "mt-12" : "mt-6"}`}>
+        <div className={`flex flex-wrap items-center gap-3 ${site.bio ? "mt-10" : "mt-6"}`}>
           {compact ? (
             <Link
               href="/estudio"
@@ -54,17 +53,14 @@ export function WhoSection({
             >
               {labels.know_more}
             </Link>
-          ) : null}
-          {site.instagram ? (
-            <a
-              href={site.instagram}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex min-h-11 items-center text-[11px] uppercase tracking-[0.22em] text-bronze hover:text-ink"
+          ) : (
+            <Link
+              href="/proyectos"
+              className="inline-flex min-h-11 items-center border border-ink px-6 text-[11px] uppercase tracking-[0.22em] transition-colors hover:bg-ink hover:text-ivory"
             >
-              {instagramLabel(site.instagram)}
-            </a>
-          ) : null}
+              {labels.see_works}
+            </Link>
+          )}
         </div>
       </div>
     </section>

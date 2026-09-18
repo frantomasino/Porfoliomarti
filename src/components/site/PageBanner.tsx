@@ -1,20 +1,37 @@
 "use client";
 
-import { Photo } from "@/components/site/Photo";
+import { useEffect, useState } from "react";
 
 export function PageBanner({ src, alt }: { src?: string; alt: string }) {
-  if (!src) return null;
+  const [landscape, setLandscape] = useState(false);
+
+  useEffect(() => {
+    if (!src) return;
+    let cancelled = false;
+    const image = new Image();
+    const decide = () => {
+      if (cancelled || !image.naturalWidth) return;
+      setLandscape(image.naturalWidth > image.naturalHeight * 1.15);
+    };
+    image.onload = decide;
+    image.src = src;
+    if (image.complete) decide();
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
+
+  if (!src || !landscape) return null;
 
   return (
-    <div className="relative isolate overflow-hidden bg-ink">
-      <div className="relative h-[min(42svh,22rem)] w-full overflow-hidden md:h-[min(52svh,28rem)]">
-        <Photo
+    <div className="overflow-hidden bg-ink">
+      <div className="relative h-[min(38svh,18rem)] w-full md:h-[min(46svh,24rem)]">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={src}
           alt={alt}
-          priority
-          className="hero-ken absolute inset-0 h-full w-full object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
-        <div className="absolute inset-0 bg-ink/15" />
       </div>
     </div>
   );

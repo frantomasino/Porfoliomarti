@@ -1,6 +1,4 @@
-import { ProjectEditor } from "@/components/admin/ProjectEditor";
-
-export const metadata = { title: "Editar obra" };
+import { redirect } from "next/navigation";
 
 export default async function EditProjectPage({
   params,
@@ -8,5 +6,5 @@ export default async function EditProjectPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <ProjectEditor projectId={id} />;
+  redirect(`/admin?obra=${id}#obras`);
 }

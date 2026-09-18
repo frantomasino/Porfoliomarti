@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import { AdminPage, ghostButtonClass } from "@/components/admin/ui";
 import { adminQuery } from "@/lib/admin/db";
+import { mailtoUrl } from "@/lib/utils";
 import type { ContactMessage } from "@/lib/types";
 
-export function MessagesList() {
+export function MessagesList({ embedded = false }: { embedded?: boolean } = {}) {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [status, setStatus] = useState("");
 
@@ -49,8 +50,10 @@ export function MessagesList() {
 
   return (
     <AdminPage
+      id={embedded ? "mensajes" : undefined}
+      embedded={embedded}
       title="Mensajes"
-      description="Las consultas del formulario de Contacto. Si cargaste WhatsApp, también se abre el chat."
+      description="Las consultas del formulario de Contacto. También llegan a WhatsApp."
     >
       {status ? <p className="mb-4 text-sm text-bronze">{status}</p> : null}
       <div className="grid gap-5">
@@ -63,8 +66,19 @@ export function MessagesList() {
               <div>
                 <p className="text-base font-medium">{message.name}</p>
                 <p className="mt-1 text-sm text-stone">
-                  {message.email}
-                  {message.phone ? ` · ${message.phone}` : ""}
+                  {message.email && mailtoUrl(message.email) ? (
+                    <a className="hover:text-ink" href={mailtoUrl(message.email)}>
+                      {message.email}
+                    </a>
+                  ) : null}
+                  {message.phone ? (
+                    <>
+                      {message.email ? " · " : ""}
+                      <a className="hover:text-ink" href={`tel:${message.phone.replace(/\s/g, "")}`}>
+                        {message.phone}
+                      </a>
+                    </>
+                  ) : null}
                 </p>
                 <p className="mt-1 text-[11px] uppercase tracking-[0.16em] text-stone">
                   {new Date(message.created_at).toLocaleString("es-AR")}

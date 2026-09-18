@@ -20,7 +20,7 @@ const blank: Omit<TimelineItem, "id"> = {
   sort_order: 0,
 };
 
-export function TimelineManager() {
+export function TimelineManager({ embedded = false }: { embedded?: boolean } = {}) {
   const [items, setItems] = useState<TimelineItem[]>([]);
   const [draft, setDraft] = useState(blank);
   const [status, setStatus] = useState("");
@@ -87,6 +87,8 @@ export function TimelineManager() {
 
   return (
     <AdminPage
+      id={embedded ? "trayectoria" : undefined}
+      embedded={embedded}
       title="Trayectoria"
       description="Práctica, formación y premios. Sale en Nosotros, debajo de la bio."
     >

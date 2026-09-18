@@ -27,7 +27,13 @@ const emptyProject: Omit<Project, "id"> = {
   sort_order: 0,
 };
 
-export function ProjectEditor({ projectId }: { projectId?: string }) {
+export function ProjectEditor({
+  projectId,
+  embedded = false,
+}: {
+  projectId?: string;
+  embedded?: boolean;
+}) {
   const router = useRouter();
   const [project, setProject] = useState(emptyProject);
   const [images, setImages] = useState<ProjectImage[]>([]);
@@ -126,7 +132,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           single: true,
         });
         if (error || !data) throw new Error(error || "No se pudo crear.");
-        router.push(`/admin/proyectos/${data.id}`);
+        router.push(`/admin?obra=${data.id}#obras`);
         router.refresh();
       }
     } catch (err) {
@@ -223,11 +229,13 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
 
   return (
     <AdminPage
+      id={embedded ? "obras" : undefined}
+      embedded={embedded}
       title={projectId ? "Editar obra" : "Nueva obra"}
       description="Título, fotos y Visible en el sitio. Las fotos extra van debajo de la portada. Guardá al final."
       actions={
-        <Link href="/admin/proyectos" className={ghostButtonClass}>
-          Volver
+        <Link href="/admin#obras" className={ghostButtonClass}>
+          Volver a obras
         </Link>
       }
     >
@@ -251,7 +259,7 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
               onChange={(e) => update("year", Number(e.target.value))}
             />
           </Field>
-          <Field label="Ubicación">
+          <Field label="Ubicación" hint="Barrio o ciudad. Se muestra en la ficha y en las tarjetas.">
             <input className={fieldClass} value={project.location} onChange={(e) => update("location", e.target.value)} />
           </Field>
           <Field label="Cliente">
@@ -260,16 +268,22 @@ export function ProjectEditor({ projectId }: { projectId?: string }) {
           <Field label="Superficie">
             <input className={fieldClass} value={project.area} onChange={(e) => update("area", e.target.value)} />
           </Field>
-          <Field label="Estado">
+          <Field label="Estado" hint="En el sitio se lee En proyecto, En obra u Obra realizada.">
             <select className={fieldClass} value={project.status} onChange={(e) => update("status", e.target.value)}>
-              {["Proyecto", "En obra", "Construido"].map((item) => (
-                <option key={item}>{item}</option>
-              ))}
+              <option value="Proyecto">En proyecto</option>
+              <option value="En obra">En obra</option>
+              <option value="Construido">Obra realizada</option>
+              {["Proyecto", "En obra", "Construido"].includes(project.status) ? null : (
+                <option value={project.status}>{project.status || "Estado actual"}</option>
+              )}
             </select>
           </Field>
         </div>
 
-        <Field label="Extracto">
+        <Field
+          label="Extracto"
+          hint="Una o dos frases. Google las usa si buscás esta obra."
+        >
           <textarea rows={3} className={fieldClass} value={project.excerpt} onChange={(e) => update("excerpt", e.target.value)} />
         </Field>
         <Field label="Memoria descriptiva" hint="Opcional. Texto largo de la obra.">

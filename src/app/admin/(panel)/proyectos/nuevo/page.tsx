@@ -1,7 +1,5 @@
-import { ProjectEditor } from "@/components/admin/ProjectEditor";
-
-export const metadata = { title: "Nueva obra" };
+import { redirect } from "next/navigation";
 
 export default function NewProjectPage() {
-  return <ProjectEditor />;
+  redirect("/admin?obra=nuevo#obras");
 }
