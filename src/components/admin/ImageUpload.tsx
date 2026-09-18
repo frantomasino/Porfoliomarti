@@ -14,6 +14,7 @@ type ImageUploadProps = {
   hint?: string;
   emptyLabel?: string;
   preview?: "cover" | "contain";
+  previewClassName?: string;
   accept?: string;
   maxEdge?: number;
   brand?: boolean;
@@ -27,6 +28,7 @@ export function ImageUpload({
   hint = "JPG, PNG o WebP, desde el celular o la computadora. Se achica sola al subir.",
   emptyLabel = "Todavía no hay foto",
   preview = "cover",
+  previewClassName,
   accept = IMAGE_ACCEPT,
   maxEdge,
   brand = false,
@@ -56,6 +58,7 @@ export function ImageUpload({
           className={cx(
             "relative overflow-hidden border border-line bg-ivory",
             preview === "contain" ? "flex min-h-48 items-center justify-center bg-ivory p-3 md:min-h-56" : "h-48 bg-line",
+            previewClassName,
           )}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -75,6 +78,7 @@ export function ImageUpload({
           className={cx(
             "flex items-center justify-center border border-dashed border-line text-sm text-stone",
             preview === "contain" ? "h-48 md:h-56" : "h-48",
+            previewClassName,
           )}
         >
           {emptyLabel}

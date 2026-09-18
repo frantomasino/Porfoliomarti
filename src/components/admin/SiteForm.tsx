@@ -209,10 +209,12 @@ export function SiteForm({ embedded = false }: { embedded?: boolean } = {}) {
               <ImageUpload
                 label="Foto del cubo / marca"
                 folder="banner"
+                preview="contain"
                 value={site.banner_url ?? ""}
                 onChange={(url) => update("banner_url", url)}
-                hint="Sale al lado del texto del estudio, no sola. Abajo pueden pasar fotos o videos."
+                hint="Sale al lado del nombre del estudio, entera, sin recortar. Abajo pueden pasar fotos o videos."
                 emptyLabel="Sin marca"
+                previewClassName="mx-auto aspect-square max-w-[18rem] p-6"
               />
             </div>
           </div>
@@ -286,7 +288,7 @@ export function SiteForm({ embedded = false }: { embedded?: boolean } = {}) {
           </Field>
           <Field
             label="Cinta de fotos"
-            hint="Las fotos de las obras pasan en una tira bajo el hero. Si el cliente la quiere, acá se prende."
+            hint="Las fotos pasan en una tira debajo del cubo. Si el cliente la quiere, acá se prende."
           >
             <select
               className={fieldClass}

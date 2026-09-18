@@ -1,7 +1,6 @@
 import { ExtraSections } from "@/components/site/ExtraSections";
 import { FilmReel } from "@/components/site/FilmReel";
 import { JsonLd } from "@/components/site/JsonLd";
-import { PageBanner } from "@/components/site/PageBanner";
 import { ProjectArchive } from "@/components/site/ProjectArchive";
 import { Reveal } from "@/components/site/Reveal";
 import { SiteShell } from "@/components/site/SiteShell";
@@ -44,9 +43,7 @@ export default async function ProjectsPage() {
       />
       {reel && reelPhotos.length > 1 ? (
         <FilmReel photos={reelPhotos} alt={labels.nav_projects} />
-      ) : (
-        <PageBanner src={site.banner_url} alt={labels.nav_projects} />
-      )}
+      ) : null}
       <section className="mx-auto max-w-7xl px-6 pb-28 pt-14 md:px-12 md:pb-36 md:pt-24 lg:px-16" style={sectionStyle(theme, "works")}>
         <Reveal>
           <div className="flex items-end justify-between gap-6 border-b border-line pb-8 md:pb-16">

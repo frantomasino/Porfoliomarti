@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { EmptyFrame } from "@/components/site/EmptyFrame";
 import { ExtraSections } from "@/components/site/ExtraSections";
-import { FilmReel } from "@/components/site/FilmReel";
 import { HeroStage } from "@/components/site/HeroStage";
 import { WorksGrid } from "@/components/site/ProjectArchive";
 import { Reveal } from "@/components/site/Reveal";
 import { HowWeWork } from "@/components/site/HowWeWork";
 import { SiteShell } from "@/components/site/SiteShell";
+import { StudioBand } from "@/components/site/StudioBand";
 import { WhoSection } from "@/components/site/WhoSection";
-import { homeHeroPhotos, mergeTheme, sectionStyle, showReel, siteLabels } from "@/lib/appearance";
+import { homeHeroPhotos, mergeTheme, reelMedia, sectionStyle, showReel, siteLabels } from "@/lib/appearance";
 import { getPageSections, getPublishedProjects, getServices, getSiteProfile } from "@/lib/content";
-import { collectionPhotoUrls } from "@/lib/media";
+import { collectionMediaUrls, collectionPhotoUrls } from "@/lib/media";
 
 function splitHeroTitle(text: string) {
   const words = text.trim().split(/\s+/).filter(Boolean);
@@ -36,6 +36,7 @@ export default async function HomePage() {
   const heroPhotos = homeHeroPhotos(site, collectionPhotoUrls(works, 4));
   const hasHero = heroPhotos.length > 0;
   const showWho = Boolean(site.bio || site.portrait_url || site.philosophy);
+  const bandMedia = showReel(theme, "home") ? reelMedia(site, collectionMediaUrls(works)) : [];
   const headline = (site.tagline || "").trim();
   const title = splitHeroTitle(headline);
 
@@ -135,10 +136,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {showReel(theme, "home") ? (
-        <FilmReel photos={collectionPhotoUrls(works, 8)} alt={labels.works} />
-      ) : null}
-
       <section
         id="obras"
         className="mx-auto max-w-7xl scroll-mt-28 px-6 pb-24 pt-16 md:px-12 md:pb-36 md:pt-32 lg:px-16"
@@ -175,6 +172,8 @@ export default async function HomePage() {
       </section>
 
       <HowWeWork site={site} services={services} />
+
+      <StudioBand site={site} media={bandMedia} />
 
       {showWho ? (
         <div style={sectionStyle(theme, "about")}>
